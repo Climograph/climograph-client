@@ -13,3 +13,5 @@ export { default as apiClient } from "./apiClient";
  * - Per-request custom headers
  */
 export { axiosInstance } from "./axiosConfig";
+
+export { WikidataService, WorldClimService } from "./services";
