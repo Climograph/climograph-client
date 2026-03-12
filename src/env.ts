@@ -6,6 +6,8 @@ const envSchema = zod.object({
   BASE_API_PREFIX: zod.string().default("/api"),
 
   NODE_ENV: zod.enum(["development", "production", "test"]).optional().default("development"),
+
+  WORLDCLIM_API_KEY: zod.string().default("example-api-key"),
 });
 
 export default envSchema.parse(import.meta.env);
