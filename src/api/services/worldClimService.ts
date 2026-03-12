@@ -1,5 +1,4 @@
-import { WORLDCLIM_BASE_URL } from "@/constants/api.constant";
-import { MONTH_NAMES } from "@/constants/climate.constant";
+import { MONTHS_ARRAY, WORLDCLIM_BASE_URL } from "@/constants";
 import env from "@/env";
 import type {
   TCellSize,
@@ -7,7 +6,7 @@ import type {
   TWorldClimCellResponse,
   TWorldClimTemperatureBinding,
   TWorldClimTemperatureResponse,
-} from "@/types/climate.type";
+} from "@/types";
 import axios from "axios";
 
 export const WorldClimService = {
@@ -43,7 +42,7 @@ export const WorldClimService = {
         const monthNum = parseInt(monthStr.replace(/\D/g, ""), 10);
         return {
           month: monthNum,
-          monthName: MONTH_NAMES[monthNum - 1] ?? monthStr,
+          monthName: MONTHS_ARRAY[monthNum - 1] ?? monthStr,
           tmin: parseFloat(b.tmin.value),
           tmax: parseFloat(b.tmax.value),
         };
