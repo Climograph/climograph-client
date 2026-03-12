@@ -1,14 +1,14 @@
 import { ENDPOINTS } from "@/constants/api.constant";
 import type {
-  WikidataCity,
-  WikidataEntitiesResult,
-  WikidataSearchResult,
+  TWikidataCity,
+  TWikidataEntitiesResult,
+  TWikidataSearchResult,
 } from "@/types/wikidata.type";
 import axios from "axios";
 
 export const WikidataService = {
-  async searchCity(query: string): Promise<WikidataCity[]> {
-    const searchRes = await axios.get<WikidataSearchResult>(ENDPOINTS.WIKIDATA, {
+  async searchCity(query: string): Promise<TWikidataCity[]> {
+    const searchRes = await axios.get<TWikidataSearchResult>(ENDPOINTS.WIKIDATA, {
       params: {
         action: "wbsearchentities",
         search: query,
@@ -24,7 +24,7 @@ export const WikidataService = {
 
     if (entityIds.length === 0) return [];
 
-    const entitiesRes = await axios.get<WikidataEntitiesResult>(ENDPOINTS.WIKIDATA, {
+    const entitiesRes = await axios.get<TWikidataEntitiesResult>(ENDPOINTS.WIKIDATA, {
       params: {
         action: "wbgetentities",
         ids: entityIds.join("|"),
@@ -35,8 +35,8 @@ export const WikidataService = {
       },
     });
 
-    const entities: WikidataEntitiesResult["entities"] = entitiesRes.data.entities;
-    const results: WikidataCity[] = [];
+    const entities: TWikidataEntitiesResult["entities"] = entitiesRes.data.entities;
+    const results: TWikidataCity[] = [];
 
     for (const id of entityIds) {
       const entity = entities[id];
