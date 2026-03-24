@@ -15,4 +15,4 @@ export const MONTHS = {
 
 export const MONTHS_ARRAY = Object.values(MONTHS);
 
-export const DEFAULT_MAP_CENTER = { lat: 48.3794, lng: 31.1656 };
+export const DEFAULT_MAP_CENTER = { lat: 40.4168, lng: -3.7038 };
