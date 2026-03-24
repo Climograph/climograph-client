@@ -13,7 +13,6 @@ export type TWikidataCoords = {
 
 export type TWikidataEntity = {
   labels?: { en?: TWikidataEntityValue };
-
   descriptions?: { en?: TWikidataEntityValue };
   claims?: {
     P625?: { mainsnak?: { datavalue?: { value?: TWikidataCoords } } }[];
@@ -22,12 +21,4 @@ export type TWikidataEntity = {
 
 export type TWikidataEntitiesResult = {
   entities: Record<string, TWikidataEntity>;
-};
-
-export type TWikidataCity = {
-  id: string;
-  label: string;
-  description: string;
-  lat: number;
-  lng: number;
 };
