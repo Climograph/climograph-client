@@ -1,5 +1,6 @@
 import { ENDPOINTS } from "@/constants";
-import type { TWikidataCity, TWikidataEntitiesResult, TWikidataSearchResult } from "@/types";
+import type { TWikidataEntitiesResult, TWikidataSearchResult } from "@/types/api/wikidata.dto";
+import type { TWikidataCity } from "@/types/domain/location";
 import axios from "axios";
 
 export const WikidataService = {
