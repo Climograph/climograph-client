@@ -1,7 +1,7 @@
 import { CellSizeSelector, LeafletMap, SearchBar, TemperatureChart } from "@/components";
-import type { THomePageViewProps } from "./HomePage.type";
+import type { TClimateStatisticsViewProps } from "./ClimateStatistics.type";
 
-export function HomePageView({
+export function ClimateStatisticsView({
   selectedCity,
   mapCenter,
   cellSize,
@@ -11,13 +11,13 @@ export function HomePageView({
   error,
   onCitySelect,
   onCellSizeChange,
-}: THomePageViewProps) {
+}: TClimateStatisticsViewProps) {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-[960px] flex flex-col gap-8">
         <header className="text-center">
           <h1 className="text-[length:var(--font-2xl)] font-bold text-[var(--color-primary)]">
-            Climograph
+            Climate Statistics
           </h1>
           <p className="mt-1 text-[var(--color-text-secondary)]">
             Search for a city to explore its climate data
