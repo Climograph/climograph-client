@@ -1,6 +1,6 @@
-import { ResultStatus } from "@/constants";
+import { RESULT_STATUSES } from "@/constants";
 
-export type TResultStatus = (typeof ResultStatus)[keyof typeof ResultStatus];
+export type TResultStatus = (typeof RESULT_STATUSES)[keyof typeof RESULT_STATUSES];
 
 export interface TApiResponse<T> {
   status: TResultStatus;
