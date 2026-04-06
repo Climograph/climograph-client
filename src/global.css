@@ -1,9 +1,9 @@
+@import "tailwindcss";
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
@@ -23,11 +23,18 @@ body {
 }
 
 :root {
-  /* Fonts */
+  /* * Fonts */
   --font-sans: "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Fira Code", "Courier New", monospace;
+  --font-xs: 12px;
+  --font-base: 14px;
+  --font-sm: 16px;
+  --font-md: 18px;
+  --font-lg: 22px;
+  --font-xl: 30px;
+  --font-2xl: 36px;
 
-  /* Colors */
+  /* * Colors */
   --color-primary: #4f46e5;
   --color-secondary: #6366f1;
   --color-accent: #f59e0b;
@@ -36,23 +43,29 @@ body {
   --color-bg-secondary: #f9fafb;
   --color-text: #111827;
   --color-text-secondary: #6b7280;
+  --color-text-strong: #374151;
   --color-border: #e5e7eb;
   --color-error: #ef4444;
+  --color-error-bg: #fef2f2;
+  --color-error-border: #fecaca;
   --color-success: #10b981;
+  --color-temperature-max: #ef4444;
+  --color-temperature-min: #3b82f6;
 
-  /* Spacing scale */
+  /* * Spacing scale */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
   --space-lg: 2rem;
   --space-xl: 4rem;
 
-  /* Border radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
+  /* * Border radius */
+  --radius-sm: 10px;
+  --radius-md: 14px;
   --radius-lg: 16px;
+  --radius-full: 9999px;
 
-  /* Shadows */
+  /* * Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);

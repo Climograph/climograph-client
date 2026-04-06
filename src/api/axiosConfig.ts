@@ -1,12 +1,12 @@
-import { ErrorConstant } from "@/constants";
+import { ERROR_CONSTANTS, TIME_CONSTANTS } from "@/constants";
 import { GLOBAL_CONFIG } from "@/global-config";
 import { userStore } from "@/stores";
-import type { TApiResponse } from "@/types";
+import type { TApiResponse } from "@/types/api/common";
 import axios, { type AxiosError, type AxiosResponse } from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: GLOBAL_CONFIG.apiBaseUrl,
-  timeout: 50000,
+  timeout: TIME_CONSTANTS.FIFTY_SECONDS,
   headers: { "Content-Type": "application/json;charset=utf-8" },
 });
 
@@ -23,13 +23,13 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   <T>(res: AxiosResponse<TApiResponse<T>>) => {
-    if (!res.data) throw new Error(ErrorConstant.API_REQUEST_FAILED);
+    if (!res.data) throw new Error(ERROR_CONSTANTS.API_REQUEST_FAILED);
     return res;
   },
   (error: AxiosError<TApiResponse<unknown>>) => {
     const { response, message } = error;
 
-    const errMsg = response?.data?.message ?? message ?? ErrorConstant.API_REQUEST_FAILED;
+    const errMsg = response?.data?.message ?? message ?? ERROR_CONSTANTS.API_REQUEST_FAILED;
 
     // * handle 401 Unauthorized - clear user session
     if (response?.status === 401) {
