@@ -22,6 +22,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.leaflet-container {
+  z-index: 0;
+}
+
 :root {
   /* * Fonts */
   --font-sans: "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;

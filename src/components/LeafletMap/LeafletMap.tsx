@@ -17,6 +17,7 @@ export function LeafletMap({ lat, lng, label }: TLeafletMapProps) {
   return (
     <div
       className={`
+        relative z-0
         overflow-hidden
         border border-[var(--color-border)]
         rounded-[var(--radius-lg)] 

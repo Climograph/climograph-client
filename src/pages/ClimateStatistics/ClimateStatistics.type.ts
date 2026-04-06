@@ -2,7 +2,7 @@ import type { TCellSize, TMonthlyTemperature } from "@/types/domain/climate";
 import type { TCoordinates, TWikidataCity } from "@/types/domain/location";
 import type { TCellSizeOption } from "@/types/ui/cell-size";
 
-export type THomePageViewProps = {
+export type TClimateStatisticsViewProps = {
   selectedCity: TWikidataCity | null;
   mapCenter: TCoordinates;
   cellSize: TCellSize;

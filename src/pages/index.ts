@@ -1,1 +1,3 @@
-export { HomePage } from "./HomePage";
+export { ClimateStatistics } from "./ClimateStatistics";
+export { ClimateComparison } from "./ClimateComparison";
+export { HeatMap } from "./HeatMap";
