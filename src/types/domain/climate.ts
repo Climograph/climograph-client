@@ -1,4 +1,4 @@
-import { CELL_SIZES } from "@/constants/worldclim.constant";
+import { CELL_SIZES } from "@/constants";
 
 export type TCellSize = (typeof CELL_SIZES)[keyof typeof CELL_SIZES];
 
@@ -7,4 +7,5 @@ export type TMonthlyTemperature = {
   monthName: string;
   tmin: number;
   tmax: number;
+  prec: number;
 };
