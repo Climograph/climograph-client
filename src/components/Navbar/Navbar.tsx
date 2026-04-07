@@ -1,11 +1,13 @@
 import { LanguageSwitcher } from "@/components";
 import { NAV_LINKS } from "@/constants";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
+import { LANGUAGE_SWITCHER_VARIANTS } from "../LanguageSwitcher";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navRef = useRef<HTMLElement | null>(null);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -18,8 +20,32 @@ export function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
+      if (window.innerWidth >= 640) return;
+
+      const target = event.target as Node | null;
+      if (!target) return;
+
+      if (navRef.current && !navRef.current.contains(target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, [isOpen]);
+
   return (
     <nav
+      ref={navRef}
       className={`
         sticky top-0 z-50 w-full
         border-b border-[var(--color-border)]
@@ -115,12 +141,12 @@ export function Navbar() {
 
           {/* desktop */}
           <li className={`hidden md:block`}>
-            <LanguageSwitcher variant="dropdown" />
+            <LanguageSwitcher variant={LANGUAGE_SWITCHER_VARIANTS.DROPDOWN} />
           </li>
 
           {/* mobile */}
           <li className="md:hidden pt-2 mt-2 border-t border-[var(--color-border)]">
-            <LanguageSwitcher variant="inline" />
+            <LanguageSwitcher variant={LANGUAGE_SWITCHER_VARIANTS.INLINE} />
           </li>
         </ul>
       </div>
