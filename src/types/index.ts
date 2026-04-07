@@ -1,6 +1,8 @@
 export type { TApiResponse, TResultStatus } from "./api/common";
 export type {
   TWikidataCoords,
+  TWikidataGeoSearchItem,
+  TWikidataGeoSearchResult,
   TWikidataEntitiesResult,
   TWikidataEntity,
   TWikidataEntityValue,

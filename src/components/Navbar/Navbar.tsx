@@ -1,36 +1,105 @@
 import { NAV_LINKS } from "@/constants";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 export function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 640) setIsOpen(false);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <nav
       className={`
-        sticky top-0 z-50 w-full 
-        border-b border-[var(--color-border)] 
+        sticky top-0 z-50 w-full
+        border-b border-[var(--color-border)]
         bg-[var(--color-bg)]
       `}
     >
       <div className={`max-w-[960px] mx-auto px-4 h-20 flex items-center justify-between`}>
-        <span className={`text-[length:var(--font-xl)] font-bold text-[var(--color-primary)]`}>
+        <span
+          className={`text-[length:var(--font-lg)] md:text-[length:var(--font-xl)] font-bold text-[var(--color-primary)]`}
+        >
           Climograph
         </span>
 
-        <ul className={`flex items-center gap-3 list-none`}>
+        {/* desktop navbar view */}
+        <ul className={`hidden sm:flex items-center gap-3 list-none`}>
           {NAV_LINKS.map(({ to, label }) => (
             <li key={to}>
               <NavLink
                 to={to}
                 end
                 className={({ isActive }) =>
-                  `
-                    px-4 py-2 rounded-[var(--radius-sm)] text-[length:var(--font-md)]
-                    transition-colors duration-150
-                    ${
-                      isActive
-                        ? `bg-[var(--color-primary)] text-[var(--color-bg)]`
-                        : `text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]`
-                    }
-                  `
+                  `px-4 py-2 rounded-[var(--radius-sm)] text-[length:var(--font-md)] md:text-[length:var(--font-md)]
+                   transition-colors duration-150
+                   ${
+                     isActive
+                       ? "bg-[var(--color-primary)] text-[var(--color-bg)]"
+                       : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]"
+                   }`
+                }
+              >
+                {label}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+
+        {/* hamburger button, mobile only */}
+        <button
+          className={`sm:hidden flex flex-col justify-center items-center w-10 h-10 gap-[5px] rounded-[var(--radius-sm)] hover:bg-[var(--color-bg-secondary)] transition-colors`}
+          onClick={() => setIsOpen((o) => !o)}
+          aria-label="Toggle menu"
+          aria-expanded={isOpen}
+        >
+          <span
+            className={`block h-[2px] w-6 bg-[var(--color-text)] rounded-full transition-all duration-300 origin-center
+              ${isOpen ? "translate-y-[7px] rotate-45" : ""}`}
+          />
+          <span
+            className={`block h-[2px] w-6 bg-[var(--color-text)] rounded-full transition-all duration-300
+              ${isOpen ? "opacity-0 scale-x-0" : ""}`}
+          />
+          <span
+            className={`block h-[2px] w-6 bg-[var(--color-text)] rounded-full transition-all duration-300 origin-center
+              ${isOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
+          />
+        </button>
+      </div>
+
+      {/* mobile dropdown */}
+      <div
+        className={`
+          sm:hidden absolute top-full left-0 right-0 z-50
+          border-t border-[var(--color-border)]
+          bg-[var(--color-bg)] shadow-md
+          ${isOpen ? `opacity-100 pointer-events-auto translate-y-0` : `opacity-0 pointer-events-none -translate-y-2`}
+          transition-all duration-300 ease-in-out
+        `}
+      >
+        <ul className={`flex flex-col px-4 py-3 gap-1 list-none`}>
+          {NAV_LINKS.map(({ to, label }) => (
+            <li key={to}>
+              <NavLink
+                to={to}
+                end
+                onClick={() => setIsOpen(false)}
+                className={({ isActive }) =>
+                  `block w-full px-4 py-3 rounded-[var(--radius-sm)] text-[length:var(--font-sm)]
+                   transition-colors duration-150
+                   ${
+                     isActive
+                       ? "bg-[var(--color-primary)] text-[var(--color-bg)] font-medium"
+                       : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]"
+                   }`
                 }
               >
                 {label}

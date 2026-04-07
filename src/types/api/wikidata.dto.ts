@@ -2,6 +2,16 @@ export type TWikidataSearchResult = {
   search: { id: string }[];
 };
 
+export type TWikidataGeoSearchItem = {
+  title: string;
+};
+
+export type TWikidataGeoSearchResult = {
+  query?: {
+    geosearch?: TWikidataGeoSearchItem[];
+  };
+};
+
 export type TWikidataEntityValue = {
   value: string;
 };

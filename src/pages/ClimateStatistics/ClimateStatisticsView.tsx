@@ -1,4 +1,10 @@
-import { CellSizeSelector, LeafletMap, SearchBar, TemperatureChart } from "@/components";
+import {
+  CellSizeSelector,
+  LeafletMap,
+  SearchBar,
+  TemperatureChart,
+  ThreeDotsScaleLoader,
+} from "@/components";
 import type { TClimateStatisticsViewProps } from "./ClimateStatistics.type";
 
 export function ClimateStatisticsView({
@@ -8,15 +14,17 @@ export function ClimateStatisticsView({
   cellSizeOptions,
   temperatureData,
   isLoading,
+  isFetching,
   error,
   onCitySelect,
+  onMapClick,
   onCellSizeChange,
 }: TClimateStatisticsViewProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen flex items-start justify-center px-4 py-8">
       <div className="w-full max-w-[960px] flex flex-col gap-8">
         <header className="text-center">
-          <h1 className="text-[length:var(--font-2xl)] font-bold text-[var(--color-primary)]">
+          <h1 className="text-[length:var(--font-xl)] lg:text-[length:var(--font-2xl)] font-bold text-[var(--color-primary)]">
             Climate Statistics
           </h1>
           <p className="mt-1 text-[var(--color-text-secondary)]">
@@ -40,22 +48,10 @@ export function ClimateStatisticsView({
           <LeafletMap
             lat={mapCenter.lat}
             lng={mapCenter.lng}
+            onMapClick={onMapClick}
             {...(selectedCity ? { label: selectedCity.label } : {})}
           />
         </section>
-
-        {isLoading && (
-          <div className="flex flex-col items-center gap-2 text-[var(--color-text-secondary)]">
-            <div
-              className={`
-              w-8 h-8 
-              border-[3px] border-[var(--color-border)] border-t-[var(--color-primary)] 
-              rounded-[var(--radius-full)] animate-spin
-            `}
-            />
-            <p>Fetching climate data...</p>
-          </div>
-        )}
 
         {error && (
           <div
@@ -70,8 +66,16 @@ export function ClimateStatisticsView({
           </div>
         )}
 
-        {temperatureData.length > 0 && selectedCity && (
-          <section>
+        {(temperatureData.length > 0 || isLoading || isFetching) && selectedCity && (
+          <section className="relative">
+            {(isLoading || isFetching) && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-[var(--radius-lg)] bg-[var(--color-bg)]/80 backdrop-blur-sm">
+                <ThreeDotsScaleLoader className="text-[var(--color-primary)]" size={80} />
+                <p className="text-sm text-[var(--color-text-secondary)]">
+                  {isLoading ? "Fetching climate data..." : "Updating..."}
+                </p>
+              </div>
+            )}
             <TemperatureChart data={temperatureData} cityName={selectedCity.label} />
           </section>
         )}

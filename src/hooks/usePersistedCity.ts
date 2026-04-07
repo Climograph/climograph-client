@@ -1,5 +1,4 @@
-import { DEFAULT_CITY } from "@/constants";
-import { LOCAL_STORAGE_KEYS } from "@/constants/keys.constants";
+import { DEFAULT_CITY, LOCAL_STORAGE_KEYS } from "@/constants";
 import { TWikidataCity } from "@/types";
 import { useState } from "react";
 

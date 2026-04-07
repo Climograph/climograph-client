@@ -1,17 +1,17 @@
 import { CELL_SIZE_OPTIONS, CELL_SIZES } from "@/constants";
-import { useGetClimateData, usePersistedCity } from "@/hooks";
+import { useGetClimateData, usePersistedCity, useResolveCityByCoordinates } from "@/hooks";
 import type { TCellSize, TCellSizeOption, TWikidataCity } from "@/types";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { formatCoordinate, toCityQueryParam } from "./ClimateStatistics.util";
 import { ClimateStatisticsView } from "./ClimateStatisticsView";
-
-function toCityQueryParam(cityLabel: string) {
-  return cityLabel.trim().toLowerCase();
-}
 
 export function ClimateStatistics() {
   const [cellSize, setCellSize] = useState<TCellSize>(CELL_SIZES.TEN_MINUTES);
   const { city: selectedCity, selectCity } = usePersistedCity();
+  const { isLoading: isResolving, mutateAsync: resolveCityByCoordinates } =
+    useResolveCityByCoordinates();
+  const latestMapClickIdRef = useRef(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCityInUrl = useMemo(
     () => toCityQueryParam(selectedCity.label),
@@ -32,9 +32,48 @@ export function ClimateStatistics() {
     selectCity(city);
   }
 
+  async function resolveClickedLocation(lat: number, lng: number) {
+    const currentMapClickId = latestMapClickIdRef.current + 1;
+    latestMapClickIdRef.current = currentMapClickId;
+
+    const latLabel = formatCoordinate(lat);
+    const lngLabel = formatCoordinate(lng);
+
+    const provisionalCity: TWikidataCity = {
+      id: `map:${latLabel},${lngLabel}`,
+      label: `Map point ${latLabel}, ${lngLabel}`,
+      description: "Selected from map",
+      lat,
+      lng,
+    };
+
+    // * update coordinates immediately so climate fetch starts without waiting for Wikidata
+    selectCity(provisionalCity);
+
+    try {
+      const resolvedCity = await resolveCityByCoordinates({ lat, lng });
+      if (!resolvedCity || latestMapClickIdRef.current !== currentMapClickId) {
+        return;
+      }
+
+      selectCity({
+        ...resolvedCity,
+        lat,
+        lng,
+      });
+    } catch {
+      // * keep provisional map label if reverse lookup fails.
+    }
+  }
+
+  function handleMapClick(lat: number, lng: number) {
+    void resolveClickedLocation(lat, lng);
+  }
+
   const {
     data: temperatureData = [],
     isLoading,
+    isFetching,
     isError,
   } = useGetClimateData(selectedCity.lat, selectedCity.lng, cellSize);
 
@@ -50,8 +89,10 @@ export function ClimateStatistics() {
       cellSizeOptions={cellSizeOptions}
       temperatureData={temperatureData}
       isLoading={isLoading}
+      isFetching={isFetching || isResolving}
       error={isError ? "Failed to fetch climate data" : null}
       onCitySelect={handleCitySelect}
+      onMapClick={handleMapClick}
       onCellSizeChange={setCellSize}
     />
   );
