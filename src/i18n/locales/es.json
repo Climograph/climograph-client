@@ -1,0 +1,53 @@
+{
+  "app": {
+    "brand": "Climograma"
+  },
+  "navbar": {
+    "toggleMenu": "Abrir o cerrar menu",
+    "links": {
+      "climateStatistics": "Estadisticas Climaticas",
+      "climateComparison": "Comparacion Climatica",
+      "heatMap": "Mapa de Calor"
+    }
+  },
+  "search": {
+    "placeholder": "Introduce el nombre de una ciudad..."
+  },
+  "climateStatistics": {
+    "title": "Estadisticas Climaticas",
+    "subtitle": "Busca una ciudad para explorar sus datos climaticos",
+    "cellResolution": "Resolucion de celda:"
+  },
+  "climateComparison": {
+    "title": "Comparacion Climatica",
+    "placeholder": "La pagina de comparacion esta vacia por ahora."
+  },
+  "heatMap": {
+    "title": "Mapa de Calor",
+    "placeholder": "Marcador de posicion de mapa de calor. Mas adelante podremos mostrar la intensidad climatica en un mapa mundial aqui."
+  },
+  "chart": {
+    "title": "Temperatura",
+    "monthAxis": "Mes",
+    "temperatureAxis": "Temperatura (grados C)",
+    "maxTemperature": "Temperatura Maxima",
+    "minTemperature": "Temperatura Minima"
+  },
+  "loading": {
+    "fetchingClimateData": "Obteniendo datos climaticos...",
+    "updating": "Actualizando..."
+  },
+  "errors": {
+    "fetchClimateData": "No se pudieron obtener los datos climaticos"
+  },
+  "map": {
+    "selectedFromMap": "Seleccionado desde el mapa",
+    "pointLabel": "Punto del mapa {{lat}}, {{lng}}"
+  },
+  "cellSizes": {
+    "10m": "10 min (~324 km2)",
+    "5m": "5 min (~81 km2)",
+    "2.5m": "2.5 min (~20.25 km2)",
+    "30s": "30 seg (~1 km2)"
+  }
+}
