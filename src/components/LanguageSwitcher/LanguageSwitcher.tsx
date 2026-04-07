@@ -2,10 +2,7 @@ import { Dropdown } from "@/components/UI";
 import { LANGUAGES, LOCAL_STORAGE_KEYS } from "@/constants";
 import i18next from "i18next";
 import { useEffect, useState } from "react";
-
-type TLanguageSwitcherProps = {
-  variant?: "dropdown" | "inline";
-};
+import { TLanguageSwitcherProps } from "./LanguageSwitcher.type";
 
 export default function LanguageSwitcher({ variant = "dropdown" }: TLanguageSwitcherProps) {
   const [current, setCurrent] = useState(i18next.language.toLowerCase());
