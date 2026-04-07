@@ -2,9 +2,11 @@ import { WikidataService } from "@/api";
 import { TIME_CONSTANTS } from "@/constants";
 import type { TWikidataCity } from "@/types/domain/location";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { TSearchBarProps } from "./SearchBar.type";
 
 export function SearchBar({ onCitySelect }: TSearchBarProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<TWikidataCity[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -57,7 +59,7 @@ export function SearchBar({ onCitySelect }: TSearchBarProps) {
         type="text"
         value={query}
         onChange={(e) => handleInputChange(e.target.value)}
-        placeholder={`Enter city name...`}
+        placeholder={t("search.placeholder")}
         className={`
           w-full px-3 md:px-4 py-2
           text-[length:var(--font-sm)] md:text-[length:var(--font-md)] 

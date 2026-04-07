@@ -22,6 +22,7 @@
     "tmax",
     "tmin",
     "VITE",
-    "WORLDCLIM"
+    "WORLDCLIM",
+    "Клімограф"
   ]
 }
