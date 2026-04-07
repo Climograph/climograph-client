@@ -11,6 +11,7 @@ export { DEFAULT_MAP_CENTER, MONTHS, MONTHS_ARRAY } from "./climate.constant";
 export { DEFAULT_CITY } from "./defaultCity.constant";
 export { ERROR_CONSTANTS } from "./error.constant";
 export { LOCAL_STORAGE_KEYS } from "./keys.constants";
+export { LANGUAGES } from "./language.constant";
 export { NAV_LINKS } from "./navlink.constant";
 export { ROUTES } from "./route.constant";
 export { TIME_CONSTANTS } from "./time.constant";

@@ -1,7 +1,7 @@
 import { ROUTES } from "./route.constant";
 
 export const NAV_LINKS = [
-  { to: ROUTES.CLIMATE_STATISTICS_SEARCH, label: "Climate Statistics" },
-  { to: ROUTES.CLIMATE_COMPARISON, label: "Climate Comparison" },
-  { to: ROUTES.HEAT_MAP, label: "Heat Map" },
+  { to: ROUTES.CLIMATE_STATISTICS_SEARCH, labelKey: "navbar.links.climateStatistics" },
+  { to: ROUTES.CLIMATE_COMPARISON, labelKey: "navbar.links.climateComparison" },
+  { to: ROUTES.HEAT_MAP, labelKey: "navbar.links.heatMap" },
 ] as const;
