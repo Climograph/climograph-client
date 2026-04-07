@@ -3,9 +3,12 @@ import { LANGUAGES, LOCAL_STORAGE_KEYS } from "@/constants";
 import i18next from "i18next";
 import { useEffect, useState } from "react";
 import { TLanguageSwitcherProps } from "./LanguageSwitcher.type";
+import { resolveLanguageCode } from "./LanguageSwitcher.util";
 
 export default function LanguageSwitcher({ variant = "dropdown" }: TLanguageSwitcherProps) {
-  const [current, setCurrent] = useState(i18next.language.toLowerCase());
+  const [current, setCurrent] = useState(
+    resolveLanguageCode(i18next.resolvedLanguage ?? i18next.language),
+  );
 
   const change = async (code: string) => {
     await i18next.changeLanguage(code);
@@ -13,9 +16,14 @@ export default function LanguageSwitcher({ variant = "dropdown" }: TLanguageSwit
   };
 
   useEffect(() => {
-    i18next.on("languageChanged", setCurrent);
+    const handleLanguageChanged = (language: string) => {
+      setCurrent(resolveLanguageCode(language));
+    };
+
+    i18next.on("languageChanged", handleLanguageChanged);
+
     return () => {
-      i18next.off("languageChanged", setCurrent);
+      i18next.off("languageChanged", handleLanguageChanged);
     };
   }, []);
 
