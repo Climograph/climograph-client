@@ -30,6 +30,7 @@
     "title": "Temperature",
     "monthAxis": "Month",
     "temperatureAxis": "Temperature (deg C)",
+    "precipitation": "Precipitation",
     "maxTemperature": "Max Temperature",
     "minTemperature": "Min Temperature"
   },

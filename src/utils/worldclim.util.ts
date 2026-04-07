@@ -22,6 +22,7 @@ export function extractPixelIri(iris: string[], variable: string): string | null
 export function buildMonthlyTemperatures(
   tminData: TWorldClimPixelResource,
   tmaxData: TWorldClimPixelResource,
+  precData: TWorldClimPixelResource,
 ): TMonthlyTemperature[] {
   return Array.from({ length: 12 }, (_, i) => {
     const monthKey = `valueMonth${String(i + 1).padStart(2, "0")}` as keyof TWorldClimPixelResource;
@@ -30,6 +31,7 @@ export function buildMonthlyTemperatures(
       monthName: MONTH_NAMES[i],
       tmin: Number(tminData[monthKey]),
       tmax: Number(tmaxData[monthKey]),
+      prec: Number(precData[monthKey]),
     };
   });
 }

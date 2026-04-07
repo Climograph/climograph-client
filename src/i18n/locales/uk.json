@@ -30,6 +30,7 @@
     "title": "Температура",
     "monthAxis": "Місяць",
     "temperatureAxis": "Температура (град C)",
+    "precipitation": "Опади",
     "maxTemperature": "Макс. температура",
     "minTemperature": "Мін. температура"
   },

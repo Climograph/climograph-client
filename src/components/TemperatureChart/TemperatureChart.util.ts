@@ -1,4 +1,4 @@
-import type { TMonthlyTemperature } from "@/types/domain/climate";
+import type { TMonthlyTemperature } from "@/types";
 import type { TFunction } from "i18next";
 import { TEMPERATURE_CHART_COLORS } from "./TemperatureChart.constant";
 import type { TemperatureChartSeries } from "./TemperatureChart.type";

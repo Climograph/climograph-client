@@ -2,7 +2,7 @@ import {
   CellSizeSelector,
   LeafletMap,
   SearchBar,
-  TemperatureChart,
+  TempPrecipChart,
   ThreeDotsScaleLoader,
 } from "@/components";
 import { useTranslation } from "react-i18next";
@@ -79,7 +79,7 @@ export function ClimateStatisticsView({
                 </p>
               </div>
             )}
-            <TemperatureChart data={temperatureData} cityName={selectedCity.label} />
+            <TempPrecipChart data={temperatureData} cityName={selectedCity.label} />
           </section>
         )}
       </div>
