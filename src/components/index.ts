@@ -5,3 +5,4 @@ export { Navbar } from "./Navbar";
 export { SearchBar } from "./SearchBar";
 export { ThreeDotsScaleLoader } from "./svg";
 export { TemperatureChart } from "./TemperatureChart";
+export { TempPrecipChart } from "./TempPrecipChart";
