@@ -1,7 +1,10 @@
 import { TCellSizeSelectorProps } from "./CellSizeSelector.type";
+import { useTranslation } from "react-i18next";
 import { getButtonClasses } from "./CellSizeSelector.util";
 
 export function CellSizeSelector({ activeSize, options, onSelect }: TCellSizeSelectorProps) {
+  const { t } = useTranslation();
+
   return (
     <div className={`flex items-center gap-2 md:gap-4 flex-wrap`}>
       <span
@@ -10,7 +13,7 @@ export function CellSizeSelector({ activeSize, options, onSelect }: TCellSizeSel
           whitespace-nowrap
         `}
       >
-        Cell resolution:
+        {t("climateStatistics.cellResolution")}
       </span>
 
       <div className={`flex gap-3`}>

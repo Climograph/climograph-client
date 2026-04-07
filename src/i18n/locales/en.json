@@ -1,0 +1,53 @@
+{
+  "app": {
+    "brand": "Climograph"
+  },
+  "navbar": {
+    "toggleMenu": "Toggle menu",
+    "links": {
+      "climateStatistics": "Climate Statistics",
+      "climateComparison": "Climate Comparison",
+      "heatMap": "Heat Map"
+    }
+  },
+  "search": {
+    "placeholder": "Enter city name..."
+  },
+  "climateStatistics": {
+    "title": "Climate Statistics",
+    "subtitle": "Search for a city to explore its climate data",
+    "cellResolution": "Cell resolution:"
+  },
+  "climateComparison": {
+    "title": "Climate Comparison",
+    "placeholder": "Comparison page is empty for now."
+  },
+  "heatMap": {
+    "title": "Heat Map",
+    "placeholder": "Heat map page placeholder. We can later render climate intensity on a world map here."
+  },
+  "chart": {
+    "title": "Temperature",
+    "monthAxis": "Month",
+    "temperatureAxis": "Temperature (deg C)",
+    "maxTemperature": "Max Temperature",
+    "minTemperature": "Min Temperature"
+  },
+  "loading": {
+    "fetchingClimateData": "Fetching climate data...",
+    "updating": "Updating..."
+  },
+  "errors": {
+    "fetchClimateData": "Failed to fetch climate data"
+  },
+  "map": {
+    "selectedFromMap": "Selected from map",
+    "pointLabel": "Map point {{lat}}, {{lng}}"
+  },
+  "cellSizes": {
+    "10m": "10 min (~324 km2)",
+    "5m": "5 min (~81 km2)",
+    "2.5m": "2.5 min (~20.25 km2)",
+    "30s": "30 sec (~1 km2)"
+  }
+}

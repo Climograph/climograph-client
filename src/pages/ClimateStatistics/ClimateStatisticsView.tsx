@@ -5,6 +5,7 @@ import {
   TemperatureChart,
   ThreeDotsScaleLoader,
 } from "@/components";
+import { useTranslation } from "react-i18next";
 import type { TClimateStatisticsViewProps } from "./ClimateStatistics.type";
 
 export function ClimateStatisticsView({
@@ -20,15 +21,17 @@ export function ClimateStatisticsView({
   onMapClick,
   onCellSizeChange,
 }: TClimateStatisticsViewProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen flex items-start justify-center px-4 py-8">
       <div className="w-full max-w-[960px] flex flex-col gap-8">
         <header className="text-center">
           <h1 className="text-[length:var(--font-xl)] lg:text-[length:var(--font-2xl)] font-bold text-[var(--color-primary)]">
-            Climate Statistics
+            {t("climateStatistics.title")}
           </h1>
           <p className="mt-1 text-[var(--color-text-secondary)]">
-            Search for a city to explore its climate data
+            {t("climateStatistics.subtitle")}
           </p>
         </header>
 
@@ -72,7 +75,7 @@ export function ClimateStatisticsView({
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-[var(--radius-lg)] bg-[var(--color-bg)]/80 backdrop-blur-sm">
                 <ThreeDotsScaleLoader className="text-[var(--color-primary)]" size={80} />
                 <p className="text-sm text-[var(--color-text-secondary)]">
-                  {isLoading ? "Fetching climate data..." : "Updating..."}
+                  {isLoading ? t("loading.fetchingClimateData") : t("loading.updating")}
                 </p>
               </div>
             )}

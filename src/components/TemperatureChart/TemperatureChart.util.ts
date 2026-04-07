@@ -1,15 +1,16 @@
 import type { TMonthlyTemperature } from "@/types/domain/climate";
+import type { TFunction } from "i18next";
 import { TEMPERATURE_CHART_COLORS } from "./TemperatureChart.constant";
 import type { TemperatureChartSeries } from "./TemperatureChart.type";
 
-export const chartData = (data: TMonthlyTemperature[]): TemperatureChartSeries[] => [
+export const chartData = (data: TMonthlyTemperature[], t: TFunction): TemperatureChartSeries[] => [
   {
-    id: "Max Temperature",
+    id: t("chart.maxTemperature"),
     color: TEMPERATURE_CHART_COLORS.MAX,
     data: data.map((d) => ({ x: d.monthName, y: d.tmax })),
   },
   {
-    id: "Min Temperature",
+    id: t("chart.minTemperature"),
     color: TEMPERATURE_CHART_COLORS.MIN,
     data: data.map((d) => ({ x: d.monthName, y: d.tmin })),
   },
@@ -66,8 +67,8 @@ export const getChartTheme = (isSmall: boolean) => ({
   grid: { line: { stroke: TEMPERATURE_CHART_COLORS.GRID } },
 });
 
-export const getAxisBottom = (isSmall: boolean) => ({
-  legend: "Month",
+export const getAxisBottom = (isSmall: boolean, monthLabel: string) => ({
+  legend: monthLabel,
   tickRotation: isSmall ? -45 : 0,
   tickPadding: isSmall ? 10 : 5,
   legendOffset: isSmall ? 70 : 60,

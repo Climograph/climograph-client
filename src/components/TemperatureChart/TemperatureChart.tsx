@@ -1,5 +1,6 @@
 import { ResponsiveLine } from "@nivo/line";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TEMPERATURE_CHART_COLORS } from "./TemperatureChart.constant";
 import type { TemperatureChartProps } from "./TemperatureChart.type";
 import {
@@ -11,6 +12,7 @@ import {
 } from "./TemperatureChart.util";
 
 export function TemperatureChart({ data, cityName }: TemperatureChartProps) {
+  const { t } = useTranslation();
   const [isSmallScreen, setIsSmallScreen] = useState(
     () => window.matchMedia("(max-width: 640px)").matches,
   );
@@ -46,18 +48,18 @@ export function TemperatureChart({ data, cityName }: TemperatureChartProps) {
           text-[var(--color-text)] text-center truncate
         `}
       >
-        Temperature — {cityName}
+        {t("chart.title")}: {cityName}
       </h3>
       <div className={`h-[280px] xs:h-[320px] sm:h-[350px] md:h-[400px] lg:h-[450px] w-full`}>
         <ResponsiveLine
-          data={chartData(data)}
+          data={chartData(data, t)}
           margin={getChartMargin(isSmallScreen)}
           xScale={{ type: "point" }}
           yScale={{ type: "linear", min: minTemp, max: "auto", stacked: false, nice: 2 }}
           curve="monotoneX"
-          axisBottom={getAxisBottom(isSmallScreen)}
+          axisBottom={getAxisBottom(isSmallScreen, t("chart.monthAxis"))}
           axisLeft={{
-            legend: "Temperature (°C)",
+            legend: t("chart.temperatureAxis"),
             legendOffset: isSmallScreen ? -42 : -52,
             legendPosition: "middle",
             tickSize: 4,

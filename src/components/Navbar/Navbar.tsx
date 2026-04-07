@@ -1,9 +1,14 @@
+import { LanguageSwitcher } from "@/components";
 import { NAV_LINKS } from "@/constants";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
+import { LANGUAGE_SWITCHER_VARIANTS } from "../LanguageSwitcher";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navRef = useRef<HTMLElement | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleResize = () => {
@@ -15,8 +20,32 @@ export function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
+      if (window.innerWidth >= 640) return;
+
+      const target = event.target as Node | null;
+      if (!target) return;
+
+      if (navRef.current && !navRef.current.contains(target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, [isOpen]);
+
   return (
     <nav
+      ref={navRef}
       className={`
         sticky top-0 z-50 w-full
         border-b border-[var(--color-border)]
@@ -27,12 +56,12 @@ export function Navbar() {
         <span
           className={`text-[length:var(--font-lg)] md:text-[length:var(--font-xl)] font-bold text-[var(--color-primary)]`}
         >
-          Climograph
+          {t("app.brand")}
         </span>
 
         {/* desktop navbar view */}
         <ul className={`hidden sm:flex items-center gap-3 list-none`}>
-          {NAV_LINKS.map(({ to, label }) => (
+          {NAV_LINKS.map(({ to, labelKey }) => (
             <li key={to}>
               <NavLink
                 to={to}
@@ -47,17 +76,20 @@ export function Navbar() {
                    }`
                 }
               >
-                {label}
+                {t(labelKey)}
               </NavLink>
             </li>
           ))}
+          <li>
+            <LanguageSwitcher />
+          </li>
         </ul>
 
         {/* hamburger button, mobile only */}
         <button
           className={`sm:hidden flex flex-col justify-center items-center w-10 h-10 gap-[5px] rounded-[var(--radius-sm)] hover:bg-[var(--color-bg-secondary)] transition-colors`}
           onClick={() => setIsOpen((o) => !o)}
-          aria-label="Toggle menu"
+          aria-label={t("navbar.toggleMenu")}
           aria-expanded={isOpen}
         >
           <span
@@ -86,7 +118,7 @@ export function Navbar() {
         `}
       >
         <ul className={`flex flex-col px-4 py-3 gap-1 list-none`}>
-          {NAV_LINKS.map(({ to, label }) => (
+          {NAV_LINKS.map(({ to, labelKey }) => (
             <li key={to}>
               <NavLink
                 to={to}
@@ -102,10 +134,20 @@ export function Navbar() {
                    }`
                 }
               >
-                {label}
+                {t(labelKey)}
               </NavLink>
             </li>
           ))}
+
+          {/* desktop */}
+          <li className={`hidden md:block`}>
+            <LanguageSwitcher variant={LANGUAGE_SWITCHER_VARIANTS.DROPDOWN} />
+          </li>
+
+          {/* mobile */}
+          <li className="md:hidden pt-2 mt-2 border-t border-[var(--color-border)]">
+            <LanguageSwitcher variant={LANGUAGE_SWITCHER_VARIANTS.INLINE} />
+          </li>
         </ul>
       </div>
     </nav>

@@ -2,11 +2,13 @@ import { CELL_SIZE_OPTIONS, CELL_SIZES } from "@/constants";
 import { useGetClimateData, usePersistedCity, useResolveCityByCoordinates } from "@/hooks";
 import type { TCellSize, TCellSizeOption, TWikidataCity } from "@/types";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { formatCoordinate, toCityQueryParam } from "./ClimateStatistics.util";
 import { ClimateStatisticsView } from "./ClimateStatisticsView";
 
 export function ClimateStatistics() {
+  const { t } = useTranslation();
   const [cellSize, setCellSize] = useState<TCellSize>(CELL_SIZES.TEN_MINUTES);
   const { city: selectedCity, selectCity } = usePersistedCity();
   const { isLoading: isResolving, mutateAsync: resolveCityByCoordinates } =
@@ -41,8 +43,8 @@ export function ClimateStatistics() {
 
     const provisionalCity: TWikidataCity = {
       id: `map:${latLabel},${lngLabel}`,
-      label: `Map point ${latLabel}, ${lngLabel}`,
-      description: "Selected from map",
+      label: t("map.pointLabel", { lat: latLabel, lng: lngLabel }),
+      description: t("map.selectedFromMap"),
       lat,
       lng,
     };
@@ -78,7 +80,10 @@ export function ClimateStatistics() {
   } = useGetClimateData(selectedCity.lat, selectedCity.lng, cellSize);
 
   const cellSizeOptions: readonly TCellSizeOption[] = Object.entries(CELL_SIZE_OPTIONS).map(
-    ([value, label]) => ({ value: value as TCellSize, label }),
+    ([value]) => ({
+      value: value as TCellSize,
+      label: t(`cellSizes.${value}`),
+    }),
   );
 
   return (
@@ -90,7 +95,7 @@ export function ClimateStatistics() {
       temperatureData={temperatureData}
       isLoading={isLoading}
       isFetching={isFetching || isResolving}
-      error={isError ? "Failed to fetch climate data" : null}
+      error={isError ? t("errors.fetchClimateData") : null}
       onCitySelect={handleCitySelect}
       onMapClick={handleMapClick}
       onCellSizeChange={setCellSize}
