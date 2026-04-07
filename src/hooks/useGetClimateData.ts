@@ -1,6 +1,6 @@
 import { WorldClimService } from "@/api";
 import { WORLDCLIM_VARIABLES } from "@/constants";
-import type { TCellSize, TMonthlyTemperature } from "@/types/domain/climate";
+import type { TCellSize, TMonthlyTemperature } from "@/types";
 import { buildMonthlyTemperatures, extractPixelIri } from "@/utils";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
@@ -34,5 +34,6 @@ export function useGetClimateData(
     },
     staleTime: Infinity,
     retry: 1,
+    keepPreviousData: true,
   });
 }
