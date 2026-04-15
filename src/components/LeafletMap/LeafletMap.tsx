@@ -14,7 +14,7 @@ function MapUpdater({ lat, lng }: TMapUpdaterProps) {
   return null;
 }
 
-export function LeafletMap({ lat, lng, label, onMapClick }: TLeafletMapProps) {
+export function LeafletMap({ lat, lng, label, onMapClick, className = "" }: TLeafletMapProps) {
   const safeOnMapClick = onMapClick as (lat: number, lng: number) => void;
 
   function MapClickHandler() {
@@ -35,6 +35,7 @@ export function LeafletMap({ lat, lng, label, onMapClick }: TLeafletMapProps) {
         border border-[var(--color-border)]
         rounded-[var(--radius-lg)] 
         shadow-md
+        ${className}
       `}
     >
       <MapContainer center={[lat, lng]} zoom={10} className="w-full h-[400px]">

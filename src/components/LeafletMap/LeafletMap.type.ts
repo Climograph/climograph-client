@@ -3,6 +3,7 @@ export type TLeafletMapProps = {
   lng: number;
   label?: string;
   onMapClick: (lat: number, lng: number) => void;
+  className?: string;
 };
 
 export type TMapUpdaterProps = {
