@@ -1,7 +1,9 @@
 export { CellSizeSelector } from "./CellSizeSelector";
+export { FiltersTab } from "./FiltersTab";
 export { LanguageSwitcher } from "./LanguageSwitcher";
 export { LeafletMap } from "./LeafletMap";
 export { Navbar } from "./Navbar";
+export { PeriodSlider } from "./PeriodSlider";
 export { SearchBar } from "./SearchBar";
 export { ThreeDotsScaleLoader } from "./svg";
 export { TemperatureChart } from "./TemperatureChart";
