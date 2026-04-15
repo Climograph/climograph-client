@@ -26,6 +26,37 @@ body {
   z-index: 0;
 }
 
+.period-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-primary);
+  outline: 3px solid #eeedfe;
+  outline-offset: 0px;
+  cursor: grab;
+}
+.period-slider:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  background: var(--color-primary);
+}
+.period-slider:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--color-primary-muted);
+}
+.period-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-subtle);
+  cursor: grab;
+}
+.period-slider:active::-moz-range-thumb {
+  background: var(--color-primary);
+}
+
 :root {
   /* * Fonts */
   --font-sans: "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
