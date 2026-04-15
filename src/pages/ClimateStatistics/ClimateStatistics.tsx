@@ -1,4 +1,4 @@
-import { CELL_SIZE_OPTIONS, CELL_SIZES } from "@/constants";
+import { CELL_SIZE_OPTIONS, CELL_SIZES, CLIMATE_START } from "@/constants";
 import { useGetClimateData, usePersistedCity, useResolveCityByCoordinates } from "@/hooks";
 import type { TCellSize, TCellSizeOption, TWikidataCity } from "@/types";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -9,6 +9,7 @@ import { ClimateStatisticsView } from "./ClimateStatisticsView";
 
 export function ClimateStatistics() {
   const { t } = useTranslation();
+  const [periodStart, setPeriodStart] = useState(CLIMATE_START);
   const [cellSize, setCellSize] = useState<TCellSize>(CELL_SIZES.TEN_MINUTES);
   const { city: selectedCity, selectCity } = usePersistedCity();
   const { isLoading: isResolving, mutateAsync: resolveCityByCoordinates } =
@@ -77,7 +78,7 @@ export function ClimateStatistics() {
     isLoading,
     isFetching,
     isError,
-  } = useGetClimateData(selectedCity.lat, selectedCity.lng, cellSize);
+  } = useGetClimateData(selectedCity.lat, selectedCity.lng, cellSize, periodStart);
 
   const cellSizeOptions: readonly TCellSizeOption[] = Object.entries(CELL_SIZE_OPTIONS).map(
     ([value]) => ({
@@ -93,12 +94,14 @@ export function ClimateStatistics() {
       cellSize={cellSize}
       cellSizeOptions={cellSizeOptions}
       temperatureData={temperatureData}
+      periodStart={periodStart}
       isLoading={isLoading}
       isFetching={isFetching || isResolving}
       error={isError ? t("errors.fetchClimateData") : null}
       onCitySelect={handleCitySelect}
       onMapClick={handleMapClick}
       onCellSizeChange={setCellSize}
+      onPeriodChange={setPeriodStart}
     />
   );
 }

@@ -1,10 +1,14 @@
 import {
   CellSizeSelector,
+  FiltersTab,
   LeafletMap,
+  PeriodSlider,
   SearchBar,
   TempPrecipChart,
   ThreeDotsScaleLoader,
 } from "@/components";
+import { FilterChip } from "@/components/FilterChip";
+import { CLIMATE_RANGE } from "@/constants";
 import { useTranslation } from "react-i18next";
 import type { TClimateStatisticsViewProps } from "./ClimateStatistics.type";
 
@@ -14,14 +18,26 @@ export function ClimateStatisticsView({
   cellSize,
   cellSizeOptions,
   temperatureData,
+  periodStart,
   isLoading,
   isFetching,
   error,
   onCitySelect,
   onMapClick,
   onCellSizeChange,
+  onPeriodChange,
 }: TClimateStatisticsViewProps) {
   const { t } = useTranslation();
+
+  const activeCell = cellSizeOptions.find((o) => o.value === cellSize);
+  const periodEnd = Math.min(periodStart + CLIMATE_RANGE.WINDOW, CLIMATE_RANGE.MAX_START);
+
+  const filterSummary = (
+    <>
+      {activeCell && <FilterChip label={activeCell.label} />}
+      <FilterChip label={`${periodStart} – ${periodEnd}`} />
+    </>
+  );
 
   return (
     <div className="min-h-screen flex items-start justify-center px-4 py-8">
@@ -35,16 +51,21 @@ export function ClimateStatisticsView({
           </p>
         </header>
 
-        <section className="flex justify-center">
-          <SearchBar onCitySelect={onCitySelect} />
-        </section>
+        <section className="flex flex-col gap-3">
+          <div className="flex justify-center">
+            <SearchBar onCitySelect={onCitySelect} />
+          </div>
 
-        <section className="flex justify-center">
-          <CellSizeSelector
-            activeSize={cellSize}
-            options={cellSizeOptions}
-            onSelect={onCellSizeChange}
-          />
+          <FiltersTab summary={filterSummary}>
+            <>
+              <CellSizeSelector
+                activeSize={cellSize}
+                options={cellSizeOptions}
+                onSelect={onCellSizeChange}
+              />
+              <PeriodSlider startYear={periodStart} onChange={onPeriodChange} />
+            </>
+          </FiltersTab>
         </section>
 
         <section>

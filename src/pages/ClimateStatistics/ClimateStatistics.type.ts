@@ -12,10 +12,12 @@ export type TClimateStatisticsViewProps = {
   cellSize: TCellSize;
   cellSizeOptions: readonly TCellSizeOption[];
   temperatureData: TMonthlyTemperature[];
+  periodStart: number;
   isLoading: boolean;
   isFetching: boolean;
   error: string | null;
   onCitySelect: (city: TWikidataCity) => void;
   onMapClick: (lat: number, lng: number) => void;
   onCellSizeChange: (size: TCellSize) => void;
+  onPeriodChange: (startYear: number) => void;
 };
