@@ -1,5 +1,5 @@
 import { WorldClimService } from "@/api";
-import { WORLDCLIM_VARIABLES } from "@/constants";
+import { CLIMATE_START, WORLDCLIM_VARIABLES } from "@/constants";
 import type { TCellSize, TMonthlyTemperature } from "@/types";
 import { buildMonthlyTemperatures, extractPixelIri } from "@/utils";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
@@ -8,15 +8,21 @@ export function useGetClimateData(
   lat: number,
   lng: number,
   gridSize: TCellSize,
+  periodStart: number,
 ): UseQueryResult<TMonthlyTemperature[], Error> {
+  const isClimate = periodStart === CLIMATE_START;
+
   return useQuery<TMonthlyTemperature[], Error>({
-    queryKey: ["climate", lat, lng, gridSize],
+    queryKey: ["climate", lat, lng, gridSize, periodStart],
     queryFn: async (): Promise<TMonthlyTemperature[]> => {
-      const pixelsResponse = await WorldClimService.getPixelsForPoint(lat, lng, gridSize, [
-        WORLDCLIM_VARIABLES.TMIN,
-        WORLDCLIM_VARIABLES.TMAX,
-        WORLDCLIM_VARIABLES.PREC,
-      ]);
+      const pixelsResponse = await WorldClimService.getPixelsForPoint(
+        lat,
+        lng,
+        gridSize,
+        [WORLDCLIM_VARIABLES.TMIN, WORLDCLIM_VARIABLES.TMAX, WORLDCLIM_VARIABLES.PREC],
+        isClimate,
+        isClimate ? undefined : periodStart,
+      );
 
       const iris = pixelsResponse.results.bindings.map((b) => b.pixel.value);
 
