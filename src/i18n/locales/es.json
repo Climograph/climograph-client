@@ -16,7 +16,8 @@
   "climateStatistics": {
     "title": "Estadisticas Climaticas",
     "subtitle": "Busca una ciudad para explorar sus datos climaticos",
-    "cellResolution": "Resolucion de celda:"
+    "cellResolution": "Resolucion de celda:",
+    "filtersTab": "Filtros"
   },
   "climateComparison": {
     "title": "Comparacion Climatica",
@@ -50,5 +51,8 @@
     "5m": "5 min (~81 km2)",
     "2.5m": "2.5 min (~20.25 km2)",
     "30s": "30 seg (~1 km2)"
+  },
+  "filters": {
+    "period": "Período"
   }
 }

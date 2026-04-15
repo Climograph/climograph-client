@@ -16,7 +16,8 @@
   "climateStatistics": {
     "title": "Climate Statistics",
     "subtitle": "Search for a city to explore its climate data",
-    "cellResolution": "Cell resolution:"
+    "cellResolution": "Cell resolution:",
+    "filtersTab": "Filters"
   },
   "climateComparison": {
     "title": "Climate Comparison",
@@ -50,5 +51,8 @@
     "5m": "5 min (~81 km2)",
     "2.5m": "2.5 min (~20.25 km2)",
     "30s": "30 sec (~1 km2)"
+  },
+  "filters": {
+    "period": "Period"
   }
 }
