@@ -22,7 +22,14 @@ export const WorldClimService = {
     return response.data;
   },
 
-  async getPixelsForPoint(lat: number, lng: number, gridSize: TCellSize, variables: string[]) {
+  async getPixelsForPoint(
+    lat: number,
+    lng: number,
+    gridSize: TCellSize,
+    variables: string[],
+    isClimate: boolean,
+    year?: number,
+  ) {
     const response = await axios.get<TWorldClimPixelsResponse>(`${WORLDCLIM_BASE_URL}/query`, {
       params: {
         id: "pixelsofapoint",
@@ -30,7 +37,7 @@ export const WorldClimService = {
         lng,
         grid: `${WORLDCLIM_GRID_BASE}${gridSize}`,
         var: variables.map((v) => `${WORLDCLIM_VARIABLE_BASE}${v}`),
-        isClimate: true,
+        ...(isClimate ? { isClimate: true } : { isWeather: true, year }),
       },
       headers: authHeaders(),
     });
