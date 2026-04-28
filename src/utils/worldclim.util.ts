@@ -1,4 +1,5 @@
-import { MONTH_NAMES } from "@/constants";
+import { MONTH_NAMES, WORLDCLIM_GRID_BASE, WORLDCLIM_VARIABLE_BASE } from "@/constants";
+import env from "@/env";
 import type {
   TCellSize,
   TMonthlyTemperature,
@@ -34,4 +35,59 @@ export function buildMonthlyTemperatures(
       prec: Number(precData[monthKey]),
     };
   });
+}
+
+/**
+ * Creates authorization headers for WorldClim API requests
+ * @returns Object with Authorization header using bearer token
+ */
+export function createWorldClimAuthHeaders(): { Authorization: string } {
+  return {
+    Authorization: `Bearer ${env.WORLDCLIM_API_KEY}`,
+  };
+}
+
+/**
+ * Builds a WorldClim grid IRI from a cell size
+ * @param gridSize Grid resolution (e.g., "10m", "5m", "2.5m", "30s")
+ * @returns Full grid IRI string
+ */
+export function buildGridIri(gridSize: TCellSize): string {
+  return `${WORLDCLIM_GRID_BASE}${gridSize}`;
+}
+
+/**
+ * Builds WorldClim variable IRIs from variable names
+ * @param variables Array of variable names (e.g., ["tmax", "tmin", "prec"])
+ * @returns Array of full variable IRI strings
+ */
+export function buildVariableIris(variables: string[]): string[] {
+  return variables.map((v) => `${WORLDCLIM_VARIABLE_BASE}${v}`);
+}
+
+/**
+ * Builds dataset query parameters based on climate vs weather flag
+ * @param isClimate Whether to query climate (1970-2000) or weather (1951-2024) data
+ * @param year Optional year for weather dataset queries
+ * @returns Object with dataset parameters for axios query
+ */
+export function buildDatasetParams(
+  isClimate: boolean,
+  year?: number,
+): { isClimate: true } | { isWeather: true; year: number } {
+  if (isClimate) {
+    return { isClimate: true };
+  }
+  return { isWeather: true, year: year ?? new Date().getFullYear() };
+}
+
+/**
+ * Validates that a response has data
+ * @param response Response object with data property
+ * @throws Error if response.data is falsy
+ */
+export function validateResponseData(response: { data: unknown }): void {
+  if (!response.data) {
+    throw new Error("No data returned from API");
+  }
 }
