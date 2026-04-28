@@ -1,1 +1,2 @@
-export { default as TempPrecipChart } from "./TempPrecipChart";
+export { TempPrecipChart } from "./TempPrecipChart";
+export type { TTempPrecipChartProps, TVisibleSeries } from "./TempPrecipChart.type";
