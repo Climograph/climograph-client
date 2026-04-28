@@ -1,31 +1,79 @@
 {
-  "app": {
-    "brand": "Climograph"
+  "topbar": {
+    "toggleFilters": "Toggle filters",
+    "toggleTheme": "Toggle theme"
   },
   "navbar": {
     "toggleMenu": "Toggle menu",
     "links": {
-      "climateStatistics": "Climate Statistics",
-      "climateComparison": "Climate Comparison",
-      "heatMap": "Heat Map"
+      "climateStatistics": "City Climate",
+      "climateComparison": "Compare Cities",
+      "heatMap": "Region Heatmap"
     }
   },
   "search": {
-    "placeholder": "Enter city name..."
+    "placeholder": "Search city or enter coordinates (lat, lng)...",
+    "coordsResult": "Go to coordinates"
   },
   "climateStatistics": {
     "title": "Climate Statistics",
     "subtitle": "Search for a city to explore its climate data",
     "cellResolution": "Cell resolution:",
-    "filtersTab": "Filters"
+    "filtersTab": "Filters",
+    "useMyLocation": "Use my location",
+    "locating": "Locating...",
+    "stats": {
+      "avgTmax": "Avg max temp",
+      "avgTmin": "Avg min temp",
+      "tmax": "Max temp",
+      "tmin": "Min temp",
+      "totalPrec": "Total precip",
+      "mmThisMonth": "mm this month",
+      "resolution": "Resolution"
+    }
   },
   "climateComparison": {
     "title": "Climate Comparison",
-    "placeholder": "Comparison page is empty for now."
+    "modeCities": "Compare Cities",
+    "modePeriods": "Compare Periods",
+    "searchA": "City A",
+    "searchB": "City B",
+    "searchCity": "City",
+    "periodA": "Period A",
+    "periodB": "Period B",
+    "noData": "Select two cities above to compare their climate data",
+    "noDataPeriods": "Select a city and two time periods to compare climate data",
+    "stats": {
+      "avgTmax": "Avg max temp",
+      "avgTmin": "Avg min temp",
+      "totalPrec": "Total precip"
+    },
+    "diff": {
+      "warmerCity": "Warmer city",
+      "moreRain": "More rainfall",
+      "hottestMonth": "Hottest month",
+      "coldestMonth": "Coldest month",
+      "byDegrees": "by {{value}}°C",
+      "byMm": "by {{value}} mm",
+      "tie": "Tie"
+    }
   },
   "heatMap": {
-    "title": "Heat Map",
-    "placeholder": "Heat map page placeholder. We can later render climate intensity on a world map here."
+    "title": "Region Heatmap",
+    "placeholder": "Heat map page placeholder. We can later render climate intensity on a world map here.",
+    "drawBbox": "Draw bounding box",
+    "drawPolygon": "Draw polygon",
+    "clearSelection": "Clear selection",
+    "drawing": "Click and drag on the map to select a region",
+    "drawingPolygon": "Click to add vertices — click the first point to close the polygon",
+    "noSelection": "Draw a bounding box or polygon on the map to analyze climate data for that region",
+    "noData": "No data available for this region",
+    "stats": {
+      "minValue": "Min",
+      "maxValue": "Max",
+      "avgValue": "Average",
+      "cellsAnalyzed": "Cells"
+    }
   },
   "chart": {
     "title": "Temperature",
@@ -33,14 +81,25 @@
     "temperatureAxis": "Temperature (deg C)",
     "precipitation": "Precipitation",
     "maxTemperature": "Max Temperature",
-    "minTemperature": "Min Temperature"
+    "minTemperature": "Min Temperature",
+    "avgTemperature": "Avg Temperature",
+    "meanTemp": "Mean temp",
+    "annualPrec": "Annual precip",
+    "aridMonths": "Arid months",
+    "aridPeriod": "Arid period",
+    "humidPeriod": "Humid period",
+    "modeStandard": "Standard chart",
+    "modeWalterLieth": "Walter-Lieth diagram",
+    "selectedMonth": "{{month}} values"
   },
   "loading": {
     "fetchingClimateData": "Fetching climate data...",
     "updating": "Updating..."
   },
   "errors": {
-    "fetchClimateData": "Failed to fetch climate data"
+    "fetchClimateData": "Failed to fetch climate data",
+    "geolocationDenied": "Location access denied. Please allow location in your browser.",
+    "geolocationUnavailable": "Unable to determine your location."
   },
   "map": {
     "selectedFromMap": "Selected from map",
@@ -54,5 +113,39 @@
   },
   "filters": {
     "period": "Period"
+  },
+  "exportMenu": {
+    "button": "Export data",
+    "png": "PNG image",
+    "svg": "SVG vector",
+    "csv": "CSV data"
+  },
+  "sidebar": {
+    "sections": {
+      "dataset": "Dataset",
+      "yearRange": "Year range",
+      "variables": "Variables",
+      "months": "Month"
+    },
+    "datasets": {
+      "climate": "Climate 1970–2000",
+      "weather": "Weather 1951–2024"
+    },
+    "variables": {
+      "tmax": "Max temp",
+      "tmin": "Min temp",
+      "prec": "Precip",
+      "tavg": "Avg temp",
+      "wind": "Wind",
+      "vapr": "Vapor"
+    },
+    "months": {
+      "all": "All"
+    },
+    "yearRange": {
+      "from": "From",
+      "to": "To"
+    },
+    "applyFilters": "Apply filters"
   }
 }
