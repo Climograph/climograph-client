@@ -1,5 +1,6 @@
 import { LanguageSwitcher } from "@/components";
 import { NAV_LINKS } from "@/constants";
+import { GLOBAL_CONFIG } from "@/global-config";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
@@ -56,7 +57,7 @@ export function Navbar() {
         <span
           className={`text-[length:var(--font-lg)] md:text-[length:var(--font-xl)] font-bold text-[var(--color-primary)]`}
         >
-          {t("app.brand")}
+          {GLOBAL_CONFIG.appName}
         </span>
 
         {/* desktop navbar view */}
