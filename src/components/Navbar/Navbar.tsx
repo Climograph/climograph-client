@@ -55,7 +55,7 @@ export function Navbar() {
     >
       <div className={`max-w-[960px] mx-auto px-4 h-20 flex items-center justify-between`}>
         <span
-          className={`text-[length:var(--font-lg)] md:text-[length:var(--font-xl)] font-bold text-[var(--color-primary)]`}
+          className={`text-[length:var(--font-lg)] md:text-[length:var(--font-xl)] lg:text-[length:var(--font-2xl)] font-bold text-[var(--color-primary)]`}
         >
           {GLOBAL_CONFIG.appName}
         </span>
@@ -68,7 +68,7 @@ export function Navbar() {
                 to={to}
                 end
                 className={({ isActive }) =>
-                  `px-4 py-2 rounded-[var(--radius-sm)] text-[length:var(--font-md)] md:text-[length:var(--font-md)]
+                  `px-4 py-2 rounded-[var(--radius-sm)] text-[length:var(--font-md)] md:text-[length:var(--font-md)] lg:text-[length:var(--font-lg)]
                    transition-colors duration-150
                    ${
                      isActive
