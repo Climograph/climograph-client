@@ -48,7 +48,7 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
         lg:static lg:top-auto lg:bottom-auto lg:z-auto lg:translate-x-0 lg:w-80
       `}
     >
-      <div className="flex flex-1 flex-col overflow-y-auto p-4 space-y-6 lg:space-y-">
+      <div className="flex flex-1 flex-col overflow-y-auto p-4 space-y-6 lg:space-y-8">
         <div>
           <SectionLabel text={t("sidebar.sections.dataset")} />
           <div className="flex flex-wrap gap-2">
