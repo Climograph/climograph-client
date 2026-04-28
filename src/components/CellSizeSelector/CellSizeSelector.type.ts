@@ -1,5 +1,4 @@
-import type { TCellSize } from "@/types/domain/climate";
-import type { TCellSizeOption } from "@/types/ui/cell-size";
+import type { TCellSize, TCellSizeOption } from "@/types";
 
 export type TCellSizeSelectorProps = {
   activeSize: TCellSize;

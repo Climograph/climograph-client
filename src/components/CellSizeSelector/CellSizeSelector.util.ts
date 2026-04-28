@@ -1,4 +1,4 @@
-import type { TCellSize } from "@/types/domain/climate";
+import type { TCellSize } from "@/types";
 
 export function getButtonClasses(activeSize: TCellSize, value: TCellSize) {
   const baseClasses = `
