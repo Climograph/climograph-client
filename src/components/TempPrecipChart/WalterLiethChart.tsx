@@ -3,7 +3,6 @@ import {
   CartesianGrid,
   ComposedChart,
   Customized,
-  Legend,
   Line,
   ResponsiveContainer,
   Tooltip,
@@ -15,9 +14,15 @@ import { SummaryStats } from "./components/SummaryStats";
 import { WLCustomized } from "./components/WLCustomized";
 import { WLTooltip } from "./components/WLTooltip";
 import type { TWLScaledPoint, TWalterLiethChartProps } from "./TempPrecipChart.type";
-import { CHART_COLORS } from "./utils/chartColors";
+import { WL_COLORS_A } from "./utils/chartColors";
 
-export function WalterLiethChart({ chartData, scales, summary }: TWalterLiethChartProps) {
+export function WalterLiethChart({
+  chartData,
+  scales,
+  summary,
+  colors = WL_COLORS_A,
+  title,
+}: TWalterLiethChartProps) {
   const { t } = useTranslation();
 
   const scaledData: TWLScaledPoint[] = chartData.map((d) => ({
@@ -28,14 +33,18 @@ export function WalterLiethChart({ chartData, scales, summary }: TWalterLiethCha
   }));
 
   return (
-    <>
+    <div>
+      {title && (
+        <p className="mb-1 font-semibold text-[length:var(--font-md)] text-[var(--color-text)]">
+          {title}
+        </p>
+      )}
       {summary && <SummaryStats summary={summary} />}
       <div className="overflow-x-auto">
         <div className="h-[300px] sm:h-[360px] md:h-[420px] lg:h-[460px] min-w-[520px]">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={scaledData} margin={{ top: 20, right: 60, bottom: 50, left: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-
               <XAxis
                 dataKey="monthName"
                 interval={0}
@@ -48,7 +57,6 @@ export function WalterLiethChart({ chartData, scales, summary }: TWalterLiethCha
                   fontWeight: 600,
                 }}
               />
-
               <YAxis
                 yAxisId="left"
                 domain={scales ? [scales.tempMin, scales.tempMax] : ["auto", "auto"]}
@@ -63,8 +71,6 @@ export function WalterLiethChart({ chartData, scales, summary }: TWalterLiethCha
                   fontWeight: 600,
                 }}
               />
-
-              {/* Right axis — mm reference only, no data series bound to it */}
               <YAxis
                 yAxisId="right"
                 orientation="right"
@@ -80,36 +86,35 @@ export function WalterLiethChart({ chartData, scales, summary }: TWalterLiethCha
                   fontWeight: 600,
                 }}
               />
-
               <Tooltip content={<WLTooltip wlData={scaledData} />} />
-              <Legend verticalAlign="bottom" height={48} wrapperStyle={{ paddingTop: 24 }} />
-
-              {/* Invisible lines — legend entries only */}
+              {/* Invisible lines — needed for recharts to initialise axis scales */}
               <Line
                 yAxisId="left"
                 dataKey="precScaled"
-                name={t("chart.precipitation")}
-                stroke={CHART_COLORS.wl.precStroke}
+                stroke={colors.precLineColor}
                 strokeWidth={0}
                 dot={false}
-                legendType="square"
+                legendType="none"
               />
-
               <Line
                 yAxisId="left"
                 dataKey="tavg"
-                name={t("chart.avgTemperature")}
-                stroke={CHART_COLORS.wl.tempStroke}
+                stroke={colors.tempLineColor}
                 strokeWidth={0}
                 dot={false}
-                legendType="line"
+                legendType="none"
               />
-              <Customized component={WLCustomized} wlData={scaledData} wlScales={scales} />
+              <Customized
+                component={WLCustomized}
+                wlData={scaledData}
+                wlScales={scales}
+                colors={colors}
+              />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
       </div>
       <AridityLegend />
-    </>
+    </div>
   );
 }

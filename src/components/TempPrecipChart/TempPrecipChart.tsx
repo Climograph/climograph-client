@@ -5,6 +5,8 @@ import { ModeToggle } from "./components/ModeToggle";
 import { useTempPrecipChart } from "./hooks/useTempPrecipChart";
 import { StandardClimateChart } from "./StandardClimateChart";
 import type { TChartMode, TTempPrecipChartProps, TVisibleSeries } from "./TempPrecipChart.type";
+import { WLCitiesLayout } from "./WLCitiesLayout";
+import { WLPeriodsLayout } from "./WLPeriodsLayout";
 import { WalterLiethChart } from "./WalterLiethChart";
 
 const DEFAULT_VISIBLE: TVisibleSeries = { tmax: true, tmin: true, tavg: false, prec: true };
@@ -77,6 +79,26 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
           chartData={chart.chartData}
           scales={chart.scales}
           summary={chart.summary}
+        />
+      ) : isWalterLieth && props.compareMode === "periods" ? (
+        <WLPeriodsLayout
+          chartDataA={chart.chartDataA}
+          chartDataB={chart.chartDataB}
+          scales={chart.scales}
+          labelA={props.labelA ?? ""}
+          labelB={props.labelB ?? ""}
+          summaryA={chart.summaryA}
+          summaryB={chart.summaryB}
+        />
+      ) : isWalterLieth ? (
+        <WLCitiesLayout
+          chartDataA={chart.chartDataA}
+          chartDataB={chart.chartDataB}
+          labelA={props.labelA ?? ""}
+          labelB={props.labelB ?? ""}
+          scales={chart.scales}
+          summaryA={chart.summaryA}
+          summaryB={chart.summaryB}
         />
       ) : (
         <StandardClimateChart
