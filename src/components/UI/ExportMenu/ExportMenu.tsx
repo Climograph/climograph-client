@@ -7,7 +7,13 @@ function ImageIcon() {
     <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 shrink-0" aria-hidden="true">
       <rect x="1" y="3" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
       <circle cx="5.5" cy="6.5" r="1" fill="currentColor" />
-      <path d="M1 11l3.5-3.5 2.5 2.5 2-2 4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M1 11l3.5-3.5 2.5 2.5 2-2 4 4"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -15,7 +21,13 @@ function ImageIcon() {
 function CodeIcon() {
   return (
     <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 shrink-0" aria-hidden="true">
-      <path d="M5 4L1 8l4 4M11 4l4 4-4 4M9 2l-2 12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M5 4L1 8l4 4M11 4l4 4-4 4M9 2l-2 12"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -42,7 +54,12 @@ function ChevronDownIcon({ open }: { open: boolean }) {
   );
 }
 
-export function ExportMenu({ onExportCSV, onExportPNG, onExportSVG, isDisabled = false }: ExportMenuProps) {
+export function ExportMenu({
+  onExportCSV,
+  onExportPNG,
+  onExportSVG,
+  isDisabled = false,
+}: ExportMenuProps) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -84,7 +101,9 @@ export function ExportMenu({ onExportCSV, onExportPNG, onExportSVG, isDisabled =
 
       <div
         className={`absolute right-0 top-full z-50 mt-1 w-40 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-bg)] shadow-md transition-all duration-150 origin-top ${
-          isOpen ? "opacity-100 scale-y-100 pointer-events-auto" : "opacity-0 scale-y-95 pointer-events-none"
+          isOpen
+            ? "opacity-100 scale-y-100 pointer-events-auto"
+            : "opacity-0 scale-y-95 pointer-events-none"
         }`}
       >
         {options.map(({ label, icon, handler }) => (
