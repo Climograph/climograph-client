@@ -1,13 +1,18 @@
 import { useXAxisScale, useYAxisScale } from "recharts";
 import type { TWLCustomizedProps } from "../TempPrecipChart.type";
 import { catmullRomPath } from "../utils/catmullRomPath";
-import { CHART_COLORS } from "../utils/chartColors";
+import { WL_COLORS_A } from "../utils/chartColors";
 
-/**
- * Renders Walter-Lieth fills and curves via SVG clipPath (even-odd winding rule).
- * Uses recharts v3 hooks to access the chart's coordinate systems.
- */
-export function WLCustomized({ wlData, wlScales }: TWLCustomizedProps) {
+// Renders Walter-Lieth fills and curves via SVG clipPath (even-odd winding rule).
+// Uses recharts v3 hooks to access the chart's coordinate systems.
+export function WLCustomized({
+  wlData,
+  wlScales,
+  colors = WL_COLORS_A,
+  clipId = "wl-clip-diff",
+  opacity = 1,
+  dashArray,
+}: TWLCustomizedProps) {
   const xScale = useXAxisScale();
   const yScale = useYAxisScale("left");
 
@@ -22,12 +27,10 @@ export function WLCustomized({ wlData, wlScales }: TWLCustomizedProps) {
     x: xScale(d.monthName, { position: "middle" }),
     y: yScale(d.tavg),
   }));
-
   const precRaw = wlData.map((d) => ({
     x: xScale(d.monthName, { position: "middle" }),
     y: yScale(d.precScaled),
   }));
-
   const baselineRaw = yScale(wlScales?.tempMin ?? 0);
 
   const tempPts = tempRaw.filter(isPoint);
@@ -51,43 +54,55 @@ export function WLCustomized({ wlData, wlScales }: TWLCustomizedProps) {
   const tempArea = `${tempLine} L ${f(lastX)},${f(baselineY)} L ${f(firstX)},${f(baselineY)} Z`;
   const precArea = `${precLine} L ${f(lastX)},${f(baselineY)} L ${f(firstX)},${f(baselineY)} Z`;
 
-  // * XOR of the two areas: only the gap between the curves is visible.
   const diffPath = `${precArea} ${tempArea}`;
 
   return (
-    <g>
+    <g opacity={opacity}>
       <defs>
-        <clipPath id="wl-clip-diff" clipPathUnits="userSpaceOnUse">
+        <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
           <path d={diffPath} clipRule="evenodd" />
         </clipPath>
       </defs>
       <path
         d={precArea}
-        fill={CHART_COLORS.wl.humidFill}
-        fillOpacity={0.85}
-        clipPath="url(#wl-clip-diff)"
+        fill={colors.humidFill}
+        fillOpacity={colors.humidFillOpacity ?? 0.85}
+        clipPath={`url(#${clipId})`}
         stroke="none"
       />
       <path
         d={tempArea}
-        fill={CHART_COLORS.wl.aridFill}
-        fillOpacity={0.9}
-        clipPath="url(#wl-clip-diff)"
+        fill={colors.aridFill}
+        fillOpacity={colors.aridFillOpacity ?? 0.9}
+        clipPath={`url(#${clipId})`}
         stroke="none"
       />
-      <path d={precLine} fill="none" stroke={CHART_COLORS.wl.precStroke} strokeWidth={1.5} />
-      <path d={tempLine} fill="none" stroke={CHART_COLORS.wl.tempStroke} strokeWidth={2} />
-      {tempPts.map((p, i) => (
-        <circle
-          key={i}
-          cx={p.x}
-          cy={p.y}
-          r={4}
-          fill={CHART_COLORS.wl.tempStroke}
-          stroke="white"
-          strokeWidth={1}
-        />
-      ))}
+      <path
+        d={precLine}
+        fill="none"
+        stroke={colors.precLineColor}
+        strokeWidth={1.5}
+        strokeDasharray={dashArray}
+      />
+      <path
+        d={tempLine}
+        fill="none"
+        stroke={colors.tempLineColor}
+        strokeWidth={2}
+        strokeDasharray={dashArray}
+      />
+      {!dashArray &&
+        tempPts.map((p, i) => (
+          <circle
+            key={i}
+            cx={p.x}
+            cy={p.y}
+            r={4}
+            fill={colors.tempLineColor}
+            stroke="white"
+            strokeWidth={1}
+          />
+        ))}
     </g>
   );
 }
