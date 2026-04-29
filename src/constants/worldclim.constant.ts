@@ -1,3 +1,8 @@
+export const AUTO_RESOLUTION = {
+  CLIMATE: "30s",
+  WEATHER: "2.5m",
+} as const;
+
 export const CELL_SIZES = {
   TEN_MINUTES: "10m",
   FIVE_MINUTES: "5m",

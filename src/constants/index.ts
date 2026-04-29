@@ -27,7 +27,7 @@ export { DEFAULT_LANGUAGE, LANGUAGES, SUPPORTED_LANGUAGE_CODES } from "./languag
 export { NAV_LINKS } from "./navlink.constant";
 export { ROUTES } from "./route.constant";
 export { TIME_CONSTANTS } from "./time.constant";
-export { CELL_SIZE_OPTIONS, CELL_SIZES } from "./worldclim.constant";
+export { AUTO_RESOLUTION, CELL_SIZE_OPTIONS, CELL_SIZES } from "./worldclim.constant";
 export {
   DATASETS,
   DEFAULT_VARIABLES,
