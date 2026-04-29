@@ -29,7 +29,8 @@
       "tmin": "Мін. темп",
       "totalPrec": "Заг. опади",
       "mmThisMonth": "мм цього місяця",
-      "resolution": "Роздільність"
+      "resolution": "Роздільність",
+      "autoResolutionTooltip": "Роздільність встановлюється автоматично на основі обраного датасету"
     }
   },
   "climateComparison": {
@@ -56,6 +57,15 @@
       "byDegrees": "на {{value}}°C",
       "byMm": "на {{value}} мм",
       "tie": "Нічия"
+    },
+    "autoResolution": "Авторозрядність: {{resolution}}",
+    "wlCompare": {
+      "warmerBy": "{{label}} тепліше на {{value}}°C",
+      "coolerBy": "{{label}} холодніше на {{value}}°C",
+      "sameTemp": "Однакова середня температура",
+      "moreArid": "{{label}} має {{value}} більше посушливих місяців",
+      "fewerArid": "{{label}} має {{value}} менше посушливих місяців",
+      "sameArid": "Однакова кількість посушливих місяців"
     }
   },
   "heatMap": {
@@ -146,6 +156,13 @@
       "from": "Від",
       "to": "До"
     },
-    "applyFilters": "Застосувати"
+    "applyFilters": "Застосувати",
+    "cellCount": {
+      "fast": "Швидко",
+      "moderate": "Помірно",
+      "slow": "Повільно",
+      "tooMany": "Забагато клітинок",
+      "tooManyError": "Зменшіть область або роздільність для застосування"
+    }
   }
 }

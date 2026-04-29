@@ -29,7 +29,8 @@
       "tmin": "Min temp",
       "totalPrec": "Total precip",
       "mmThisMonth": "mm this month",
-      "resolution": "Resolution"
+      "resolution": "Resolution",
+      "autoResolutionTooltip": "Resolution is automatically set based on selected dataset"
     }
   },
   "climateComparison": {
@@ -56,6 +57,15 @@
       "byDegrees": "by {{value}}°C",
       "byMm": "by {{value}} mm",
       "tie": "Tie"
+    },
+    "autoResolution": "Auto resolution: {{resolution}}",
+    "wlCompare": {
+      "warmerBy": "{{label}} warmer by {{value}}°C",
+      "coolerBy": "{{label}} cooler by {{value}}°C",
+      "sameTemp": "Same avg temperature",
+      "moreArid": "{{label}} has {{value}} more arid month(s)",
+      "fewerArid": "{{label}} has {{value}} fewer arid month(s)",
+      "sameArid": "Same arid months"
     }
   },
   "heatMap": {
@@ -146,6 +156,13 @@
       "from": "From",
       "to": "To"
     },
-    "applyFilters": "Apply filters"
+    "applyFilters": "Apply filters",
+    "cellCount": {
+      "fast": "Fast",
+      "moderate": "Moderate",
+      "slow": "Slow",
+      "tooMany": "Too many cells",
+      "tooManyError": "Reduce area or resolution to apply"
+    }
   }
 }
