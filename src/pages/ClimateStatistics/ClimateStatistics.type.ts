@@ -1,23 +1,25 @@
-import type {
-  TCellSize,
-  TCellSizeOption,
-  TCoordinates,
-  TMonthlyTemperature,
-  TWikidataCity,
-} from "@/types";
+import type { TCellSize, TCoordinates, TMonthlyTemperature, TWikidataCity } from "@/types";
 
 export type TClimateStatisticsViewProps = {
   selectedCity: TWikidataCity | null;
   mapCenter: TCoordinates;
-  cellSize: TCellSize;
-  cellSizeOptions: readonly TCellSizeOption[];
   temperatureData: TMonthlyTemperature[];
-  periodStart: number;
+  cellSize: TCellSize;
+  isAutoResolution: boolean;
+  selectedMonth: number | null;
   isLoading: boolean;
   isFetching: boolean;
+  isLocating: boolean;
   error: string | null;
+  locationError: string | null;
   onCitySelect: (city: TWikidataCity) => void;
   onMapClick: (lat: number, lng: number) => void;
-  onCellSizeChange: (size: TCellSize) => void;
-  onPeriodChange: (startYear: number) => void;
+  onLocate: () => void;
+};
+
+export type TStatCardProps = {
+  label: string;
+  value: string;
+  unit?: string;
+  tooltip?: string;
 };

@@ -1,7 +1,12 @@
-import { CELL_SIZE_OPTIONS, CELL_SIZES, CLIMATE_START } from "@/constants";
-import { useGetClimateData, usePersistedCity, useResolveCityByCoordinates } from "@/hooks";
-import type { TCellSize, TCellSizeOption, TWikidataCity } from "@/types";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { AUTO_RESOLUTION, CLIMATE_START, SIDEBAR_PARAMS } from "@/constants";
+import {
+  useGeolocation,
+  useGetClimateData,
+  usePersistedCity,
+  useResolveCityByCoordinates,
+} from "@/hooks";
+import type { TCellSize, TWikidataCity } from "@/types";
+import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { formatCoordinate, toCityQueryParam } from "./ClimateStatistics.util";
@@ -9,13 +14,22 @@ import { ClimateStatisticsView } from "./ClimateStatisticsView";
 
 export function ClimateStatistics() {
   const { t } = useTranslation();
-  const [periodStart, setPeriodStart] = useState(CLIMATE_START);
-  const [cellSize, setCellSize] = useState<TCellSize>(CELL_SIZES.TEN_MINUTES);
   const { city: selectedCity, selectCity } = usePersistedCity();
   const { isLoading: isResolving, mutateAsync: resolveCityByCoordinates } =
     useResolveCityByCoordinates();
+  const { locate, isLocating, locationError, clearLocationError } = useGeolocation();
   const latestMapClickIdRef = useRef(0);
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const yearStart = searchParams.get(SIDEBAR_PARAMS.YEAR_START);
+  const periodStart = yearStart ? Number(yearStart) : CLIMATE_START;
+  const isClimate = yearStart === null;
+  const defaultGrid: TCellSize = isClimate ? AUTO_RESOLUTION.CLIMATE : AUTO_RESOLUTION.WEATHER;
+  const cellSize: TCellSize =
+    (searchParams.get(SIDEBAR_PARAMS.GRID) as TCellSize | null) ?? defaultGrid;
+  const monthParam = searchParams.get(SIDEBAR_PARAMS.MONTH);
+  const selectedMonth: number | null =
+    monthParam !== null && monthParam !== "all" ? Number(monthParam) : null;
   const selectedCityInUrl = useMemo(
     () => toCityQueryParam(selectedCity.label),
     [selectedCity.label],
@@ -32,7 +46,12 @@ export function ClimateStatistics() {
   }, [searchParams, selectedCityInUrl, setSearchParams]);
 
   function handleCitySelect(city: TWikidataCity) {
+    clearLocationError();
     selectCity(city);
+  }
+
+  function handleLocate() {
+    locate((city) => selectCity(city));
   }
 
   async function resolveClickedLocation(lat: number, lng: number) {
@@ -80,28 +99,29 @@ export function ClimateStatistics() {
     isError,
   } = useGetClimateData(selectedCity.lat, selectedCity.lng, cellSize, periodStart);
 
-  const cellSizeOptions: readonly TCellSizeOption[] = Object.entries(CELL_SIZE_OPTIONS).map(
-    ([value]) => ({
-      value: value as TCellSize,
-      label: t(`cellSizes.${value}`),
-    }),
-  );
+  const resolvedLocationError =
+    locationError === "denied"
+      ? t("errors.geolocationDenied")
+      : locationError === "unavailable"
+        ? t("errors.geolocationUnavailable")
+        : null;
 
   return (
     <ClimateStatisticsView
       selectedCity={selectedCity}
       mapCenter={{ lat: selectedCity.lat, lng: selectedCity.lng }}
-      cellSize={cellSize}
-      cellSizeOptions={cellSizeOptions}
       temperatureData={temperatureData}
-      periodStart={periodStart}
+      cellSize={cellSize}
+      isAutoResolution
+      selectedMonth={selectedMonth}
       isLoading={isLoading}
       isFetching={isFetching || isResolving}
+      isLocating={isLocating}
       error={isError ? t("errors.fetchClimateData") : null}
+      locationError={resolvedLocationError}
       onCitySelect={handleCitySelect}
       onMapClick={handleMapClick}
-      onCellSizeChange={setCellSize}
-      onPeriodChange={setPeriodStart}
+      onLocate={handleLocate}
     />
   );
 }
