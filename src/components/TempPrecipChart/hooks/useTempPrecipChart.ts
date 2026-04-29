@@ -23,6 +23,11 @@ export function useTempPrecipChart({ data, dataA, dataB }: TTempPrecipChartProps
     [dataA, isCompare],
   );
 
+  const aridityB = useMemo(
+    () => (isCompare && dataB?.length ? computeAridityPeriods(dataB) : null),
+    [dataB, isCompare],
+  );
+
   const scalesData = useMemo(
     () => (isCompare ? [...(dataA ?? []), ...(dataB ?? [])] : (data ?? [])),
     [data, dataA, dataB, isCompare],
@@ -46,6 +51,26 @@ export function useTempPrecipChart({ data, dataA, dataB }: TTempPrecipChartProps
     [aridity, data],
   );
 
+  const chartDataA = useMemo<Record<string, unknown>[]>(
+    () => (isCompare ? (dataA ?? []).map((d) => ({ ...d, tavg: (d.tmax + d.tmin) / 2 })) : []),
+    [dataA, isCompare],
+  );
+
+  const chartDataB = useMemo<Record<string, unknown>[]>(
+    () => (isCompare ? (dataB ?? []).map((d) => ({ ...d, tavg: (d.tmax + d.tmin) / 2 })) : []),
+    [dataB, isCompare],
+  );
+
+  const summaryA = useMemo(
+    () => (aridityA && dataA ? computeChartSummary(dataA, aridityA) : null),
+    [aridityA, dataA],
+  );
+
+  const summaryB = useMemo(
+    () => (aridityB && dataB ? computeChartSummary(dataB, aridityB) : null),
+    [aridityB, dataB],
+  );
+
   const rightMax = useMemo(() => {
     const precValues = isCompare
       ? [...(dataA ?? []), ...(dataB ?? [])].map((d) => d.prec)
@@ -56,5 +81,18 @@ export function useTempPrecipChart({ data, dataA, dataB }: TTempPrecipChartProps
     return Math.ceil(max / 10) * 10 || 100;
   }, [data, dataA, dataB, isCompare]);
 
-  return { isCompare, hasData, aridity, aridityA, scales, chartData, summary, rightMax };
+  return {
+    isCompare,
+    hasData,
+    aridity,
+    aridityA,
+    scales,
+    chartData,
+    chartDataA,
+    chartDataB,
+    summary,
+    summaryA,
+    summaryB,
+    rightMax,
+  };
 }
