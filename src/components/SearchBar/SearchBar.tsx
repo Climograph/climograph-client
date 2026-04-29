@@ -127,10 +127,7 @@ export function SearchBar({ onCitySelect }: TSearchBarProps) {
           )}
           {results.map((city) => (
             <li key={city.id}>
-              <button
-                onClick={() => handleSelectCity(city)}
-                className={itemClass}
-              >
+              <button onClick={() => handleSelectCity(city)} className={itemClass}>
                 <span className="font-medium text-[var(--color-text)]">{city.label}</span>
                 <span className="text-[length:var(--font-xs)] md:text-[length:var(--font-sm)] text-[var(--color-text-secondary)]">
                   {city.description}
