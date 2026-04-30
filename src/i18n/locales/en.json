@@ -8,6 +8,8 @@
     "links": {
       "climateStatistics": "City Climate",
       "climateComparison": "Compare Cities",
+      "compareCities": "Compare Cities",
+      "comparePeriods": "Compare Periods",
       "heatMap": "Region Heatmap"
     }
   },
@@ -33,6 +35,12 @@
       "autoResolutionTooltip": "Resolution is automatically set based on selected dataset",
       "filteredMonths": "Filtered: {{months}}"
     }
+  },
+  "compareCities": {
+    "title": "Compare Cities"
+  },
+  "comparePeriods": {
+    "title": "Compare Periods"
   },
   "climateComparison": {
     "title": "Climate Comparison",

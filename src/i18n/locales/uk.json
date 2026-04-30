@@ -8,6 +8,8 @@
     "links": {
       "climateStatistics": "Клімат міста",
       "climateComparison": "Порівняти міста",
+      "compareCities": "Порівняти міста",
+      "comparePeriods": "Порівняти періоди",
       "heatMap": "Теплова мапа регіону"
     }
   },
@@ -33,6 +35,12 @@
       "autoResolutionTooltip": "Роздільність встановлюється автоматично на основі обраного датасету",
       "filteredMonths": "Фільтр: {{months}}"
     }
+  },
+  "compareCities": {
+    "title": "Порівняти міста"
+  },
+  "comparePeriods": {
+    "title": "Порівняти періоди"
   },
   "climateComparison": {
     "title": "Порівняння клімату",
