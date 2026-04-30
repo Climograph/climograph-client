@@ -1,3 +1,3 @@
 export { useGeolocation } from "./useGeolocation";
-export { PERIOD_WINDOW_OPTIONS, useSidebarFilters } from "./useSidebarFilters";
+export { PERIOD_WINDOW_OPTIONS } from "./useSidebarFilters";
 export { useTheme } from "./useTheme";
