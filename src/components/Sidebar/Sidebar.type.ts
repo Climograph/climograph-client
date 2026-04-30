@@ -13,7 +13,7 @@ export type TSidebarFilters = {
   yearEnd: number;
   variables: TVariable[];
   grid: TCellSize;
-  month: TMonthFilter;
+  months: TMonthFilter;
   cellSizeOptions: readonly TCellSizeOption[];
 };
 
@@ -23,7 +23,8 @@ export type TSidebarHandlers = {
   onYearEndChange: (year: number) => void;
   onVariableToggle: (variable: TVariable) => void;
   onGridChange: (grid: TCellSize) => void;
-  onMonthChange: (month: TMonthFilter) => void;
+  onMonthToggle: (month: number) => void;
+  onAllMonthsSelect: () => void;
   onApply: () => void;
 };
 
@@ -34,10 +35,11 @@ export type TSidebarFiltersState = {
   setPeriodWindowStart: (value: string) => void;
   variables: TVariable[];
   toggleVariable: (variable: TVariable) => void;
-  grid: number;
-  setGrid: (size: number) => void;
-  month: TMonthFilter;
-  setMonth: (month: TMonthFilter) => void;
-  cellSizeOptions: { value: number; label: string }[];
+  grid: TCellSize;
+  setGrid: (size: TCellSize) => void;
+  months: TMonthFilter;
+  toggleMonth: (month: number) => void;
+  selectAllMonths: () => void;
+  cellSizeOptions: readonly TCellSizeOption[];
   handleApply: () => void;
 };

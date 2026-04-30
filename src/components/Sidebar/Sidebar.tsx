@@ -1,41 +1,80 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { CellSizeSelector, FilterChip, SectionLabel } from "@/components";
 import { Dropdown } from "@/components/UI";
-import { DATASETS, MONTHS_ARRAY, SIDEBAR_VARIABLES } from "@/constants";
-import { PERIOD_WINDOW_OPTIONS, useSidebarFilters } from "@/hooks";
-import type { TMonthFilter, TVariable } from "@/types";
+import { DATASETS, ROUTES, SIDEBAR_PARAMS, SIDEBAR_VARIABLES } from "@/constants";
+import { CELL_SIZE_OPTIONS } from "@/constants/worldclim.constant";
+import { PERIOD_WINDOW_OPTIONS } from "@/hooks";
+import { useFiltersStore } from "@/stores";
+import type { TCellSize, TVariable } from "@/types";
+import type { TCellSizeOption } from "@/types/ui/cell-size";
+import { estimateCellCount, getCellCountStatus } from "@/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { useLocation, useSearchParams } from "react-router-dom";
 import type { TSidebarProps } from "./Sidebar.type";
 
 export function Sidebar({ isOpen, onClose }: TSidebarProps) {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
+  const queryClient = useQueryClient();
+
   const {
     dataset,
-    setDataset,
-    periodWindowStart,
-    setPeriodWindowStart,
+    periodStart,
     variables,
-    toggleVariable,
-    grid,
-    setGrid,
-    month,
-    setMonth,
-    cellSizeOptions,
-    handleApply,
-  } = useSidebarFilters();
+    gridSize,
+    months,
+    actions: {
+      setDataset,
+      setPeriodStart,
+      toggleVariable,
+      setGridSize,
+      toggleMonth,
+      selectAllMonths,
+    },
+  } = useFiltersStore();
 
-  const handleApplyAndClose = () => {
-    handleApply();
+  const isHeatmapPage = pathname.startsWith(ROUTES.HEAT_MAP);
+
+  const northRaw = searchParams.get(SIDEBAR_PARAMS.BBOX_NORTH);
+  const southRaw = searchParams.get(SIDEBAR_PARAMS.BBOX_SOUTH);
+  const westRaw = searchParams.get(SIDEBAR_PARAMS.BBOX_WEST);
+  const eastRaw = searchParams.get(SIDEBAR_PARAMS.BBOX_EAST);
+  const heatmapBbox =
+    northRaw !== null && southRaw !== null && westRaw !== null && eastRaw !== null
+      ? {
+          north: Number(northRaw),
+          south: Number(southRaw),
+          west: Number(westRaw),
+          east: Number(eastRaw),
+        }
+      : null;
+
+  const cellCount =
+    isHeatmapPage && heatmapBbox !== null ? estimateCellCount(heatmapBbox, gridSize) : null;
+  const cellStatus = cellCount !== null ? getCellCountStatus(cellCount) : null;
+  const isTooMany = cellCount !== null && cellCount > 10_000;
+
+  const cellSizeOptions: readonly TCellSizeOption[] = (
+    Object.keys(CELL_SIZE_OPTIONS) as TCellSize[]
+  ).map((value) => ({ value, label: t(`cellSizes.${value}`) }));
+
+  const periodWindowStart = String(periodStart);
+
+  function handlePeriodChange(value: string) {
+    setPeriodStart(Number(value));
+  }
+
+  function handleApplyAndClose() {
+    void queryClient.invalidateQueries({ queryKey: ["climate"] });
+    void queryClient.invalidateQueries({ queryKey: ["compare"] });
+    void queryClient.invalidateQueries({ queryKey: ["compare-periods"] });
+    void queryClient.invalidateQueries({ queryKey: ["heatmap"] });
+    void queryClient.invalidateQueries({ queryKey: ["heatmap-polygon"] });
     onClose();
-  };
+  }
 
-  const monthOptions: { value: TMonthFilter; label: string }[] = [
-    { value: "all", label: t("sidebar.months.all") },
-    ...MONTHS_ARRAY.map((name, i) => ({ value: String(i + 1) as TMonthFilter, label: name })),
-  ];
+  const isAllActive = months === "all";
 
   return (
     <aside
@@ -69,7 +108,7 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
             <Dropdown
               options={PERIOD_WINDOW_OPTIONS}
               value={periodWindowStart}
-              onChange={setPeriodWindowStart}
+              onChange={handlePeriodChange}
               className="w-full"
             />
           </div>
@@ -90,20 +129,48 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
         </div>
 
         <div>
-          <CellSizeSelector activeSize={grid} options={cellSizeOptions} onSelect={setGrid} />
+          <CellSizeSelector
+            activeSize={gridSize}
+            options={cellSizeOptions}
+            onSelect={setGridSize}
+          />
+          {isHeatmapPage && cellStatus !== null && cellCount !== null && (
+            <div className="mt-2 flex flex-col gap-1">
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[length:var(--font-xs)] font-medium ${cellStatus.colorClass}`}
+              >
+                {t(cellStatus.labelKey)}
+                <span className="opacity-70">({cellCount.toLocaleString()} cells)</span>
+              </span>
+              {isTooMany && (
+                <p className="text-[length:var(--font-xs)] text-[var(--color-error)]">
+                  {t("sidebar.cellCount.tooManyError")}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         <div>
           <SectionLabel text={t("sidebar.sections.months")} />
           <div className="flex flex-wrap gap-2">
-            {monthOptions.map(({ value, label }) => (
-              <FilterChip
-                key={value}
-                label={label}
-                isActive={month === value}
-                onClick={() => setMonth(value)}
-              />
-            ))}
+            <FilterChip
+              label={t("sidebar.months.all")}
+              isActive={isAllActive}
+              onClick={selectAllMonths}
+            />
+            {Array.from({ length: 12 }, (_, i) => {
+              const monthNum = i + 1;
+              const isActive = !isAllActive && months.includes(monthNum);
+              return (
+                <FilterChip
+                  key={monthNum}
+                  label={t(`months.${monthNum}`)}
+                  isActive={isActive}
+                  onClick={() => toggleMonth(monthNum)}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
@@ -112,7 +179,8 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
         <button
           type="button"
           onClick={handleApplyAndClose}
-          className="w-full rounded-[var(--radius-sm)] bg-[var(--color-primary)] py-2 text-[length:var(--font-base)] font-medium text-white transition-colors duration-150 hover:bg-[var(--color-dark)]"
+          disabled={isTooMany}
+          className="w-full rounded-[var(--radius-sm)] bg-[var(--color-primary)] py-2 text-[length:var(--font-base)] font-medium text-white transition-colors duration-150 hover:bg-[var(--color-dark)] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {t("sidebar.applyFilters")}
         </button>
