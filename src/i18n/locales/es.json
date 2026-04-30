@@ -30,7 +30,8 @@
       "totalPrec": "Precipitación total",
       "mmThisMonth": "mm este mes",
       "resolution": "Resolución",
-      "autoResolutionTooltip": "La resolución se establece automáticamente según el conjunto de datos seleccionado"
+      "autoResolutionTooltip": "La resolución se establece automáticamente según el conjunto de datos seleccionado",
+      "filteredMonths": "Filtrado: {{months}}"
     }
   },
   "climateComparison": {
@@ -129,6 +130,20 @@
     "png": "Imagen PNG",
     "svg": "Vector SVG",
     "csv": "Datos CSV"
+  },
+  "months": {
+    "1": "Ene",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Abr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Ago",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dic"
   },
   "sidebar": {
     "sections": {

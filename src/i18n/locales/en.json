@@ -30,7 +30,8 @@
       "totalPrec": "Total precip",
       "mmThisMonth": "mm this month",
       "resolution": "Resolution",
-      "autoResolutionTooltip": "Resolution is automatically set based on selected dataset"
+      "autoResolutionTooltip": "Resolution is automatically set based on selected dataset",
+      "filteredMonths": "Filtered: {{months}}"
     }
   },
   "climateComparison": {
@@ -129,6 +130,20 @@
     "png": "PNG image",
     "svg": "SVG vector",
     "csv": "CSV data"
+  },
+  "months": {
+    "1": "Jan",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Apr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Aug",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec"
   },
   "sidebar": {
     "sections": {
