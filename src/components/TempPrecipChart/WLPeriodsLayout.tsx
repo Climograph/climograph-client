@@ -1,3 +1,4 @@
+import { MONTH_NAMES } from "@/constants";
 import { useTranslation } from "react-i18next";
 import {
   CartesianGrid,
@@ -33,6 +34,11 @@ export function WLPeriodsLayout({
 }: TWLPeriodsLayoutProps) {
   const { t } = useTranslation();
 
+  function localMonthName(v: unknown): string {
+    const idx = (MONTH_NAMES as readonly string[]).indexOf(String(v));
+    return idx >= 0 ? t(`months.${idx + 1}`) : String(v);
+  }
+
   const scaledA: TWLScaledPoint[] = chartDataA.map(toScaledPoint);
   const scaledB: TWLScaledPoint[] = chartDataB.map(toScaledPoint);
 
@@ -55,9 +61,11 @@ export function WLPeriodsLayout({
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={combined} margin={{ top: 20, right: 60, bottom: 50, left: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+
               <XAxis
                 dataKey="monthName"
                 interval={0}
+                tickFormatter={localMonthName}
                 tick={{ fontSize: 11, fill: "var(--color-text-secondary)" }}
                 label={{
                   value: t("chart.monthAxis"),
@@ -67,6 +75,7 @@ export function WLPeriodsLayout({
                   fontWeight: 600,
                 }}
               />
+
               <YAxis
                 yAxisId="left"
                 domain={scales ? [scales.tempMin, scales.tempMax] : ["auto", "auto"]}
@@ -81,6 +90,7 @@ export function WLPeriodsLayout({
                   fontWeight: 600,
                 }}
               />
+
               <YAxis
                 yAxisId="right"
                 orientation="right"
@@ -96,6 +106,7 @@ export function WLPeriodsLayout({
                   fontWeight: 600,
                 }}
               />
+
               <Tooltip
                 content={
                   <WLPeriodsTooltip
@@ -106,9 +117,11 @@ export function WLPeriodsLayout({
                   />
                 }
               />
-              {/* Invisible lines to initialise axis scales */}
+
+              {/* invisible lines to init axis scales */}
               <Line yAxisId="left" dataKey="tavgA" strokeWidth={0} dot={false} legendType="none" />
               <Line yAxisId="left" dataKey="tavgB" strokeWidth={0} dot={false} legendType="none" />
+
               <Customized
                 component={WLCustomized}
                 wlData={scaledA}
@@ -116,6 +129,7 @@ export function WLPeriodsLayout({
                 colors={WL_COLORS_A}
                 clipId="wl-clip-a"
               />
+
               <Customized
                 component={WLCustomized}
                 wlData={scaledB}

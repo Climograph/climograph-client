@@ -1,3 +1,4 @@
+import { MONTH_NAMES } from "@/constants";
 import { useTranslation } from "react-i18next";
 import {
   Bar,
@@ -25,24 +26,32 @@ export function StandardClimateChart({
   rightMax,
   summary,
   visible,
-  selectedMonth,
+  selectedMonths,
   isCompare,
   labelA,
   labelB,
 }: TStandardClimateChartProps) {
   const { t } = useTranslation();
 
+  function localMonthName(v: unknown): string {
+    const idx = (MONTH_NAMES as readonly string[]).indexOf(String(v));
+    return idx >= 0 ? t(`months.${idx + 1}`) : String(v);
+  }
+
   function makeDot(color: string) {
     return (dotProps: TDotRendererProps) => {
       const { cx = 0, cy = 0, fill = color, index = -1 } = dotProps;
-      const isSelected = selectedMonth === undefined || aridity?.[index]?.month === selectedMonth;
+      const month = aridity?.[index]?.month ?? -1;
+      const isSelected =
+        !selectedMonths || selectedMonths.length === 0 || selectedMonths.includes(month);
+      const isHighlighted = selectedMonths?.length === 1 && isSelected;
       return (
         <circle
           cx={cx}
           cy={cy}
-          r={isSelected && selectedMonth !== undefined ? 5 : 3}
+          r={isHighlighted ? 5 : 3}
           fill={fill}
-          opacity={isSelected ? 1 : 0.2}
+          opacity={isSelected ? 1 : 0.15}
           stroke="none"
         />
       );
@@ -66,6 +75,7 @@ export function StandardClimateChart({
               <XAxis
                 dataKey="monthName"
                 interval={0}
+                tickFormatter={localMonthName}
                 tick={{ fontSize: 11, fill: "var(--color-text-secondary)" }}
                 label={{
                   value: t("chart.monthAxis"),
@@ -115,6 +125,7 @@ export function StandardClimateChart({
                   borderRadius: "var(--radius-md)",
                   fontSize: 13,
                 }}
+                labelFormatter={localMonthName}
                 formatter={(value, name) => {
                   const v = Array.isArray(value) ? value.join(", ") : String(value ?? "");
                   const isPrecip = String(name).includes(t("chart.precipitation"));
@@ -135,12 +146,15 @@ export function StandardClimateChart({
                   shape={<PrecipBarShape />}
                 >
                   {aridity?.map((m, i) => {
-                    const isSelected = selectedMonth === undefined || m.month === selectedMonth;
+                    const isSelected =
+                      !selectedMonths ||
+                      selectedMonths.length === 0 ||
+                      selectedMonths.includes(m.month);
                     return (
                       <Cell
                         key={`prec-${i}`}
                         fill={m.isArid ? CHART_COLORS.arid : CHART_COLORS.humid}
-                        fillOpacity={isSelected ? 0.8 : 0.2}
+                        fillOpacity={isSelected ? 0.8 : 0.15}
                       />
                     );
                   })}

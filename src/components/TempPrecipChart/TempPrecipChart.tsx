@@ -29,8 +29,8 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
   }
 
   const selectedMonthName =
-    !chart.isCompare && props.selectedMonth !== undefined
-      ? (props.data?.find((d) => d.month === props.selectedMonth)?.monthName ?? "")
+    !chart.isCompare && props.selectedMonths?.length === 1
+      ? (props.data?.find((d) => d.month === props.selectedMonths![0])?.monthName ?? "")
       : "";
 
   const chips: { key: keyof TVisibleSeries; label: string }[] = [
@@ -110,7 +110,7 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
           summary={chart.summary}
           visible={visible}
           isCompare={chart.isCompare}
-          {...(props.selectedMonth !== undefined ? { selectedMonth: props.selectedMonth } : {})}
+          {...(props.selectedMonths !== undefined ? { selectedMonths: props.selectedMonths } : {})}
           {...(props.labelA !== undefined ? { labelA: props.labelA } : {})}
           {...(props.labelB !== undefined ? { labelB: props.labelB } : {})}
         />

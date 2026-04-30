@@ -16,7 +16,7 @@ export type TCompareMode = "cities" | "periods";
 export type TTempPrecipChartProps = {
   data?: TMonthlyTemperature[];
   cityName?: string;
-  selectedMonth?: number;
+  selectedMonths?: number[];
   dataA?: TMonthlyTemperature[];
   dataB?: TMonthlyTemperature[];
   labelA?: string;
@@ -158,7 +158,7 @@ export type TStandardClimateChartProps = {
   rightMax: number;
   summary: TChartSummary | null;
   visible: TVisibleSeries;
-  selectedMonth?: number;
+  selectedMonths?: number[];
   isCompare: boolean;
   labelA?: string;
   labelB?: string;

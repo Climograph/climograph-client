@@ -1,3 +1,4 @@
+import { MONTH_NAMES } from "@/constants";
 import { useTranslation } from "react-i18next";
 import {
   CartesianGrid,
@@ -25,6 +26,11 @@ export function WalterLiethChart({
 }: TWalterLiethChartProps) {
   const { t } = useTranslation();
 
+  function localMonthName(v: unknown): string {
+    const idx = (MONTH_NAMES as readonly string[]).indexOf(String(v));
+    return idx >= 0 ? t(`months.${idx + 1}`) : String(v);
+  }
+
   const scaledData: TWLScaledPoint[] = chartData.map((d) => ({
     monthName: typeof d["monthName"] === "string" ? d["monthName"] : "",
     tavg: Number(d["tavg"] ?? 0),
@@ -48,6 +54,7 @@ export function WalterLiethChart({
               <XAxis
                 dataKey="monthName"
                 interval={0}
+                tickFormatter={localMonthName}
                 tick={{ fontSize: 11, fill: "var(--color-text-secondary)" }}
                 label={{
                   value: t("chart.monthAxis"),
