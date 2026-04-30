@@ -1,5 +1,6 @@
 import type { TMiniMapLocation } from "@/components";
 import { MiniMap, SearchBar, TempPrecipChart, ThreeDotsScaleLoader } from "@/components";
+import { PageWrapper } from "@/components/UI";
 import { CELL_SIZE_OPTIONS, CLIMATE_RANGE } from "@/constants";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -255,10 +256,10 @@ export function ClimateComparisonView({
         ];
 
   return (
-    <div className="min-h-screen flex items-start justify-center px-4 py-8">
-      <div className="w-full max-w-[960px] flex flex-col gap-8">
+    <PageWrapper>
+      <div className="flex flex-col gap-10">
         <header className="text-center">
-          <h1 className="text-[length:var(--font-xl)] lg:text-[length:var(--font-2xl)] font-bold text-[var(--color-primary)]">
+          <h1 className="mb-2 text-[length:var(--font-xl)] lg:text-[length:var(--font-2xl)] font-bold text-[var(--color-primary)]">
             {t("climateComparison.title")}
           </h1>
         </header>
@@ -425,6 +426,6 @@ export function ClimateComparisonView({
           </div>
         )}
       </div>
-    </div>
+    </PageWrapper>
   );
 }

@@ -1,8 +1,7 @@
-import { AUTO_RESOLUTION, CLIMATE_RANGE, CLIMATE_START, SIDEBAR_PARAMS } from "@/constants";
+import { CLIMATE_RANGE, CLIMATE_START, DATASETS } from "@/constants";
 import { useGetCompareData, useGetComparePeriods, usePersistedComparisonCities } from "@/hooks";
-import type { TCellSize } from "@/types";
+import { useFiltersStore } from "@/stores";
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import type { TComparisonMode } from "./ClimateComparison.type";
 import { ClimateComparisonView } from "./ClimateComparisonView";
 
@@ -12,24 +11,16 @@ export function ClimateComparison() {
   const [periodA, setPeriodA] = useState<number>(CLIMATE_START);
   const [periodB, setPeriodB] = useState<number>(CLIMATE_RANGE.MAX_START);
 
-  const [searchParams] = useSearchParams();
-  const yearStart = searchParams.get(SIDEBAR_PARAMS.YEAR_START);
-  const periodStart = yearStart ? Number(yearStart) : CLIMATE_START;
-  const isClimate = yearStart === null;
-  const citiesDefaultGrid: TCellSize = isClimate
-    ? AUTO_RESOLUTION.CLIMATE
-    : AUTO_RESOLUTION.WEATHER;
-  const periodsDefaultGrid: TCellSize = AUTO_RESOLUTION.WEATHER;
-  const urlGrid = searchParams.get(SIDEBAR_PARAMS.GRID) as TCellSize | null;
-  const autoGrid: TCellSize =
-    urlGrid ?? (comparisonMode === "periods" ? periodsDefaultGrid : citiesDefaultGrid);
+  const { dataset, periodStart: storePeriodStart, gridSize } = useFiltersStore();
+  const isClimate = dataset === DATASETS.CLIMATE;
+  const effectivePeriodStart = isClimate ? CLIMATE_START : storePeriodStart;
 
   const {
     cityA: compareCitiesDataA,
     cityB: compareCitiesDataB,
     isLoading: compareCitiesLoading,
     error: compareCitiesError,
-  } = useGetCompareData(cityA.lat, cityA.lng, cityB.lat, cityB.lng, autoGrid, periodStart);
+  } = useGetCompareData(cityA.lat, cityA.lng, cityB.lat, cityB.lng, gridSize, effectivePeriodStart);
 
   const periodsLat = comparisonMode === "periods" ? cityA.lat : null;
   const periodsLng = comparisonMode === "periods" ? cityA.lng : null;
@@ -39,7 +30,7 @@ export function ClimateComparison() {
     dataB: comparePeriodsDataB,
     isLoading: comparePeriodsLoading,
     error: comparePeriodsError,
-  } = useGetComparePeriods(periodsLat, periodsLng, periodA, periodB, autoGrid);
+  } = useGetComparePeriods(periodsLat, periodsLng, periodA, periodB, gridSize);
 
   const isCitiesMode = comparisonMode === "cities";
   const dataA = isCitiesMode ? compareCitiesDataA : comparePeriodsDataA;
@@ -56,7 +47,7 @@ export function ClimateComparison() {
       periodB={periodB}
       dataA={dataA}
       dataB={dataB}
-      autoGrid={autoGrid}
+      autoGrid={gridSize}
       isLoading={isLoading}
       error={error}
       onComparisonModeChange={setComparisonMode}
