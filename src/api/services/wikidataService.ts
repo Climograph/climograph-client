@@ -73,8 +73,8 @@ export const WikidataService = {
       const searchItem = items.find((item) => item.id === id);
       results.push({
         id,
-        label: (searchItem?.label ?? id) as string,
-        description: (searchItem?.description ?? "") as string,
+        label: String(searchItem?.label ?? id),
+        description: String(searchItem?.description ?? ""),
         lat: coords.lat,
         lng: coords.lng,
       });
