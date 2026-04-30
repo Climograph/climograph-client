@@ -1,3 +1,6 @@
+/**
+ * legacy combined comparison page kept for reference at /compare-legacy
+ */
 import { CLIMATE_RANGE, CLIMATE_START, DATASETS } from "@/constants";
 import { useGetCompareData, useGetComparePeriods, usePersistedComparisonCities } from "@/hooks";
 import { useFiltersStore } from "@/stores";
