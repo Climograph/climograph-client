@@ -55,7 +55,7 @@ export function Topbar({ isSidebarOpen, onToggleSidebar }: TTopbarProps) {
   const location = useLocation();
 
   useEffect(() => {
-    setIsNavOpen(false);
+    queueMicrotask(() => setIsNavOpen(false));
   }, [location.pathname]);
 
   useEffect(() => {

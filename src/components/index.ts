@@ -1,10 +1,16 @@
 export { CellSizeSelector } from "./CellSizeSelector";
+export { FilterChip } from "./FilterChip";
 export { FiltersTab } from "./FiltersTab";
 export { LanguageSwitcher } from "./LanguageSwitcher";
 export { LeafletMap } from "./LeafletMap";
 export { Navbar } from "./Navbar";
 export { PeriodSlider } from "./PeriodSlider";
 export { SearchBar } from "./SearchBar";
+export { MiniMap } from "./shared/MiniMap";
+export { SectionLabel } from "./shared/SectionLabel";
+export type { TMiniMapLocation } from "./shared/MiniMap";
+export { Sidebar } from "./Sidebar";
 export { ThreeDotsScaleLoader } from "./svg";
 export { TemperatureChart } from "./TemperatureChart";
 export { TempPrecipChart } from "./TempPrecipChart";
+export { Topbar } from "./Topbar";
