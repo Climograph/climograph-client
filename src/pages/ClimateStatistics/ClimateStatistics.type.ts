@@ -6,7 +6,7 @@ export type TClimateStatisticsViewProps = {
   temperatureData: TMonthlyTemperature[];
   cellSize: TCellSize;
   isAutoResolution: boolean;
-  selectedMonth: number | null;
+  selectedMonths: number[] | null;
   isLoading: boolean;
   isFetching: boolean;
   isLocating: boolean;

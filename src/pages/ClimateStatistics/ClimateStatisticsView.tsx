@@ -1,6 +1,6 @@
 import { LeafletMap, SearchBar, TempPrecipChart, ThreeDotsScaleLoader } from "@/components";
 import { LocationIcon, SpinnerIcon } from "@/components/svg";
-import { ExportMenu } from "@/components/UI";
+import { ExportMenu, PageWrapper } from "@/components/UI";
 import { exportToCSV, exportToPNG, exportToSVG } from "@/utils";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -41,7 +41,7 @@ export function ClimateStatisticsView({
   temperatureData,
   cellSize,
   isAutoResolution,
-  selectedMonth,
+  selectedMonths,
   isLoading,
   isFetching,
   isLocating,
@@ -54,21 +54,18 @@ export function ClimateStatisticsView({
   const { t } = useTranslation();
   const chartRef = useRef<HTMLElement | null>(null);
 
-  type TComputedStats = {
-    avgTmax: string;
-    avgTmin: string;
-    totalPrec: string;
-    resolution: string;
-  };
+  const isFiltered = selectedMonths !== null && selectedMonths.length > 0;
+  const isSingleMonth = isFiltered && selectedMonths.length === 1;
 
   const showStats = temperatureData.length > 0 && !isLoading && !error;
-  const computeStats = computeClimateStats as unknown as (
-    data: typeof temperatureData,
-    size: typeof cellSize,
-    month?: number | null,
-  ) => TComputedStats;
-  const stats: TComputedStats | null = showStats
-    ? computeStats(temperatureData, cellSize, selectedMonth)
+  const stats = showStats ? computeClimateStats(temperatureData, cellSize, selectedMonths) : null;
+
+  const filteredMonthNames = isFiltered
+    ? selectedMonths
+        .slice()
+        .sort((a, b) => a - b)
+        .map((n) => t(`months.${n}`))
+        .join(", ")
     : null;
 
   // * fall back to description if wikidata returned an entity ID as the label
@@ -91,10 +88,10 @@ export function ClimateStatisticsView({
   }
 
   return (
-    <div className="min-h-screen flex items-start justify-center px-4 py-8">
-      <div className="w-full max-w-[960px] flex flex-col gap-8">
+    <PageWrapper>
+      <div className="flex flex-col gap-10">
         <header className="text-center">
-          <h1 className="text-[length:var(--font-xl)] lg:text-[length:var(--font-2xl)] font-bold text-[var(--color-primary)]">
+          <h1 className="mb-2 text-[length:var(--font-xl)] lg:text-[length:var(--font-2xl)] font-bold text-[var(--color-primary)]">
             {t("climateStatistics.title")}
           </h1>
           <p className="mt-1 text-[var(--color-text-secondary)]">
@@ -114,10 +111,10 @@ export function ClimateStatisticsView({
               aria-label={t("climateStatistics.useMyLocation")}
               className={`
                 flex h-10 shrink-0 items-center gap-1.5 px-3
-                rounded-[var(--radius-sm)] 
-                border border-[var(--color-border)] bg-[var(--color-bg)]  
+                rounded-[var(--radius-sm)]
+                border border-[var(--color-border)] bg-[var(--color-bg)]
                 text-[length:var(--font-sm)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)]
-                transition-colors duration-150 hover:bg-[var(--color-bg-secondary)] 
+                transition-colors duration-150 hover:bg-[var(--color-bg-secondary)]
                 disabled:cursor-not-allowed disabled:opacity-60
               `}
             >
@@ -155,37 +152,44 @@ export function ClimateStatisticsView({
         {selectedCity && (temperatureData.length > 0 || isLoading || isFetching) && (
           <div id="climate-stats-container" className="flex flex-col gap-8">
             {stats && (
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                <StatCard
-                  label={
-                    selectedMonth !== null
-                      ? t("climateStatistics.stats.tmax")
-                      : t("climateStatistics.stats.avgTmax")
-                  }
-                  value={stats.avgTmax}
-                  unit="°C"
-                />
-                <StatCard
-                  label={
-                    selectedMonth !== null
-                      ? t("climateStatistics.stats.tmin")
-                      : t("climateStatistics.stats.avgTmin")
-                  }
-                  value={stats.avgTmin}
-                  unit="°C"
-                />
-                <StatCard
-                  label={t("climateStatistics.stats.totalPrec")}
-                  value={stats.totalPrec}
-                  unit={selectedMonth !== null ? t("climateStatistics.stats.mmThisMonth") : "mm"}
-                />
-                <StatCard
-                  label={t("climateStatistics.stats.resolution")}
-                  value={stats.resolution}
-                  {...(isAutoResolution
-                    ? { tooltip: t("climateStatistics.stats.autoResolutionTooltip") }
-                    : {})}
-                />
+              <div className="flex flex-col gap-3">
+                <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                  <StatCard
+                    label={
+                      isSingleMonth
+                        ? t("climateStatistics.stats.tmax")
+                        : t("climateStatistics.stats.avgTmax")
+                    }
+                    value={stats.avgTmax}
+                    unit="°C"
+                  />
+                  <StatCard
+                    label={
+                      isSingleMonth
+                        ? t("climateStatistics.stats.tmin")
+                        : t("climateStatistics.stats.avgTmin")
+                    }
+                    value={stats.avgTmin}
+                    unit="°C"
+                  />
+                  <StatCard
+                    label={t("climateStatistics.stats.totalPrec")}
+                    value={stats.totalPrec}
+                    unit={isSingleMonth ? t("climateStatistics.stats.mmThisMonth") : "mm"}
+                  />
+                  <StatCard
+                    label={t("climateStatistics.stats.resolution")}
+                    value={stats.resolution}
+                    {...(isAutoResolution
+                      ? { tooltip: t("climateStatistics.stats.autoResolutionTooltip") }
+                      : {})}
+                  />
+                </div>
+                {filteredMonthNames && (
+                  <p className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
+                    {t("climateStatistics.stats.filteredMonths", { months: filteredMonthNames })}
+                  </p>
+                )}
               </div>
             )}
 
@@ -215,13 +219,13 @@ export function ClimateStatisticsView({
                 <TempPrecipChart
                   data={temperatureData}
                   cityName={chartCityName}
-                  {...(selectedMonth !== null ? { selectedMonth } : {})}
+                  {...(isFiltered ? { selectedMonths } : {})}
                 />
               </section>
             </div>
           </div>
         )}
       </div>
-    </div>
+    </PageWrapper>
   );
 }

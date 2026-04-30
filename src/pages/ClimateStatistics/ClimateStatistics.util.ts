@@ -18,22 +18,17 @@ export type TClimateStats = {
 export function computeClimateStats(
   data: TMonthlyTemperature[],
   resolution: TCellSize,
-  month?: number | null,
+  months?: number[] | null,
 ): TClimateStats {
-  if (month !== undefined && month !== null) {
-    const m = data.find((d) => d.month === month);
-    return {
-      avgTmax: m !== undefined ? m.tmax.toFixed(1) : "—",
-      avgTmin: m !== undefined ? m.tmin.toFixed(1) : "—",
-      totalPrec: m !== undefined ? m.prec.toFixed(0) : "—",
-      resolution,
-    };
-  }
+  const filtered =
+    months && months.length > 0 ? data.filter((d) => months.includes(d.month)) : data;
 
-  const count = data.length;
-  const avgTmax = count > 0 ? (data.reduce((sum, d) => sum + d.tmax, 0) / count).toFixed(1) : "—";
-  const avgTmin = count > 0 ? (data.reduce((sum, d) => sum + d.tmin, 0) / count).toFixed(1) : "—";
-  const totalPrec = count > 0 ? data.reduce((sum, d) => sum + d.prec, 0).toFixed(0) : "—";
+  const count = filtered.length;
+  const avgTmax =
+    count > 0 ? (filtered.reduce((sum, d) => sum + d.tmax, 0) / count).toFixed(1) : "—";
+  const avgTmin =
+    count > 0 ? (filtered.reduce((sum, d) => sum + d.tmin, 0) / count).toFixed(1) : "—";
+  const totalPrec = count > 0 ? filtered.reduce((sum, d) => sum + d.prec, 0).toFixed(0) : "—";
 
   return { avgTmax, avgTmin, totalPrec, resolution };
 }

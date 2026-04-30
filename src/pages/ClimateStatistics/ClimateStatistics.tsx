@@ -1,11 +1,12 @@
-import { AUTO_RESOLUTION, CLIMATE_START, SIDEBAR_PARAMS } from "@/constants";
+import { CLIMATE_START, DATASETS } from "@/constants";
 import {
   useGeolocation,
   useGetClimateData,
   usePersistedCity,
   useResolveCityByCoordinates,
 } from "@/hooks";
-import type { TCellSize, TWikidataCity } from "@/types";
+import { useFiltersStore } from "@/stores";
+import type { TWikidataCity } from "@/types";
 import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
@@ -21,15 +22,11 @@ export function ClimateStatistics() {
   const latestMapClickIdRef = useRef(0);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const yearStart = searchParams.get(SIDEBAR_PARAMS.YEAR_START);
-  const periodStart = yearStart ? Number(yearStart) : CLIMATE_START;
-  const isClimate = yearStart === null;
-  const defaultGrid: TCellSize = isClimate ? AUTO_RESOLUTION.CLIMATE : AUTO_RESOLUTION.WEATHER;
-  const cellSize: TCellSize =
-    (searchParams.get(SIDEBAR_PARAMS.GRID) as TCellSize | null) ?? defaultGrid;
-  const monthParam = searchParams.get(SIDEBAR_PARAMS.MONTH);
-  const selectedMonth: number | null =
-    monthParam !== null && monthParam !== "all" ? Number(monthParam) : null;
+  const { dataset, periodStart: storePeriodStart, gridSize, months } = useFiltersStore();
+  const isClimate = dataset === DATASETS.CLIMATE;
+  const effectivePeriodStart = isClimate ? CLIMATE_START : storePeriodStart;
+  const selectedMonths: number[] | null = Array.isArray(months) ? months : null;
+
   const selectedCityInUrl = useMemo(
     () => toCityQueryParam(selectedCity.label),
     [selectedCity.label],
@@ -97,7 +94,7 @@ export function ClimateStatistics() {
     isLoading,
     isFetching,
     isError,
-  } = useGetClimateData(selectedCity.lat, selectedCity.lng, cellSize, periodStart);
+  } = useGetClimateData(selectedCity.lat, selectedCity.lng, gridSize, effectivePeriodStart);
 
   const resolvedLocationError =
     locationError === "denied"
@@ -111,9 +108,9 @@ export function ClimateStatistics() {
       selectedCity={selectedCity}
       mapCenter={{ lat: selectedCity.lat, lng: selectedCity.lng }}
       temperatureData={temperatureData}
-      cellSize={cellSize}
-      isAutoResolution
-      selectedMonth={selectedMonth}
+      cellSize={gridSize}
+      isAutoResolution={false}
+      selectedMonths={selectedMonths}
       isLoading={isLoading}
       isFetching={isFetching || isResolving}
       isLocating={isLocating}
