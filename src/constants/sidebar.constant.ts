@@ -18,7 +18,7 @@ export const SIDEBAR_PARAMS = {
   YEAR_END: "yearEnd",
   VARIABLES: "variables",
   GRID: "grid",
-  MONTH: "month",
+  MONTHS: "months",
   BBOX_NORTH: "north",
   BBOX_SOUTH: "south",
   BBOX_WEST: "west",
