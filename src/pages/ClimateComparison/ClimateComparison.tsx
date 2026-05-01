@@ -1,7 +1,7 @@
 /**
  * legacy combined comparison page kept for reference at /compare-legacy
  */
-import { CLIMATE_RANGE, CLIMATE_START, DATASETS } from "@/constants";
+import { CLIMATE_RANGE, CLIMATE_START } from "@/constants";
 import { useGetCompareData, useGetComparePeriods, usePersistedComparisonCities } from "@/hooks";
 import { useFiltersStore } from "@/stores";
 import { useState } from "react";
@@ -14,16 +14,14 @@ export function ClimateComparison() {
   const [periodA, setPeriodA] = useState<number>(CLIMATE_START);
   const [periodB, setPeriodB] = useState<number>(CLIMATE_RANGE.MAX_START);
 
-  const { dataset, periodStart: storePeriodStart, gridSize } = useFiltersStore();
-  const isClimate = dataset === DATASETS.CLIMATE;
-  const effectivePeriodStart = isClimate ? CLIMATE_START : storePeriodStart;
+  const { gridSize } = useFiltersStore();
 
   const {
     cityA: compareCitiesDataA,
     cityB: compareCitiesDataB,
     isLoading: compareCitiesLoading,
     error: compareCitiesError,
-  } = useGetCompareData(cityA.lat, cityA.lng, cityB.lat, cityB.lng, gridSize, effectivePeriodStart);
+  } = useGetCompareData(cityA.lat, cityA.lng, cityB.lat, cityB.lng, gridSize);
 
   const periodsLat = comparisonMode === "periods" ? cityA.lat : null;
   const periodsLng = comparisonMode === "periods" ? cityA.lng : null;
