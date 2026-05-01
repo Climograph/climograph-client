@@ -1,12 +1,12 @@
 {
   "name": "Climatica",
+  "version": "1.0.0",
   "description": "Client part of web application to check, compare, analyze climate metrics",
   "author": {
     "name": "Andrii Kononenko [Wastardy]",
     "email": "wastardy.k@gmail.com"
   },
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
