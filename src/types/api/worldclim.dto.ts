@@ -118,3 +118,19 @@ export type TWorldClimAvgBoxResponse = {
     bindings: TWorldClimAvgBoxBinding[];
   };
 };
+
+export type TWorldClimPointValueBinding = {
+  value: TSparqlValue;
+  month: TSparqlValue;
+  pixel: TSparqlUriValue;
+  raster: TSparqlUriValue;
+  var: TSparqlUriValue;
+  cell: TSparqlUriValue;
+  grid: TSparqlUriValue;
+};
+
+export type TWorldClimPointValueResponse = {
+  results: {
+    bindings: TWorldClimPointValueBinding[];
+  };
+};

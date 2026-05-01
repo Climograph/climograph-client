@@ -23,6 +23,8 @@ export type {
   TWorldClimCellResponseResults,
   TWorldClimPixelResource,
   TWorldClimPixelsResponse,
+  TWorldClimPointValueBinding,
+  TWorldClimPointValueResponse,
   TWorldClimTemperatureBinding,
   TWorldClimTemperatureResponse,
   TWorldClimTemperatureResponseResults,
