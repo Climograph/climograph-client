@@ -1,6 +1,7 @@
-import { CellSizeSelector, FilterChip, SectionLabel } from "@/components";
+import { CellSizeSelector, FilterChip, PeriodSelectRow, SectionLabel } from "@/components";
 import { Dropdown } from "@/components/UI";
 import {
+  CELL_SIZE_OPTIONS,
   CLIMATE_PERIOD_LABELS,
   CLIMATE_PERIODS,
   CLIMATE_VARIABLES,
@@ -11,15 +12,15 @@ import {
   WEATHER_MIN_YEAR,
   WEATHER_VARIABLES,
 } from "@/constants";
-import { CELL_SIZE_OPTIONS } from "@/constants/worldclim.constant";
 import { useFiltersStore } from "@/stores";
-import type { TCellSize } from "@/types";
-import type { TCellSizeOption } from "@/types/ui/cell-size";
+import type { TCellSize, TCellSizeOption } from "@/types";
 import { estimateCellCount, getCellCountStatus } from "@/utils";
+import { sidebarFiltersSchema } from "@/validators";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useSearchParams } from "react-router-dom";
-import type { TSidebarProps } from "./Sidebar.type";
+import type { TDraftErrors, TDraftFilters, TSidebarProps } from "./Sidebar.type";
 
 const CLIMATE_PERIOD_OPTIONS = Object.values(CLIMATE_PERIODS).map((period) => ({
   value: period,
@@ -50,6 +51,37 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
     },
   } = useFiltersStore();
 
+  const [draft, setDraft] = useState<TDraftFilters>(() => ({
+    dataset,
+    climatePeriod,
+    weatherYear,
+    weatherYearInput: String(weatherYear),
+    variables,
+    gridSize,
+    months,
+  }));
+
+  const [errors, setErrors] = useState<TDraftErrors>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (isOpen) {
+      setDraft({
+        dataset,
+        climatePeriod,
+        weatherYear,
+        weatherYearInput: String(weatherYear),
+        variables: [...variables],
+        gridSize,
+        months,
+      });
+      setErrors({});
+      setSubmitAttempted(false);
+    }
+  }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  /* eslint-enable react-hooks/set-state-in-effect */
+
   const isHeatmapPage = pathname.startsWith(ROUTES.HEAT_MAP);
 
   const northRaw = searchParams.get(SIDEBAR_PARAMS.BBOX_NORTH);
@@ -67,7 +99,7 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
       : null;
 
   const cellCount =
-    isHeatmapPage && heatmapBbox !== null ? estimateCellCount(heatmapBbox, gridSize) : null;
+    isHeatmapPage && heatmapBbox !== null ? estimateCellCount(heatmapBbox, draft.gridSize) : null;
   const cellStatus = cellCount !== null ? getCellCountStatus(cellCount) : null;
   const isTooMany = cellCount !== null && cellCount > 10_000;
 
@@ -75,35 +107,112 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
     Object.keys(CELL_SIZE_OPTIONS) as TCellSize[]
   ).map((value) => ({ value, label: t(`cellSizes.${value}`) }));
 
-  function handleClimatePeriodChange(value: string) {
-    const period = Object.values(CLIMATE_PERIODS).find((p) => p === value);
-    if (period !== undefined) setClimatePeriod(period);
+  function handleDraftDatasetChange(ds: (typeof DATASETS)[keyof typeof DATASETS]) {
+    setDraft((prev) => ({
+      ...prev,
+      dataset: ds,
+      variables:
+        ds === DATASETS.WEATHER
+          ? prev.variables.filter((v) => (WEATHER_VARIABLES as readonly string[]).includes(v))
+          : prev.variables,
+    }));
   }
 
-  function handleWeatherYearChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const n = parseInt(e.target.value, 10);
-    if (!isNaN(n)) {
-      setWeatherYear(Math.min(WEATHER_MAX_YEAR, Math.max(WEATHER_MIN_YEAR, n)));
+  function handleDraftClimatePeriodChange(value: string) {
+    const period = Object.values(CLIMATE_PERIODS).find((p) => p === value);
+    if (period !== undefined) {
+      setDraft((prev) => ({ ...prev, climatePeriod: period }));
     }
   }
 
-  function handleWeatherYearBlur(e: React.FocusEvent<HTMLInputElement>) {
-    const n = parseInt(e.target.value, 10);
-    setWeatherYear(
-      isNaN(n) ? WEATHER_MIN_YEAR : Math.min(WEATHER_MAX_YEAR, Math.max(WEATHER_MIN_YEAR, n)),
-    );
+  function handleDraftYearInputChange(val: string) {
+    setDraft((prev) => ({ ...prev, weatherYearInput: val }));
+    if (submitAttempted && errors["weatherYear"] !== undefined) {
+      setErrors({});
+    }
+  }
+
+  function handleDraftVariableToggle(v: string) {
+    setDraft((prev) => ({
+      ...prev,
+      variables: prev.variables.includes(v as (typeof prev.variables)[number])
+        ? prev.variables.filter((x) => x !== v)
+        : ([...prev.variables, v] as typeof prev.variables),
+    }));
+  }
+
+  function handleDraftGridSizeChange(size: TCellSize) {
+    setDraft((prev) => ({ ...prev, gridSize: size }));
+  }
+
+  function handleDraftMonthToggle(month: number) {
+    setDraft((prev) => {
+      const current = prev.months === "all" ? [] : prev.months;
+      const next = current.includes(month)
+        ? current.filter((m) => m !== month)
+        : [...current, month];
+      return { ...prev, months: next.length === 0 ? "all" : next };
+    });
+  }
+
+  function handleDraftSelectAllMonths() {
+    setDraft((prev) => ({ ...prev, months: "all" }));
   }
 
   function handleApplyAndClose() {
+    setSubmitAttempted(true);
+
+    const parsedYear = parseInt(draft.weatherYearInput, 10);
+
+    const result = sidebarFiltersSchema.safeParse({
+      dataset: draft.dataset,
+      climatePeriod: draft.climatePeriod,
+      weatherYear: isNaN(parsedYear) ? draft.weatherYearInput : parsedYear,
+    });
+
+    if (!result.success) {
+      const fieldErrors: TDraftErrors = {};
+      result.error.issues.forEach((err) => {
+        const field = err.path[0];
+        if (typeof field === "string") {
+          fieldErrors[field] = t(err.message, {
+            min: WEATHER_MIN_YEAR,
+            max: WEATHER_MAX_YEAR,
+          });
+        }
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setDataset(draft.dataset);
+    setClimatePeriod(draft.climatePeriod);
+    setWeatherYear(result.data.weatherYear);
+    draft.variables.forEach((v) => {
+      if (!variables.includes(v)) toggleVariable(v);
+    });
+    variables.forEach((v) => {
+      if (!draft.variables.includes(v)) toggleVariable(v);
+    });
+    setGridSize(draft.gridSize);
+    if (draft.months === "all") {
+      selectAllMonths();
+    } else {
+      draft.months.forEach((m) => toggleMonth(m));
+    }
+
     void queryClient.invalidateQueries({ queryKey: ["climate"] });
     void queryClient.invalidateQueries({ queryKey: ["compare"] });
     void queryClient.invalidateQueries({ queryKey: ["compare-periods"] });
     void queryClient.invalidateQueries({ queryKey: ["heatmap"] });
     void queryClient.invalidateQueries({ queryKey: ["heatmap-polygon"] });
+
+    setSubmitAttempted(false);
+    setErrors({});
     onClose();
   }
 
-  const isAllActive = months === "all";
+  const isAllActive = draft.months === "all";
 
   return (
     <aside
@@ -117,7 +226,7 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
       `}
     >
       <div className="flex flex-1 flex-col overflow-y-auto p-4 space-y-6 lg:space-y-8">
-        {/* Section 1 — Dataset */}
+        {/* // * Section 1 — Dataset */}
         <div>
           <SectionLabel text={t("sidebar.sections.dataset")} />
           <div className="flex flex-wrap gap-2">
@@ -125,21 +234,21 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
               <FilterChip
                 key={ds}
                 label={t(`sidebar.datasets.${ds}`)}
-                isActive={dataset === ds}
-                onClick={() => setDataset(ds)}
+                isActive={draft.dataset === ds}
+                onClick={() => handleDraftDatasetChange(ds)}
               />
             ))}
           </div>
         </div>
 
-        {/* Section 2 — Period / Year */}
-        {dataset === DATASETS.CLIMATE && (
+        {/* // * Section 2 — Period / Year */}
+        {draft.dataset === DATASETS.CLIMATE && (
           <div>
             <SectionLabel text={t("sidebar.sections.climatePeriod")} />
             <Dropdown
               options={CLIMATE_PERIOD_OPTIONS}
-              value={climatePeriod}
-              onChange={handleClimatePeriodChange}
+              value={draft.climatePeriod}
+              onChange={handleDraftClimatePeriodChange}
               className="w-full"
             />
             <p className="mt-1.5 text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
@@ -148,55 +257,51 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
           </div>
         )}
 
-        {dataset === DATASETS.WEATHER && (
+        {draft.dataset === DATASETS.WEATHER && (
           <div>
             <SectionLabel text={t("sidebar.sections.yearRange")} />
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                min={WEATHER_MIN_YEAR}
-                max={WEATHER_MAX_YEAR}
-                value={weatherYear}
-                onChange={handleWeatherYearChange}
-                onBlur={handleWeatherYearBlur}
-                className="w-24 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-[length:var(--font-sm)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-              />
-              <span className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
-                {WEATHER_MIN_YEAR}–{WEATHER_MAX_YEAR}
-              </span>
-            </div>
+            <PeriodSelectRow
+              label={t("sidebar.sections.yearRange")}
+              hideDot={true}
+              value={draft.weatherYearInput}
+              onChange={handleDraftYearInputChange}
+              error={errors["weatherYear"]}
+              hint={`${WEATHER_MIN_YEAR}–${WEATHER_MAX_YEAR}`}
+            />
             <p className="mt-1.5 text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
               {t("sidebar.notes.weatherData")}
             </p>
           </div>
         )}
 
-        {/* Section 3 — Variables */}
+        {/* // * Section 3 — Variables */}
         <div>
           <SectionLabel text={t("sidebar.sections.variables")} />
           <div className="flex flex-wrap gap-2">
-            {(dataset === DATASETS.WEATHER ? WEATHER_VARIABLES : CLIMATE_VARIABLES).map((v) => (
-              <FilterChip
-                key={v}
-                label={t(`sidebar.variables.${v}`)}
-                isActive={variables.includes(v)}
-                onClick={() => toggleVariable(v)}
-              />
-            ))}
+            {(draft.dataset === DATASETS.WEATHER ? WEATHER_VARIABLES : CLIMATE_VARIABLES).map(
+              (v) => (
+                <FilterChip
+                  key={v}
+                  label={t(`sidebar.variables.${v}`)}
+                  isActive={draft.variables.includes(v)}
+                  onClick={() => handleDraftVariableToggle(v)}
+                />
+              ),
+            )}
           </div>
-          {dataset === DATASETS.WEATHER && (
+          {draft.dataset === DATASETS.WEATHER && (
             <p className="mt-1.5 text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
               {t("sidebar.notes.weatherVariables")}
             </p>
           )}
         </div>
 
-        {/* Section 4 — Grid resolution */}
+        {/* // * Section 4 — Grid resolution */}
         <div>
           <CellSizeSelector
-            activeSize={gridSize}
+            activeSize={draft.gridSize}
             options={cellSizeOptions}
-            onSelect={setGridSize}
+            onSelect={handleDraftGridSizeChange}
           />
           {isHeatmapPage && cellStatus !== null && cellCount !== null && (
             <div className="mt-2 flex flex-col gap-1">
@@ -215,24 +320,24 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
           )}
         </div>
 
-        {/* Section 5 — Months */}
+        {/* // * Section 5 — Months */}
         <div>
           <SectionLabel text={t("sidebar.sections.months")} />
           <div className="flex flex-wrap gap-2">
             <FilterChip
               label={t("sidebar.months.all")}
               isActive={isAllActive}
-              onClick={selectAllMonths}
+              onClick={handleDraftSelectAllMonths}
             />
             {Array.from({ length: 12 }, (_, i) => {
               const monthNum = i + 1;
-              const isActive = !isAllActive && months.includes(monthNum);
+              const isActive = !isAllActive && (draft.months as number[]).includes(monthNum);
               return (
                 <FilterChip
                   key={monthNum}
                   label={t(`months.${monthNum}`)}
                   isActive={isActive}
-                  onClick={() => toggleMonth(monthNum)}
+                  onClick={() => handleDraftMonthToggle(monthNum)}
                 />
               );
             })}

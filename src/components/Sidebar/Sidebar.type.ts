@@ -1,3 +1,4 @@
+import type { TClimatePeriod } from "@/constants";
 import { DATASETS } from "@/constants";
 import type { TCellSize, TDataset, TMonthFilter, TVariable } from "@/types";
 import type { TCellSizeOption } from "@/types/ui/cell-size";
@@ -5,6 +6,16 @@ import type { TCellSizeOption } from "@/types/ui/cell-size";
 export type TSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
+};
+
+export type TDraftFilters = {
+  dataset: TDataset;
+  climatePeriod: TClimatePeriod;
+  weatherYear: number;
+  weatherYearInput: string;
+  variables: TVariable[];
+  gridSize: TCellSize;
+  months: TMonthFilter;
 };
 
 export type TSidebarFilters = {
@@ -43,3 +54,5 @@ export type TSidebarFiltersState = {
   cellSizeOptions: readonly TCellSizeOption[];
   handleApply: () => void;
 };
+
+export type TDraftErrors = Record<string, string>;
