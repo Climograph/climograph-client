@@ -133,6 +133,18 @@
   "filters": {
     "period": "Período"
   },
+  "validation": {
+    "year": {
+      "required": "El año es obligatorio",
+      "invalid": "Ingresa un número válido",
+      "integer": "El año debe ser un número entero",
+      "tooSmall": "El año debe ser al menos {{min}}",
+      "tooBig": "El año no puede superar {{max}}"
+    },
+    "period": {
+      "invalid": "Selecciona un período climático válido"
+    }
+  },
   "exportMenu": {
     "button": "Exportar",
     "png": "Imagen PNG",
