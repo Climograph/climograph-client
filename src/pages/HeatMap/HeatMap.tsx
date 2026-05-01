@@ -15,7 +15,7 @@ export function HeatMap() {
   const [polygon, setPolygon] = useState<TPolygon | null>(null);
   const [mapTarget, setMapTarget] = useState<TMapTarget | null>(null);
 
-  const { dataset, weatherYear, gridSize: grid, variables } = useFiltersStore();
+  const { dataset, climatePeriod, weatherYear, gridSize: grid, variables } = useFiltersStore();
   const isClimate = dataset === DATASETS.CLIMATE;
   const year = isClimate ? undefined : weatherYear;
   const activeVariable = variables[0] ?? "tmax";
@@ -42,14 +42,14 @@ export function HeatMap() {
     avg: bboxAvg,
     isLoading: bboxLoading,
     error: bboxError,
-  } = useGetHeatmapData(polygon ? null : bbox, grid, activeVariable, isClimate, year);
+  } = useGetHeatmapData(polygon ? null : bbox, grid, activeVariable, isClimate, climatePeriod, year);
 
   const {
     pixels: polyPixels,
     avg: polyAvg,
     isLoading: polyLoading,
     error: polyError,
-  } = useGetHeatmapPolygonData(wkt, grid, activeVariable, isClimate, year);
+  } = useGetHeatmapPolygonData(wkt, grid, activeVariable, isClimate, climatePeriod, year);
 
   const pixels = polygon ? polyPixels : bboxPixels;
   const avg = polygon ? polyAvg : bboxAvg;
