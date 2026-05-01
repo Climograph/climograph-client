@@ -1,20 +1,17 @@
-import { CLIMATE_START, DATASETS } from "@/constants";
 import { useGetCompareData, usePersistedComparisonCities } from "@/hooks";
 import { useFiltersStore } from "@/stores";
 import { CompareCitiesView } from "./CompareCitiesView";
 
 export function CompareCities() {
   const { cityA, cityB, selectCityA, selectCityB } = usePersistedComparisonCities();
-  const { dataset, periodStart: storePeriodStart, gridSize } = useFiltersStore();
-  const isClimate = dataset === DATASETS.CLIMATE;
-  const effectivePeriodStart = isClimate ? CLIMATE_START : storePeriodStart;
+  const { gridSize } = useFiltersStore();
 
   const {
     cityA: dataA,
     cityB: dataB,
     isLoading,
     error,
-  } = useGetCompareData(cityA.lat, cityA.lng, cityB.lat, cityB.lng, gridSize, effectivePeriodStart);
+  } = useGetCompareData(cityA.lat, cityA.lng, cityB.lat, cityB.lng, gridSize);
 
   return (
     <CompareCitiesView
