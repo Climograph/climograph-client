@@ -1,7 +1,6 @@
-# 🌍 Climatica – Global Climate Explorer
-
-<div align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNDRhcDMxcjdodnJlNzF4d3A0aHRvNGFkOGlrdW1pd2ExaGdnbDZiayZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o85xCVo1diTHyIoPC/giphy.gif" alt="Global Climate" width="300" />
+<div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+  <img src="./src/assets/climatica-logo.svg" alt="Climatica Logo" width="50" style="flex-shrink: 0;" />
+  <h1 style="margin: 0; padding: 0; line-height: 1.2;">Climatica – Global Climate Explorer</h1>
 </div>
 
 **Climatica** is an interactive web application that allows you to explore, analyze, and compare climate data from around the world. Whether you're a student studying climate patterns, a researcher analyzing weather trends, or simply curious about climate statistics in different regions, Climatica provides powerful tools to visualize and understand global climate data.
@@ -11,8 +10,6 @@
 - [Features](#-features)
 - [Installation for Regular Users](#-installation-for-regular-users)
 - [Installation for Developers](#-installation-for-developers)
-- [Supported Languages](#-supported-languages)
-- [System Requirements](#-system-requirements)
 - [License](#-license)
 
 ---
@@ -374,16 +371,6 @@ In VS Code: Ctrl+Shift+P → "TypeScript: Restart TS Server"
 
 **Browser cache issues**  
 Hard refresh: Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac)
-
----
-
-## Supported Languages
-
-The application supports three languages. Switch using the language selector in the top-right corner:
-
-- English
-- Spanish (Español)
-- Ukrainian (Українська)
 
 ---
 

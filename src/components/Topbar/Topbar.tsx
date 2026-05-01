@@ -6,21 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, useLocation } from "react-router-dom";
 import { FilterIcon, MoonIcon, SunIcon } from "../svg";
+import ClimaticaLogo from "../svg/logos/ClimaticaLogo";
 import type { TTopbarProps } from "./Topbar.type";
-
-function ClimaticaLogo() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-      <circle cx="14" cy="14" r="12.5" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M2 14C4.5 8 7.5 8 10 14S15.5 20 18 14 23.5 8 26 14"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
 
 function BurgerIcon({ isOpen }: { isOpen: boolean }) {
   return (
@@ -89,8 +76,8 @@ export function Topbar({ isSidebarOpen, onToggleSidebar }: TTopbarProps) {
       <div className="flex h-full items-center px-4">
         {/* Logo */}
         <div className="flex flex-1 items-center gap-2.5 text-[var(--color-primary)]">
-          <ClimaticaLogo />
-          <span className="text-[length:var(--font-base)] font-semibold tracking-wide">
+          <ClimaticaLogo className="h-8 w-8 md:h-9 md:w-9 lg:h-10 lg:w-10 shrink-0" />
+          <span className="text-[length:var(--font-sm)] md:text-[length:var(--font-md)] lg:text-[length:var(--font-lg)] font-semibold tracking-wide leading-none">
             {GLOBAL_CONFIG.appName}
           </span>
         </div>
