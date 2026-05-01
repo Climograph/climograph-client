@@ -3,14 +3,7 @@ export const DATASETS = {
   WEATHER: "weather",
 } as const;
 
-export const SIDEBAR_VARIABLES = ["tmax", "tmin", "prec", "tavg", "wind", "vapr"] as const;
-
-export const DEFAULT_VARIABLES: readonly string[] = ["tmax", "tmin", "prec"];
-
-export const WEATHER_YEAR_RANGE = {
-  MIN: 1951,
-  MAX: 2024,
-} as const;
+export const DEFAULT_VARIABLES = ["tmax", "tmin", "prec"] as const;
 
 export const SIDEBAR_PARAMS = {
   DATASET: "dataset",
