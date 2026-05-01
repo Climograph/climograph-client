@@ -10,6 +10,7 @@ export {
   buildDatasetParams,
   buildGridIri,
   buildMonthlyTemperatures,
+  buildMonthlyTemperaturesFromPointValues,
   buildVariableIris,
   createWorldClimAuthHeaders,
   extractCellBySize,

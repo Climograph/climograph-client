@@ -5,6 +5,7 @@ import type {
   TMonthlyTemperature,
   TWorldClimCellResponse,
   TWorldClimPixelResource,
+  TWorldClimPointValueBinding,
 } from "@/types";
 
 export function extractCellBySize(
@@ -61,7 +62,7 @@ export function buildGridIri(gridSize: TCellSize): string {
  * @param variables Array of variable names (e.g., ["tmax", "tmin", "prec"])
  * @returns Array of full variable IRI strings
  */
-export function buildVariableIris(variables: string[]): string[] {
+export function buildVariableIris(variables: readonly string[]): string[] {
   return variables.map((v) => `${WORLDCLIM_VARIABLE_BASE}${v}`);
 }
 
@@ -90,4 +91,23 @@ export function validateResponseData(response: { data: unknown }): void {
   if (!response.data) {
     throw new Error("No data returned from API");
   }
+}
+
+export function buildMonthlyTemperaturesFromPointValues(
+  bindings: TWorldClimPointValueBinding[],
+): TMonthlyTemperature[] {
+  const vals = new Map<string, number>();
+  for (const b of bindings) {
+    const varParts = b.var.value.split("Variable_");
+    const varName = varParts[varParts.length - 1] ?? "";
+    const monthNum = parseInt(b.month.value.replace("--", ""), 10);
+    vals.set(`${varName}_${monthNum}`, Number(b.value.value));
+  }
+  return Array.from({ length: 12 }, (_, i) => ({
+    month: i + 1,
+    monthName: MONTH_NAMES[i],
+    tmin: vals.get(`tmin_${i + 1}`) ?? 0,
+    tmax: vals.get(`tmax_${i + 1}`) ?? 0,
+    prec: vals.get(`prec_${i + 1}`) ?? 0,
+  }));
 }
