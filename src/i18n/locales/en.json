@@ -156,7 +156,8 @@
   "sidebar": {
     "sections": {
       "dataset": "Dataset",
-      "yearRange": "Year range",
+      "climatePeriod": "Climate period",
+      "yearRange": "Year",
       "variables": "Variables",
       "months": "Month"
     },
@@ -169,6 +170,7 @@
       "tmin": "Min temp",
       "prec": "Precip",
       "tavg": "Avg temp",
+      "srad": "Solar rad",
       "wind": "Wind",
       "vapr": "Vapor"
     },
@@ -186,6 +188,11 @@
       "slow": "Slow",
       "tooMany": "Too many cells",
       "tooManyError": "Reduce area or resolution to apply"
+    },
+    "notes": {
+      "climateNormals": "30-year climate normals",
+      "weatherData": "Annual weather data (CRU-TS-4.09)",
+      "weatherVariables": "Weather data only includes temperature and precipitation"
     }
   }
 }

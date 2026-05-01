@@ -156,7 +156,8 @@
   "sidebar": {
     "sections": {
       "dataset": "Dataset",
-      "yearRange": "Rango de años",
+      "climatePeriod": "Período climático",
+      "yearRange": "Año",
       "variables": "Variables",
       "months": "Mes"
     },
@@ -169,6 +170,7 @@
       "tmin": "Temp. mín",
       "prec": "Precip",
       "tavg": "Temp. med",
+      "srad": "Rad. solar",
       "wind": "Viento",
       "vapr": "Vapor"
     },
@@ -186,6 +188,11 @@
       "slow": "Lento",
       "tooMany": "Demasiadas celdas",
       "tooManyError": "Reduce el área o la resolución para aplicar"
+    },
+    "notes": {
+      "climateNormals": "Normales climáticas de 30 años",
+      "weatherData": "Datos meteorológicos anuales (CRU-TS-4.09)",
+      "weatherVariables": "Los datos meteorológicos solo incluyen temperatura y precipitación"
     }
   }
 }
