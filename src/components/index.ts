@@ -4,6 +4,7 @@ export { FiltersTab } from "./FiltersTab";
 export { LanguageSwitcher } from "./LanguageSwitcher";
 export { LeafletMap } from "./LeafletMap";
 export { Navbar } from "./Navbar";
+export { PeriodSelectRow } from "./PeriodSelectRow";
 export { PeriodSlider } from "./PeriodSlider";
 export { SearchBar } from "./SearchBar";
 export { MiniMap } from "./shared/MiniMap";

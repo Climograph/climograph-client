@@ -1,8 +1,9 @@
 export type TPeriodSelectRowProps = {
   label: string;
-  dotColor: string;
-  value: number;
-  onChange: (year: number) => void;
-  onApply?: (year: number) => void;
-  showApplyButton?: boolean;
+  value: string;
+  onChange: (value: string) => void;
+  error?: string;
+  hint?: string;
+  hideDot?: boolean;
+  dotColor?: string;
 };
