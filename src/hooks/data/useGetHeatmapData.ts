@@ -1,4 +1,5 @@
 import { WorldClimService } from "@/api/services/worldClimService";
+import type { TClimatePeriod } from "@/constants";
 import type { TCellSize, TVariable } from "@/types";
 import type { TWorldClimAvgBoxResponse, TWorldClimBoxResponse } from "@/types/api/worldclim.dto";
 import { useQuery } from "@tanstack/react-query";
@@ -20,6 +21,7 @@ export function useGetHeatmapData(
   gridSize: TCellSize,
   variable: TVariable,
   isClimate: boolean,
+  climatePeriod: TClimatePeriod,
   year?: number,
 ) {
   const enabled = bbox !== null;
@@ -33,13 +35,24 @@ export function useGetHeatmapData(
       bbox?.east,
       gridSize,
       variable,
-      isClimate,
-      year,
+      isClimate ? climatePeriod : year,
     ],
     queryFn: async (): Promise<THeatmapResult> => {
       const { north, south, west, east } = bbox!;
       const variables = [`${variable}`];
-      const [pixels, avg] = await Promise.all([
+
+      console.warn("[useGetHeatmapData] Request params:", {
+        id: "pixelvaluesinbox / avgpixelvaluesinbox",
+        north,
+        south,
+        west,
+        east,
+        grid: gridSize,
+        var: variable,
+        ...(isClimate ? { isClimate: true, climatePeriod } : { isWeather: true, year }),
+      });
+
+      const [rawPixels, avg] = await Promise.all([
         WorldClimService.getPixelValuesInBox(
           north,
           south,
@@ -61,6 +74,23 @@ export function useGetHeatmapData(
           isClimate ? undefined : year,
         ),
       ]);
+
+      console.warn("[useGetHeatmapData] Bindings received:", rawPixels.results.bindings.length);
+
+      let filteredBindings = rawPixels.results.bindings;
+      if (isClimate) {
+        filteredBindings = rawPixels.results.bindings.filter((b) =>
+          b.pixel?.value.includes(climatePeriod),
+        );
+        console.warn(
+          `[useGetHeatmapData] Bindings after '${climatePeriod}' filter:`,
+          filteredBindings.length,
+        );
+      }
+
+      console.warn("[useGetHeatmapData] First 3 bindings:", filteredBindings.slice(0, 3));
+
+      const pixels: TWorldClimBoxResponse = { results: { bindings: filteredBindings } };
       return { pixels, avg };
     },
     enabled,
