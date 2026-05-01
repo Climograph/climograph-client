@@ -22,6 +22,41 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.leaflet-container {
+  z-index: 0;
+}
+
+.period-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-primary);
+  outline: 3px solid var(--color-primary-muted);
+  outline-offset: 0px;
+  cursor: grab;
+}
+.period-slider:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  background: var(--color-primary);
+}
+.period-slider:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--color-primary-muted);
+}
+.period-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-subtle);
+  cursor: grab;
+}
+.period-slider:active::-moz-range-thumb {
+  background: var(--color-primary);
+}
+
 :root {
   /* * Fonts */
   --font-sans: "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
@@ -35,9 +70,17 @@ body {
   --font-2xl: 36px;
 
   /* * Colors */
-  --color-primary: #4f46e5;
-  --color-secondary: #6366f1;
+  --color-primary: #1d9e75;
+  --color-primary-muted: rgba(29, 158, 117, 0.2);
+  --color-primary-subtle: rgba(29, 158, 117, 0.15);
+  --color-secondary: #5dcaa5;
+  --color-light: #9fe1cb;
+  --color-dark: #0f6e56;
   --color-accent: #f59e0b;
+
+  --color-chip-active-bg: #e1f5ee;
+  --color-chip-active-text: #0f6e56;
+  --color-chip-active-border: #5dcaa5;
 
   --color-bg: #ffffff;
   --color-bg-secondary: #f9fafb;
@@ -69,4 +112,43 @@ body {
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+
+  /* * Charts */
+  --chart-arid: #fcd34d;
+  --chart-humid: #93c5fd;
+
+  --chart-temp-max: #ef4444;
+  --chart-temp-min: #3b82f6;
+  --chart-temp-avg: #f97316;
+
+  --chart-compare-a-max: #1d9e75;
+  --chart-compare-a-min: #5dcaa5;
+  --chart-compare-a-prec: #9fe1cb;
+
+  --chart-compare-b-max: #378add;
+  --chart-compare-b-min: #93c5fd;
+  --chart-compare-b-prec: #bfdbfe;
+}
+
+html.dark {
+  --color-bg: #111827;
+  --color-bg-secondary: #1f2937;
+  --color-text: #f9fafb;
+  --color-text-secondary: #9ca3af;
+  --color-text-strong: #e5e7eb;
+  --color-border: #374151;
+
+  --color-chip-active-bg: #052e1c;
+  --color-chip-active-text: #6ee7b7;
+  --color-chip-active-border: #059669;
+
+  --color-primary-muted: rgba(29, 158, 117, 0.25);
+  --color-primary-subtle: rgba(29, 158, 117, 0.18);
+
+  --color-error-bg: #1f0a0a;
+  --color-error-border: #7f1d1d;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.6);
 }

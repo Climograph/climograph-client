@@ -1,12 +1,12 @@
 {
-  "name": "climograph-client",
+  "name": "Climatica",
+  "version": "1.0.0",
   "description": "Client part of web application to check, compare, analyze climate metrics",
   "author": {
     "name": "Andrii Kononenko [Wastardy]",
     "email": "wastardy.k@gmail.com"
   },
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -26,14 +26,20 @@
     "@nivo/radar": "^0.99.0",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-query": "^4.43.0",
+    "@types/html2canvas": "^0.5.35",
     "@types/leaflet": "^1.9.21",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.13.6",
+    "html2canvas": "^1.4.1",
+    "i18next": "^26.0.3",
     "leaflet": "^1.9.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-i18next": "^17.0.2",
+    "react-is": "^19.2.4",
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^7.13.1",
+    "recharts": "^3.8.1",
     "tailwindcss": "^4.2.1",
     "zod": "^4.3.6",
     "zustand": "^5.0.11"

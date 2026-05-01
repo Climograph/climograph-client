@@ -1,0 +1,210 @@
+{
+  "topbar": {
+    "toggleFilters": "Alternar filtros",
+    "toggleTheme": "Cambiar tema"
+  },
+  "navbar": {
+    "toggleMenu": "Abrir o cerrar menu",
+    "links": {
+      "climateStatistics": "Clima de Ciudad",
+      "climateComparison": "Comparar Ciudades",
+      "compareCities": "Comparar Ciudades",
+      "comparePeriods": "Comparar Períodos",
+      "heatMap": "Mapa de Calor Regional"
+    }
+  },
+  "search": {
+    "placeholder": "Buscar ciudad o introducir coordenadas (lat, lng)...",
+    "coordsResult": "Ir a las coordenadas"
+  },
+  "climateStatistics": {
+    "title": "Estadisticas Climaticas",
+    "subtitle": "Busca una ciudad para explorar sus datos climaticos",
+    "cellResolution": "Resolucion de celda:",
+    "filtersTab": "Filtros",
+    "useMyLocation": "Usar mi ubicación",
+    "locating": "Localizando...",
+    "stats": {
+      "avgTmax": "Temp. máx promedio",
+      "avgTmin": "Temp. mín promedio",
+      "tmax": "Temp. máx",
+      "tmin": "Temp. mín",
+      "totalPrec": "Precipitación total",
+      "mmThisMonth": "mm este mes",
+      "resolution": "Resolución",
+      "autoResolutionTooltip": "La resolución se establece automáticamente según el conjunto de datos seleccionado",
+      "filteredMonths": "Filtrado: {{months}}"
+    }
+  },
+  "compareCities": {
+    "title": "Comparar Ciudades"
+  },
+  "comparePeriods": {
+    "title": "Comparar Períodos"
+  },
+  "climateComparison": {
+    "title": "Comparacion Climatica",
+    "modeCities": "Comparar ciudades",
+    "modePeriods": "Comparar períodos",
+    "searchA": "Ciudad A",
+    "searchB": "Ciudad B",
+    "searchCity": "Ciudad",
+    "periodA": "Período A",
+    "periodB": "Período B",
+    "noData": "Selecciona dos ciudades para comparar sus datos climaticos",
+    "noDataPeriods": "Selecciona una ciudad y dos períodos de tiempo para comparar datos climáticos",
+    "stats": {
+      "avgTmax": "Temp. máx promedio",
+      "avgTmin": "Temp. mín promedio",
+      "totalPrec": "Precipitación total"
+    },
+    "diff": {
+      "warmerCity": "Ciudad más cálida",
+      "moreRain": "Más lluvias",
+      "hottestMonth": "Mes más caluroso",
+      "coldestMonth": "Mes más frío",
+      "byDegrees": "por {{value}}°C",
+      "byMm": "por {{value}} mm",
+      "tie": "Empate"
+    },
+    "autoResolution": "Resolución automática: {{resolution}}",
+    "wlCompare": {
+      "warmerBy": "{{label}} más cálido por {{value}}°C",
+      "coolerBy": "{{label}} más frío por {{value}}°C",
+      "sameTemp": "Temperatura promedio igual",
+      "moreArid": "{{label}} tiene {{value}} mes(es) árido(s) más",
+      "fewerArid": "{{label}} tiene {{value}} mes(es) árido(s) menos",
+      "sameArid": "Mismos meses áridos"
+    }
+  },
+  "heatMap": {
+    "title": "Mapa de Calor Regional",
+    "placeholder": "Marcador de posicion de mapa de calor. Mas adelante podremos mostrar la intensidad climatica en un mapa mundial aqui.",
+    "drawBbox": "Dibujar caja delimitadora",
+    "drawPolygon": "Dibujar polígono",
+    "clearSelection": "Limpiar selección",
+    "drawing": "Haz clic y arrastra en el mapa para seleccionar una región",
+    "drawingPolygon": "Haz clic para añadir vértices — haz clic en el primer punto para cerrar el polígono",
+    "noSelection": "Dibuja una caja o polígono en el mapa para analizar datos climáticos de esa región",
+    "noData": "No hay datos disponibles para esta región",
+    "stats": {
+      "minValue": "Mín",
+      "maxValue": "Máx",
+      "avgValue": "Promedio",
+      "cellsAnalyzed": "Celdas"
+    }
+  },
+  "chart": {
+    "title": "Temperatura",
+    "monthAxis": "Mes",
+    "temperatureAxis": "Temperatura (grados C)",
+    "precipitation": "Precipitacion",
+    "maxTemperature": "Temperatura Maxima",
+    "minTemperature": "Temperatura Minima",
+    "avgTemperature": "Temperatura Media",
+    "meanTemp": "Temp. media",
+    "annualPrec": "Precip. anual",
+    "aridMonths": "Meses áridos",
+    "aridPeriod": "Período árido",
+    "humidPeriod": "Período húmedo",
+    "modeStandard": "Gráfico estándar",
+    "modeWalterLieth": "Diagrama Walter-Lieth",
+    "selectedMonth": "valores de {{month}}"
+  },
+  "loading": {
+    "fetchingClimateData": "Obteniendo datos climaticos...",
+    "updating": "Actualizando..."
+  },
+  "errors": {
+    "fetchClimateData": "No se pudieron obtener los datos climaticos",
+    "geolocationDenied": "Acceso a ubicación denegado. Permite la ubicación en tu navegador.",
+    "geolocationUnavailable": "No se pudo determinar tu ubicación."
+  },
+  "map": {
+    "selectedFromMap": "Seleccionado desde el mapa",
+    "pointLabel": "Punto del mapa {{lat}}, {{lng}}"
+  },
+  "cellSizes": {
+    "10m": "10 min (~324 km2)",
+    "5m": "5 min (~81 km2)",
+    "2.5m": "2.5 min (~20.25 km2)",
+    "30s": "30 seg (~1 km2)"
+  },
+  "filters": {
+    "period": "Período"
+  },
+  "validation": {
+    "year": {
+      "required": "El año es obligatorio",
+      "invalid": "Ingresa un número válido",
+      "integer": "El año debe ser un número entero",
+      "tooSmall": "El año debe ser al menos {{min}}",
+      "tooBig": "El año no puede superar {{max}}"
+    },
+    "period": {
+      "invalid": "Selecciona un período climático válido"
+    }
+  },
+  "exportMenu": {
+    "button": "Exportar",
+    "png": "Imagen PNG",
+    "svg": "Vector SVG",
+    "csv": "Datos CSV"
+  },
+  "months": {
+    "1": "Ene",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Abr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Ago",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dic"
+  },
+  "sidebar": {
+    "sections": {
+      "dataset": "Dataset",
+      "climatePeriod": "Período climático",
+      "yearRange": "Año",
+      "variables": "Variables",
+      "months": "Mes"
+    },
+    "datasets": {
+      "climate": "Clima 1970–2000",
+      "weather": "Tiempo 1951–2024"
+    },
+    "variables": {
+      "tmax": "Temp. máx",
+      "tmin": "Temp. mín",
+      "prec": "Precip",
+      "tavg": "Temp. med",
+      "srad": "Rad. solar",
+      "wind": "Viento",
+      "vapr": "Vapor"
+    },
+    "months": {
+      "all": "Todos"
+    },
+    "yearRange": {
+      "from": "Desde",
+      "to": "Hasta"
+    },
+    "applyFilters": "Aplicar filtros",
+    "cellCount": {
+      "fast": "Rápido",
+      "moderate": "Moderado",
+      "slow": "Lento",
+      "tooMany": "Demasiadas celdas",
+      "tooManyError": "Reduce el área o la resolución para aplicar"
+    },
+    "notes": {
+      "climateNormals": "Normales climáticas de 30 años",
+      "weatherData": "Datos meteorológicos anuales (CRU-TS-4.09)",
+      "weatherVariables": "Los datos meteorológicos solo incluyen temperatura y precipitación"
+    }
+  }
+}

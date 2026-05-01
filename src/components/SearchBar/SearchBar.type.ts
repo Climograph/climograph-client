@@ -1,4 +1,4 @@
-import type { TWikidataCity } from "@/types/domain/location";
+import type { TWikidataCity } from "@/types";
 
 export type TSearchBarProps = {
   onCitySelect: (city: TWikidataCity) => void;

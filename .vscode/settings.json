@@ -10,18 +10,23 @@
   "cSpell.words": [
     "Andrii",
     "axios",
+    "Climatica",
     "climograph",
     "Kononenko",
     "navlink",
     "nivo",
     "PREC",
+    "Precip",
     "react-icons",
     "react-query",
     "react-router-dom",
     "Sparql",
+    "tavg",
     "tmax",
     "tmin",
+    "Topbar",
     "VITE",
-    "WORLDCLIM"
+    "WORLDCLIM",
+    "Клімограф"
   ]
 }

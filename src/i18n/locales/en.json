@@ -1,0 +1,210 @@
+{
+  "topbar": {
+    "toggleFilters": "Toggle filters",
+    "toggleTheme": "Toggle theme"
+  },
+  "navbar": {
+    "toggleMenu": "Toggle menu",
+    "links": {
+      "climateStatistics": "City Climate",
+      "climateComparison": "Compare Cities",
+      "compareCities": "Compare Cities",
+      "comparePeriods": "Compare Periods",
+      "heatMap": "Region Heatmap"
+    }
+  },
+  "search": {
+    "placeholder": "Search city or enter coordinates (lat, lng)...",
+    "coordsResult": "Go to coordinates"
+  },
+  "climateStatistics": {
+    "title": "Climate Statistics",
+    "subtitle": "Search for a city to explore its climate data",
+    "cellResolution": "Cell resolution:",
+    "filtersTab": "Filters",
+    "useMyLocation": "Use my location",
+    "locating": "Locating...",
+    "stats": {
+      "avgTmax": "Avg max temp",
+      "avgTmin": "Avg min temp",
+      "tmax": "Max temp",
+      "tmin": "Min temp",
+      "totalPrec": "Total precip",
+      "mmThisMonth": "mm this month",
+      "resolution": "Resolution",
+      "autoResolutionTooltip": "Resolution is automatically set based on selected dataset",
+      "filteredMonths": "Filtered: {{months}}"
+    }
+  },
+  "compareCities": {
+    "title": "Compare Cities"
+  },
+  "comparePeriods": {
+    "title": "Compare Periods"
+  },
+  "climateComparison": {
+    "title": "Climate Comparison",
+    "modeCities": "Compare Cities",
+    "modePeriods": "Compare Periods",
+    "searchA": "City A",
+    "searchB": "City B",
+    "searchCity": "City",
+    "periodA": "Period A",
+    "periodB": "Period B",
+    "noData": "Select two cities above to compare their climate data",
+    "noDataPeriods": "Select a city and two time periods to compare climate data",
+    "stats": {
+      "avgTmax": "Avg max temp",
+      "avgTmin": "Avg min temp",
+      "totalPrec": "Total precip"
+    },
+    "diff": {
+      "warmerCity": "Warmer city",
+      "moreRain": "More rainfall",
+      "hottestMonth": "Hottest month",
+      "coldestMonth": "Coldest month",
+      "byDegrees": "by {{value}}°C",
+      "byMm": "by {{value}} mm",
+      "tie": "Tie"
+    },
+    "autoResolution": "Auto resolution: {{resolution}}",
+    "wlCompare": {
+      "warmerBy": "{{label}} warmer by {{value}}°C",
+      "coolerBy": "{{label}} cooler by {{value}}°C",
+      "sameTemp": "Same avg temperature",
+      "moreArid": "{{label}} has {{value}} more arid month(s)",
+      "fewerArid": "{{label}} has {{value}} fewer arid month(s)",
+      "sameArid": "Same arid months"
+    }
+  },
+  "heatMap": {
+    "title": "Region Heatmap",
+    "placeholder": "Heat map page placeholder. We can later render climate intensity on a world map here.",
+    "drawBbox": "Draw bounding box",
+    "drawPolygon": "Draw polygon",
+    "clearSelection": "Clear selection",
+    "drawing": "Click and drag on the map to select a region",
+    "drawingPolygon": "Click to add vertices — click the first point to close the polygon",
+    "noSelection": "Draw a bounding box or polygon on the map to analyze climate data for that region",
+    "noData": "No data available for this region",
+    "stats": {
+      "minValue": "Min",
+      "maxValue": "Max",
+      "avgValue": "Average",
+      "cellsAnalyzed": "Cells"
+    }
+  },
+  "chart": {
+    "title": "Temperature",
+    "monthAxis": "Month",
+    "temperatureAxis": "Temperature (deg C)",
+    "precipitation": "Precipitation",
+    "maxTemperature": "Max Temperature",
+    "minTemperature": "Min Temperature",
+    "avgTemperature": "Avg Temperature",
+    "meanTemp": "Mean temp",
+    "annualPrec": "Annual precip",
+    "aridMonths": "Arid months",
+    "aridPeriod": "Arid period",
+    "humidPeriod": "Humid period",
+    "modeStandard": "Standard chart",
+    "modeWalterLieth": "Walter-Lieth diagram",
+    "selectedMonth": "{{month}} values"
+  },
+  "loading": {
+    "fetchingClimateData": "Fetching climate data...",
+    "updating": "Updating..."
+  },
+  "errors": {
+    "fetchClimateData": "Failed to fetch climate data",
+    "geolocationDenied": "Location access denied. Please allow location in your browser.",
+    "geolocationUnavailable": "Unable to determine your location."
+  },
+  "map": {
+    "selectedFromMap": "Selected from map",
+    "pointLabel": "Map point {{lat}}, {{lng}}"
+  },
+  "cellSizes": {
+    "10m": "10 min (~324 km2)",
+    "5m": "5 min (~81 km2)",
+    "2.5m": "2.5 min (~20.25 km2)",
+    "30s": "30 sec (~1 km2)"
+  },
+  "filters": {
+    "period": "Period"
+  },
+  "validation": {
+    "year": {
+      "required": "Year is required",
+      "invalid": "Enter a valid number",
+      "integer": "Year must be a whole number",
+      "tooSmall": "Year must be at least {{min}}",
+      "tooBig": "Year cannot exceed {{max}}"
+    },
+    "period": {
+      "invalid": "Select a valid climate period"
+    }
+  },
+  "exportMenu": {
+    "button": "Export data",
+    "png": "PNG image",
+    "svg": "SVG vector",
+    "csv": "CSV data"
+  },
+  "months": {
+    "1": "Jan",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Apr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Aug",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec"
+  },
+  "sidebar": {
+    "sections": {
+      "dataset": "Dataset",
+      "climatePeriod": "Climate period",
+      "yearRange": "Year",
+      "variables": "Variables",
+      "months": "Month"
+    },
+    "datasets": {
+      "climate": "Climate 1970–2000",
+      "weather": "Weather 1951–2024"
+    },
+    "variables": {
+      "tmax": "Max temp",
+      "tmin": "Min temp",
+      "prec": "Precip",
+      "tavg": "Avg temp",
+      "srad": "Solar rad",
+      "wind": "Wind",
+      "vapr": "Vapor"
+    },
+    "months": {
+      "all": "All"
+    },
+    "yearRange": {
+      "from": "From",
+      "to": "To"
+    },
+    "applyFilters": "Apply filters",
+    "cellCount": {
+      "fast": "Fast",
+      "moderate": "Moderate",
+      "slow": "Slow",
+      "tooMany": "Too many cells",
+      "tooManyError": "Reduce area or resolution to apply"
+    },
+    "notes": {
+      "climateNormals": "30-year climate normals",
+      "weatherData": "Annual weather data (CRU-TS-4.09)",
+      "weatherVariables": "Weather data only includes temperature and precipitation"
+    }
+  }
+}

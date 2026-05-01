@@ -1,29 +1,21 @@
-import { TCellSizeSelectorProps } from "./CellSizeSelector.type";
-import { getButtonClasses } from "./CellSizeSelector.util";
+import { Dropdown } from "@/components/UI";
+import { useTranslation } from "react-i18next";
+import type { TCellSizeSelectorProps } from "./CellSizeSelector.type";
 
 export function CellSizeSelector({ activeSize, options, onSelect }: TCellSizeSelectorProps) {
-  return (
-    <div className={`flex items-center gap-2 md:gap-4 flex-wrap`}>
-      <span
-        className={`
-          text-[length:var(--font-md)] text-[var(--color-text-strong)] 
-          whitespace-nowrap
-        `}
-      >
-        Cell resolution:
-      </span>
+  const { t } = useTranslation();
 
-      <div className={`flex gap-3`}>
-        {options.map((option) => (
-          <button
-            key={option.value}
-            onClick={() => onSelect(option.value)}
-            className={getButtonClasses(activeSize, option.value)}
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
+  return (
+    <div className="flex flex-col gap-1.5">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
+        {t("climateStatistics.cellResolution")}
+      </p>
+      <Dropdown
+        options={options.map((o) => ({ value: o.value, label: o.label }))}
+        value={activeSize}
+        onChange={(v) => onSelect(v as typeof activeSize)}
+        className="w-full"
+      />
     </div>
   );
 }

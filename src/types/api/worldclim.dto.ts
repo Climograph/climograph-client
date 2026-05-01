@@ -71,3 +71,66 @@ export interface TWorldClimPixelResource {
   valueMonth11: number;
   valueMonth12: number;
 }
+
+export type TWorldClimBoxBinding = {
+  pixel: TSparqlUriValue;
+  lat: TSparqlValue;
+  lng: TSparqlValue;
+  variable: TSparqlUriValue;
+  valueMonth01: TSparqlValue;
+  valueMonth02: TSparqlValue;
+  valueMonth03: TSparqlValue;
+  valueMonth04: TSparqlValue;
+  valueMonth05: TSparqlValue;
+  valueMonth06: TSparqlValue;
+  valueMonth07: TSparqlValue;
+  valueMonth08: TSparqlValue;
+  valueMonth09: TSparqlValue;
+  valueMonth10: TSparqlValue;
+  valueMonth11: TSparqlValue;
+  valueMonth12: TSparqlValue;
+};
+
+export type TWorldClimBoxResponse = {
+  results: {
+    bindings: TWorldClimBoxBinding[];
+  };
+};
+
+export type TWorldClimAvgBoxBinding = {
+  variable: TSparqlUriValue;
+  valueMonth01: TSparqlValue;
+  valueMonth02: TSparqlValue;
+  valueMonth03: TSparqlValue;
+  valueMonth04: TSparqlValue;
+  valueMonth05: TSparqlValue;
+  valueMonth06: TSparqlValue;
+  valueMonth07: TSparqlValue;
+  valueMonth08: TSparqlValue;
+  valueMonth09: TSparqlValue;
+  valueMonth10: TSparqlValue;
+  valueMonth11: TSparqlValue;
+  valueMonth12: TSparqlValue;
+};
+
+export type TWorldClimAvgBoxResponse = {
+  results: {
+    bindings: TWorldClimAvgBoxBinding[];
+  };
+};
+
+export type TWorldClimPointValueBinding = {
+  value: TSparqlValue;
+  month: TSparqlValue;
+  pixel: TSparqlUriValue;
+  raster: TSparqlUriValue;
+  var: TSparqlUriValue;
+  cell: TSparqlUriValue;
+  grid: TSparqlUriValue;
+};
+
+export type TWorldClimPointValueResponse = {
+  results: {
+    bindings: TWorldClimPointValueBinding[];
+  };
+};
