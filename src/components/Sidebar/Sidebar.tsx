@@ -1,16 +1,30 @@
 import { CellSizeSelector, FilterChip, SectionLabel } from "@/components";
 import { Dropdown } from "@/components/UI";
-import { DATASETS, ROUTES, SIDEBAR_PARAMS, SIDEBAR_VARIABLES } from "@/constants";
+import {
+  CLIMATE_PERIOD_LABELS,
+  CLIMATE_PERIODS,
+  CLIMATE_VARIABLES,
+  DATASETS,
+  ROUTES,
+  SIDEBAR_PARAMS,
+  WEATHER_MAX_YEAR,
+  WEATHER_MIN_YEAR,
+  WEATHER_VARIABLES,
+} from "@/constants";
 import { CELL_SIZE_OPTIONS } from "@/constants/worldclim.constant";
-import { PERIOD_WINDOW_OPTIONS } from "@/hooks";
 import { useFiltersStore } from "@/stores";
-import type { TCellSize, TVariable } from "@/types";
+import type { TCellSize } from "@/types";
 import type { TCellSizeOption } from "@/types/ui/cell-size";
 import { estimateCellCount, getCellCountStatus } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useLocation, useSearchParams } from "react-router-dom";
 import type { TSidebarProps } from "./Sidebar.type";
+
+const CLIMATE_PERIOD_OPTIONS = Object.values(CLIMATE_PERIODS).map((period) => ({
+  value: period,
+  label: CLIMATE_PERIOD_LABELS[period],
+}));
 
 export function Sidebar({ isOpen, onClose }: TSidebarProps) {
   const { t } = useTranslation();
@@ -20,13 +34,15 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
 
   const {
     dataset,
-    periodStart,
+    climatePeriod,
+    weatherYear,
     variables,
     gridSize,
     months,
     actions: {
       setDataset,
-      setPeriodStart,
+      setClimatePeriod,
+      setWeatherYear,
       toggleVariable,
       setGridSize,
       toggleMonth,
@@ -59,10 +75,23 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
     Object.keys(CELL_SIZE_OPTIONS) as TCellSize[]
   ).map((value) => ({ value, label: t(`cellSizes.${value}`) }));
 
-  const periodWindowStart = String(periodStart);
+  function handleClimatePeriodChange(value: string) {
+    const period = Object.values(CLIMATE_PERIODS).find((p) => p === value);
+    if (period !== undefined) setClimatePeriod(period);
+  }
 
-  function handlePeriodChange(value: string) {
-    setPeriodStart(Number(value));
+  function handleWeatherYearChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const n = parseInt(e.target.value, 10);
+    if (!isNaN(n)) {
+      setWeatherYear(Math.min(WEATHER_MAX_YEAR, Math.max(WEATHER_MIN_YEAR, n)));
+    }
+  }
+
+  function handleWeatherYearBlur(e: React.FocusEvent<HTMLInputElement>) {
+    const n = parseInt(e.target.value, 10);
+    setWeatherYear(
+      isNaN(n) ? WEATHER_MIN_YEAR : Math.min(WEATHER_MAX_YEAR, Math.max(WEATHER_MIN_YEAR, n)),
+    );
   }
 
   function handleApplyAndClose() {
@@ -88,6 +117,7 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
       `}
     >
       <div className="flex flex-1 flex-col overflow-y-auto p-4 space-y-6 lg:space-y-8">
+        {/* Section 1 — Dataset */}
         <div>
           <SectionLabel text={t("sidebar.sections.dataset")} />
           <div className="flex flex-wrap gap-2">
@@ -102,22 +132,50 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
           </div>
         </div>
 
-        {dataset === DATASETS.WEATHER && (
+        {/* Section 2 — Period / Year */}
+        {dataset === DATASETS.CLIMATE && (
           <div>
-            <SectionLabel text={t("sidebar.sections.yearRange")} />
+            <SectionLabel text={t("sidebar.sections.climatePeriod")} />
             <Dropdown
-              options={PERIOD_WINDOW_OPTIONS}
-              value={periodWindowStart}
-              onChange={handlePeriodChange}
+              options={CLIMATE_PERIOD_OPTIONS}
+              value={climatePeriod}
+              onChange={handleClimatePeriodChange}
               className="w-full"
             />
+            <p className="mt-1.5 text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
+              {t("sidebar.notes.climateNormals")}
+            </p>
           </div>
         )}
 
+        {dataset === DATASETS.WEATHER && (
+          <div>
+            <SectionLabel text={t("sidebar.sections.yearRange")} />
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min={WEATHER_MIN_YEAR}
+                max={WEATHER_MAX_YEAR}
+                value={weatherYear}
+                onChange={handleWeatherYearChange}
+                onBlur={handleWeatherYearBlur}
+                className="w-24 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-[length:var(--font-sm)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              />
+              <span className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
+                {WEATHER_MIN_YEAR}–{WEATHER_MAX_YEAR}
+              </span>
+            </div>
+            <p className="mt-1.5 text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
+              {t("sidebar.notes.weatherData")}
+            </p>
+          </div>
+        )}
+
+        {/* Section 3 — Variables */}
         <div>
           <SectionLabel text={t("sidebar.sections.variables")} />
           <div className="flex flex-wrap gap-2">
-            {(SIDEBAR_VARIABLES as readonly TVariable[]).map((v) => (
+            {(dataset === DATASETS.WEATHER ? WEATHER_VARIABLES : CLIMATE_VARIABLES).map((v) => (
               <FilterChip
                 key={v}
                 label={t(`sidebar.variables.${v}`)}
@@ -126,8 +184,14 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
               />
             ))}
           </div>
+          {dataset === DATASETS.WEATHER && (
+            <p className="mt-1.5 text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
+              {t("sidebar.notes.weatherVariables")}
+            </p>
+          )}
         </div>
 
+        {/* Section 4 — Grid resolution */}
         <div>
           <CellSizeSelector
             activeSize={gridSize}
@@ -151,6 +215,7 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
           )}
         </div>
 
+        {/* Section 5 — Months */}
         <div>
           <SectionLabel text={t("sidebar.sections.months")} />
           <div className="flex flex-wrap gap-2">
