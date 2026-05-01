@@ -25,9 +25,11 @@ type TFiltersState = TFiltersData & {
     setClimatePeriod: (period: TClimatePeriod) => void;
     setWeatherYear: (year: number) => void;
     toggleVariable: (v: TVariable) => void;
+    setVariables: (vars: TVariable[]) => void;
     setGridSize: (g: TCellSize) => void;
     toggleMonth: (n: number) => void;
     selectAllMonths: () => void;
+    setMonths: (months: TMonthFilter) => void;
   };
 };
 
@@ -65,6 +67,7 @@ export const useFiltersStore = create<TFiltersState>()(
               ? state.variables.filter((x) => x !== v)
               : [...state.variables, v],
           })),
+        setVariables: (variables) => set({ variables }),
         setGridSize: (gridSize) => set({ gridSize }),
         toggleMonth: (n) =>
           set((state) => {
@@ -78,6 +81,7 @@ export const useFiltersStore = create<TFiltersState>()(
             return { months: next.length === 12 ? "all" : next };
           }),
         selectAllMonths: () => set({ months: "all" }),
+        setMonths: (months) => set({ months }),
       },
     }),
     {
