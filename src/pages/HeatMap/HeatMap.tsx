@@ -42,7 +42,14 @@ export function HeatMap() {
     avg: bboxAvg,
     isLoading: bboxLoading,
     error: bboxError,
-  } = useGetHeatmapData(polygon ? null : bbox, grid, activeVariable, isClimate, climatePeriod, year);
+  } = useGetHeatmapData(
+    polygon ? null : bbox,
+    grid,
+    activeVariable,
+    isClimate,
+    climatePeriod,
+    year,
+  );
 
   const {
     pixels: polyPixels,

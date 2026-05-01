@@ -1,5 +1,11 @@
 import type { TMiniMapLocation } from "@/components";
-import { MiniMap, SearchBar, TempPrecipChart, ThreeDotsScaleLoader } from "@/components";
+import {
+  MiniMap,
+  PeriodSelectRow,
+  SearchBar,
+  TempPrecipChart,
+  ThreeDotsScaleLoader,
+} from "@/components";
 import { PageWrapper } from "@/components/UI";
 import { CELL_SIZE_OPTIONS, CLIMATE_RANGE } from "@/constants";
 import { useState } from "react";
@@ -9,7 +15,6 @@ import type {
   TClimateComparisonViewProps,
   TDiffCardProps,
   TModeToggleProps,
-  TPeriodSelectRowProps,
   TStatsGridProps,
 } from "./ClimateComparison.type";
 import {
@@ -32,41 +37,6 @@ function CitySearchRow({ label, dotColor, onCitySelect }: TCitySearchRowProps) {
         </span>
       </div>
       <SearchBar onCitySelect={onCitySelect} />
-    </div>
-  );
-}
-
-function PeriodSelectRow({ label, dotColor, value, onChange }: TPeriodSelectRowProps) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-center gap-2">
-        <span
-          className="h-3 w-3 shrink-0 rounded-full"
-          style={{ backgroundColor: dotColor }}
-          aria-hidden="true"
-        />
-        <span className="text-[length:var(--font-sm)] font-medium text-[var(--color-text-secondary)]">
-          {label}
-        </span>
-      </div>
-      <div className="flex items-center gap-3">
-        <input
-          type="number"
-          min={CLIMATE_RANGE.MIN_START}
-          max={CLIMATE_RANGE.MAX_START}
-          value={value}
-          onChange={(e) => {
-            const n = parseInt(e.target.value, 10);
-            if (!isNaN(n) && n >= CLIMATE_RANGE.MIN_START && n <= CLIMATE_RANGE.MAX_START) {
-              onChange(n);
-            }
-          }}
-          className="w-24 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-[length:var(--font-sm)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-        />
-        <span className="text-[length:var(--font-sm)] text-[var(--color-text-secondary)]">
-          {value}–{value + CLIMATE_RANGE.WINDOW}
-        </span>
-      </div>
     </div>
   );
 }
@@ -299,14 +269,20 @@ export function ClimateComparisonView({
                   <PeriodSelectRow
                     label={t("climateComparison.periodA")}
                     dotColor={CLIMATE_COMPARISON_COLORS.A.tmax}
-                    value={periodA}
-                    onChange={onPeriodAChange}
+                    value={String(periodA)}
+                    onChange={(val) => {
+                      const n = parseInt(val, 10);
+                      if (!isNaN(n)) onPeriodAChange(n);
+                    }}
                   />
                   <PeriodSelectRow
                     label={t("climateComparison.periodB")}
                     dotColor={CLIMATE_COMPARISON_COLORS.B.tmax}
-                    value={periodB}
-                    onChange={onPeriodBChange}
+                    value={String(periodB)}
+                    onChange={(val) => {
+                      const n = parseInt(val, 10);
+                      if (!isNaN(n)) onPeriodBChange(n);
+                    }}
                   />
                 </div>
               </div>
