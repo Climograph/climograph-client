@@ -1,13 +1,19 @@
-import { CLIMATE_START } from "@/constants/climate.constant";
-import { DATASETS, DEFAULT_VARIABLES } from "@/constants/sidebar.constant";
-import { CELL_SIZES } from "@/constants/worldclim.constant";
-import type { TCellSize, TDataset, TMonthFilter, TVariable } from "@/types/domain/climate";
+import type { TClimatePeriod } from "@/constants";
+import {
+  CELL_SIZES,
+  CLIMATE_PERIODS,
+  DATASETS,
+  DEFAULT_VARIABLES,
+  WEATHER_VARIABLES,
+} from "@/constants";
+import type { TCellSize, TDataset, TMonthFilter, TVariable } from "@/types/";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type TFiltersData = {
   dataset: TDataset;
-  periodStart: number;
+  climatePeriod: TClimatePeriod;
+  weatherYear: number;
   variables: TVariable[];
   gridSize: TCellSize;
   months: TMonthFilter;
@@ -16,7 +22,8 @@ type TFiltersData = {
 type TFiltersState = TFiltersData & {
   actions: {
     setDataset: (d: TDataset) => void;
-    setPeriodStart: (n: number) => void;
+    setClimatePeriod: (period: TClimatePeriod) => void;
+    setWeatherYear: (year: number) => void;
     toggleVariable: (v: TVariable) => void;
     setGridSize: (g: TCellSize) => void;
     toggleMonth: (n: number) => void;
@@ -26,8 +33,9 @@ type TFiltersState = TFiltersData & {
 
 const DEFAULT_FILTERS: TFiltersData = {
   dataset: DATASETS.CLIMATE,
-  periodStart: CLIMATE_START,
-  variables: [...DEFAULT_VARIABLES] as TVariable[],
+  climatePeriod: CLIMATE_PERIODS.C1970_2000,
+  weatherYear: 2024,
+  variables: [...DEFAULT_VARIABLES],
   gridSize: CELL_SIZES.TEN_MINUTES,
   months: "all",
 };
@@ -37,8 +45,20 @@ export const useFiltersStore = create<TFiltersState>()(
     (set) => ({
       ...DEFAULT_FILTERS,
       actions: {
-        setDataset: (dataset) => set({ dataset }),
-        setPeriodStart: (periodStart) => set({ periodStart }),
+        setDataset: (dataset) =>
+          set((state) => {
+            if (dataset === DATASETS.WEATHER) {
+              const allowed = new Set<string>(WEATHER_VARIABLES);
+              const filtered = state.variables.filter((v) => allowed.has(v));
+              return {
+                dataset,
+                variables: filtered.length > 0 ? filtered : [...DEFAULT_VARIABLES],
+              };
+            }
+            return { dataset };
+          }),
+        setClimatePeriod: (climatePeriod) => set({ climatePeriod }),
+        setWeatherYear: (weatherYear) => set({ weatherYear }),
         toggleVariable: (v) =>
           set((state) => ({
             variables: state.variables.includes(v)
@@ -64,7 +84,8 @@ export const useFiltersStore = create<TFiltersState>()(
       name: "climatica-filters",
       partialize: (state) => ({
         dataset: state.dataset,
-        periodStart: state.periodStart,
+        climatePeriod: state.climatePeriod,
+        weatherYear: state.weatherYear,
         variables: state.variables,
         gridSize: state.gridSize,
         months: state.months,
