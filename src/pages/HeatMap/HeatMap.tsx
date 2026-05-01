@@ -1,4 +1,4 @@
-import { CLIMATE_START, DATASETS, SIDEBAR_PARAMS } from "@/constants";
+import { DATASETS, SIDEBAR_PARAMS } from "@/constants";
 import { useGetHeatmapData, useGetHeatmapPolygonData } from "@/hooks";
 import type { TBbox } from "@/hooks";
 import { useFiltersStore } from "@/stores";
@@ -15,9 +15,9 @@ export function HeatMap() {
   const [polygon, setPolygon] = useState<TPolygon | null>(null);
   const [mapTarget, setMapTarget] = useState<TMapTarget | null>(null);
 
-  const { dataset, periodStart: storePeriodStart, gridSize: grid, variables } = useFiltersStore();
+  const { dataset, weatherYear, gridSize: grid, variables } = useFiltersStore();
   const isClimate = dataset === DATASETS.CLIMATE;
-  const effectivePeriodStart = isClimate ? CLIMATE_START : storePeriodStart;
+  const year = isClimate ? undefined : weatherYear;
   const activeVariable = variables[0] ?? "tmax";
 
   // Bbox from URL search params — null until user draws
@@ -42,26 +42,14 @@ export function HeatMap() {
     avg: bboxAvg,
     isLoading: bboxLoading,
     error: bboxError,
-  } = useGetHeatmapData(
-    polygon ? null : bbox,
-    grid,
-    activeVariable,
-    isClimate,
-    isClimate ? undefined : effectivePeriodStart,
-  );
+  } = useGetHeatmapData(polygon ? null : bbox, grid, activeVariable, isClimate, year);
 
   const {
     pixels: polyPixels,
     avg: polyAvg,
     isLoading: polyLoading,
     error: polyError,
-  } = useGetHeatmapPolygonData(
-    wkt,
-    grid,
-    activeVariable,
-    isClimate,
-    isClimate ? undefined : effectivePeriodStart,
-  );
+  } = useGetHeatmapPolygonData(wkt, grid, activeVariable, isClimate, year);
 
   const pixels = polygon ? polyPixels : bboxPixels;
   const avg = polygon ? polyAvg : bboxAvg;
