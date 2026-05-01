@@ -1,7 +1,9 @@
 import { WorldClimService } from "@/api";
-import { CLIMATE_START, WORLDCLIM_VARIABLES } from "@/constants";
+import { DATASETS, WEATHER_VARIABLES } from "@/constants";
+import type { TClimatePeriod } from "@/constants/worldclim.constant";
+import { useFiltersStore } from "@/stores";
 import type { TCellSize, TMonthlyTemperature } from "@/types";
-import { buildMonthlyTemperatures, extractPixelIri } from "@/utils";
+import { buildMonthlyTemperaturesFromPointValues } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 
 type TCompareData = {
@@ -21,34 +23,25 @@ export async function fetchCityData(
   lng: number,
   gridSize: TCellSize,
   isClimate: boolean,
-  periodStart: number,
+  climatePeriod: TClimatePeriod,
+  year?: number,
 ): Promise<TMonthlyTemperature[]> {
-  const pixelsResponse = await WorldClimService.getPixelsForPoint(
-    lat,
-    lng,
-    gridSize,
-    [WORLDCLIM_VARIABLES.TMIN, WORLDCLIM_VARIABLES.TMAX, WORLDCLIM_VARIABLES.PREC],
-    isClimate,
-    isClimate ? undefined : periodStart,
-  );
-
-  const iris = pixelsResponse.results.bindings.map((b) => b.pixel.value);
-
-  const tminIri = extractPixelIri(iris, WORLDCLIM_VARIABLES.TMIN);
-  const tmaxIri = extractPixelIri(iris, WORLDCLIM_VARIABLES.TMAX);
-  const precIri = extractPixelIri(iris, WORLDCLIM_VARIABLES.PREC);
-
-  if (!tminIri || !tmaxIri || !precIri) {
-    throw new Error(`No pixels found for (${lat}, ${lng}) at ${gridSize}`);
-  }
-
-  const [tminData, tmaxData, precData] = await Promise.all([
-    WorldClimService.getPixelResource(tminIri),
-    WorldClimService.getPixelResource(tmaxIri),
-    WorldClimService.getPixelResource(precIri),
-  ]);
-
-  return buildMonthlyTemperatures(tminData, tmaxData, precData);
+  const response = isClimate
+    ? await WorldClimService.getClimateDataForPoint(
+        lat,
+        lng,
+        gridSize,
+        WEATHER_VARIABLES,
+        climatePeriod,
+      )
+    : await WorldClimService.getWeatherDataForPoint(
+        lat,
+        lng,
+        gridSize,
+        WEATHER_VARIABLES,
+        year ?? new Date().getFullYear(),
+      );
+  return buildMonthlyTemperaturesFromPointValues(response.results.bindings);
 }
 
 export function useGetCompareData(
@@ -57,17 +50,27 @@ export function useGetCompareData(
   latB: number,
   lngB: number,
   gridSize: TCellSize,
-  periodStart: number,
 ): TUseGetCompareDataReturn {
-  const isClimate = periodStart === CLIMATE_START;
+  const { dataset, climatePeriod, weatherYear } = useFiltersStore();
+  const isClimate = dataset === DATASETS.CLIMATE;
+  const year = isClimate ? undefined : weatherYear;
+
   const enabled = latA !== 0 && lngA !== 0 && latB !== 0 && lngB !== 0;
 
   const { data, isLoading, error } = useQuery<TCompareData, Error>({
-    queryKey: ["compare", latA, lngA, latB, lngB, gridSize, periodStart],
+    queryKey: [
+      "compare",
+      latA,
+      lngA,
+      latB,
+      lngB,
+      gridSize,
+      isClimate ? climatePeriod : weatherYear,
+    ],
     queryFn: async (): Promise<TCompareData> => {
       const [cityA, cityB] = await Promise.all([
-        fetchCityData(latA, lngA, gridSize, isClimate, periodStart),
-        fetchCityData(latB, lngB, gridSize, isClimate, periodStart),
+        fetchCityData(latA, lngA, gridSize, isClimate, climatePeriod, year),
+        fetchCityData(latB, lngB, gridSize, isClimate, climatePeriod, year),
       ]);
       return { cityA, cityB };
     },

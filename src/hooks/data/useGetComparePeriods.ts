@@ -1,3 +1,4 @@
+import { CLIMATE_PERIODS } from "@/constants";
 import type { TCellSize, TMonthlyTemperature } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCityData } from "./useGetCompareData";
@@ -28,8 +29,8 @@ export function useGetComparePeriods(
     queryFn: async (): Promise<TComparePeriods> => {
       if (lat === null || lng === null) throw new Error("No location selected");
       const [dataA, dataB] = await Promise.all([
-        fetchCityData(lat, lng, gridSize, false, periodA),
-        fetchCityData(lat, lng, gridSize, false, periodB),
+        fetchCityData(lat, lng, gridSize, false, CLIMATE_PERIODS.C1970_2000, periodA),
+        fetchCityData(lat, lng, gridSize, false, CLIMATE_PERIODS.C1970_2000, periodB),
       ]);
       return { dataA, dataB };
     },
