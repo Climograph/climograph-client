@@ -1,4 +1,3 @@
-import { CLIMATE_START, DATASETS } from "@/constants";
 import {
   useGeolocation,
   useGetClimateData,
@@ -22,9 +21,7 @@ export function ClimateStatistics() {
   const latestMapClickIdRef = useRef(0);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { dataset, periodStart: storePeriodStart, gridSize, months } = useFiltersStore();
-  const isClimate = dataset === DATASETS.CLIMATE;
-  const effectivePeriodStart = isClimate ? CLIMATE_START : storePeriodStart;
+  const { gridSize, months } = useFiltersStore();
   const selectedMonths: number[] | null = Array.isArray(months) ? months : null;
 
   const selectedCityInUrl = useMemo(
@@ -94,7 +91,7 @@ export function ClimateStatistics() {
     isLoading,
     isFetching,
     isError,
-  } = useGetClimateData(selectedCity.lat, selectedCity.lng, gridSize, effectivePeriodStart);
+  } = useGetClimateData(selectedCity.lat, selectedCity.lng, gridSize);
 
   const resolvedLocationError =
     locationError === "denied"
