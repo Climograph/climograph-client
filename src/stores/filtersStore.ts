@@ -6,7 +6,7 @@ import {
   DEFAULT_VARIABLES,
   WEATHER_VARIABLES,
 } from "@/constants";
-import type { TCellSize, TDataset, TMonthFilter, TVariable } from "@/types/";
+import type { TCellSize, TDataset, TMonthFilter, TVariable } from "@/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
