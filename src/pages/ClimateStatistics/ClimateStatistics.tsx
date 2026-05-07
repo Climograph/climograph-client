@@ -1,16 +1,23 @@
+import type { TChartSubtitle } from "@/components/TempPrecipChart/TempPrecipChart.type";
+import { DATASETS } from "@/constants";
 import {
   useGeolocation,
+  useGetAltitude,
   useGetClimateData,
   usePersistedCity,
   useResolveCityByCoordinates,
 } from "@/hooks";
 import { useFiltersStore } from "@/stores";
 import type { TWikidataCity } from "@/types";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { formatCoordinate, toCityQueryParam } from "./ClimateStatistics.util";
 import { ClimateStatisticsView } from "./ClimateStatisticsView";
+
+function resolveCityName(city: TWikidataCity): string {
+  return /^Q\d+$/.test(city.label) ? city.description : city.label;
+}
 
 export function ClimateStatistics() {
   const { t } = useTranslation();
@@ -21,8 +28,15 @@ export function ClimateStatistics() {
   const latestMapClickIdRef = useRef(0);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { gridSize, months } = useFiltersStore();
+  const { dataset, climatePeriod, weatherYear, gridSize, months } = useFiltersStore();
   const selectedMonths: number[] | null = Array.isArray(months) ? months : null;
+
+  const [chartCityName, setChartCityName] = useState<string>(() => resolveCityName(selectedCity));
+
+  const subtitle: TChartSubtitle =
+    dataset === DATASETS.CLIMATE
+      ? { dataset: DATASETS.CLIMATE, climatePeriod }
+      : { dataset: DATASETS.WEATHER, weatherYear };
 
   const selectedCityInUrl = useMemo(
     () => toCityQueryParam(selectedCity.label),
@@ -41,11 +55,17 @@ export function ClimateStatistics() {
 
   function handleCitySelect(city: TWikidataCity) {
     clearLocationError();
+    const name = resolveCityName(city);
+    if (name) setChartCityName(name);
     selectCity(city);
   }
 
   function handleLocate() {
-    locate((city) => selectCity(city));
+    locate((city) => {
+      const name = resolveCityName(city);
+      if (name) setChartCityName(name);
+      selectCity(city);
+    });
   }
 
   async function resolveClickedLocation(lat: number, lng: number) {
@@ -72,6 +92,9 @@ export function ClimateStatistics() {
         return;
       }
 
+      const name = resolveCityName(resolvedCity);
+      if (name) setChartCityName(name);
+
       selectCity({
         ...resolvedCity,
         lat,
@@ -93,20 +116,18 @@ export function ClimateStatistics() {
     isError,
   } = useGetClimateData(selectedCity.lat, selectedCity.lng, gridSize);
 
-  const resolvedLocationError =
-    locationError === "denied"
-      ? t("errors.geolocationDenied")
-      : locationError === "unavailable"
-        ? t("errors.geolocationUnavailable")
-        : null;
+  const { data: altitude = null } = useGetAltitude(selectedCity.lat, selectedCity.lng, gridSize);
+
+  const resolvedLocationError = locationError !== null ? t(locationError) : null;
 
   return (
     <ClimateStatisticsView
       selectedCity={selectedCity}
       mapCenter={{ lat: selectedCity.lat, lng: selectedCity.lng }}
       temperatureData={temperatureData}
-      cellSize={gridSize}
-      isAutoResolution={false}
+      cityName={chartCityName}
+      subtitle={subtitle}
+      altitude={altitude}
       selectedMonths={selectedMonths}
       isLoading={isLoading}
       isFetching={isFetching || isResolving}
@@ -116,6 +137,7 @@ export function ClimateStatistics() {
       onCitySelect={handleCitySelect}
       onMapClick={handleMapClick}
       onLocate={handleLocate}
+      onClearLocationError={clearLocationError}
     />
   );
 }

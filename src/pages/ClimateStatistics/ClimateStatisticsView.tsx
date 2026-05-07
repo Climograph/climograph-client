@@ -39,8 +39,9 @@ export function ClimateStatisticsView({
   selectedCity,
   mapCenter,
   temperatureData,
-  cellSize,
-  isAutoResolution,
+  cityName,
+  subtitle,
+  altitude,
   selectedMonths,
   isLoading,
   isFetching,
@@ -50,6 +51,7 @@ export function ClimateStatisticsView({
   onCitySelect,
   onMapClick,
   onLocate,
+  onClearLocationError,
 }: TClimateStatisticsViewProps) {
   const { t } = useTranslation();
   const chartRef = useRef<HTMLElement | null>(null);
@@ -58,7 +60,7 @@ export function ClimateStatisticsView({
   const isSingleMonth = isFiltered && selectedMonths.length === 1;
 
   const showStats = temperatureData.length > 0 && !isLoading && !error;
-  const stats = showStats ? computeClimateStats(temperatureData, cellSize, selectedMonths) : null;
+  const stats = showStats ? computeClimateStats(temperatureData, selectedMonths) : null;
 
   const filteredMonthNames = isFiltered
     ? selectedMonths
@@ -68,23 +70,16 @@ export function ClimateStatisticsView({
         .join(", ")
     : null;
 
-  // * fall back to description if wikidata returned an entity ID as the label
-  const chartCityName = selectedCity
-    ? /^Q\d+$/.test(selectedCity.label)
-      ? selectedCity.description
-      : selectedCity.label
-    : "";
-
   function handleExportCSV() {
-    exportToCSV(temperatureData, chartCityName);
+    exportToCSV(temperatureData, cityName);
   }
 
-  function handleExportPNG() {
-    void exportToPNG("climate-stats-container", `climatica-${chartCityName}`);
+  function handleExportPNG(): Promise<void> {
+    return exportToPNG("climate-stats-container", `climatica-${cityName}`);
   }
 
   function handleExportSVG() {
-    exportToSVG(chartRef, `climatica-${chartCityName}`);
+    exportToSVG(chartRef, `climatica-${cityName}`);
   }
 
   return (
@@ -128,9 +123,26 @@ export function ClimateStatisticsView({
           </div>
 
           {locationError && (
-            <p className="text-[length:var(--font-sm)] text-[var(--color-error)]">
-              {locationError}
-            </p>
+            <div className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--color-error-border)] bg-[var(--color-error-bg)] px-3 py-2">
+              <p className="flex-1 text-[length:var(--font-sm)] text-[var(--color-error)]">
+                {locationError}
+              </p>
+              <button
+                type="button"
+                onClick={onClearLocationError}
+                aria-label="Dismiss"
+                className="shrink-0 text-[var(--color-error)] opacity-60 hover:opacity-100 transition-opacity"
+              >
+                <svg viewBox="0 0 14 14" fill="none" className="h-3.5 w-3.5" aria-hidden="true">
+                  <path
+                    d="M1 1l12 12M13 1L1 13"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
           )}
         </div>
 
@@ -178,11 +190,9 @@ export function ClimateStatisticsView({
                     unit={isSingleMonth ? t("climateStatistics.stats.mmThisMonth") : "mm"}
                   />
                   <StatCard
-                    label={t("climateStatistics.stats.resolution")}
-                    value={stats.resolution}
-                    {...(isAutoResolution
-                      ? { tooltip: t("climateStatistics.stats.autoResolutionTooltip") }
-                      : {})}
+                    label={t("climateStatistics.stats.altitude")}
+                    value={altitude !== null ? String(altitude) : "—"}
+                    {...(altitude !== null ? { unit: "m" } : {})}
                   />
                 </div>
                 {filteredMonthNames && (
@@ -218,7 +228,9 @@ export function ClimateStatisticsView({
                 )}
                 <TempPrecipChart
                   data={temperatureData}
-                  cityName={chartCityName}
+                  cityName={cityName}
+                  subtitle={subtitle}
+                  {...(altitude !== null ? { altitude } : {})}
                   {...(isFiltered ? { selectedMonths } : {})}
                 />
               </section>

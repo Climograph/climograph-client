@@ -1,11 +1,13 @@
-import type { TCellSize, TCoordinates, TMonthlyTemperature, TWikidataCity } from "@/types";
+import type { TChartSubtitle } from "@/components/TempPrecipChart/TempPrecipChart.type";
+import type { TCoordinates, TMonthlyTemperature, TWikidataCity } from "@/types";
 
 export type TClimateStatisticsViewProps = {
   selectedCity: TWikidataCity | null;
   mapCenter: TCoordinates;
   temperatureData: TMonthlyTemperature[];
-  cellSize: TCellSize;
-  isAutoResolution: boolean;
+  cityName: string;
+  subtitle: TChartSubtitle;
+  altitude: number | null;
   selectedMonths: number[] | null;
   isLoading: boolean;
   isFetching: boolean;
@@ -15,6 +17,7 @@ export type TClimateStatisticsViewProps = {
   onCitySelect: (city: TWikidataCity) => void;
   onMapClick: (lat: number, lng: number) => void;
   onLocate: () => void;
+  onClearLocationError: () => void;
 };
 
 export type TStatCardProps = {
