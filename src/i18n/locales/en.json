@@ -33,6 +33,7 @@
       "mmThisMonth": "mm this month",
       "resolution": "Resolution",
       "autoResolutionTooltip": "Resolution is automatically set based on selected dataset",
+      "altitude": "Altitude",
       "filteredMonths": "Filtered: {{months}}"
     }
   },
@@ -109,7 +110,12 @@
     "humidPeriod": "Humid period",
     "modeStandard": "Standard chart",
     "modeWalterLieth": "Walter-Lieth diagram",
-    "selectedMonth": "{{month}} values"
+    "selectedMonth": "{{month}} values",
+    "altitude": "Altitude",
+    "subtitle": {
+      "climate": "Climate {{period}}",
+      "weather": "Weather {{year}}"
+    }
   },
   "loading": {
     "fetchingClimateData": "Fetching climate data...",
@@ -119,6 +125,14 @@
     "fetchClimateData": "Failed to fetch climate data",
     "geolocationDenied": "Location access denied. Please allow location in your browser.",
     "geolocationUnavailable": "Unable to determine your location."
+  },
+  "geolocation": {
+    "notSupported": "Geolocation is not supported by your browser",
+    "httpsRequired": "Location requires a secure connection",
+    "permissionDenied": "Location access denied. Please allow location in browser settings",
+    "unavailable": "Unable to determine your location",
+    "timeout": "Location request timed out. Please try again",
+    "unknown": "An unknown error occurred"
   },
   "map": {
     "selectedFromMap": "Selected from map",
@@ -174,8 +188,8 @@
       "months": "Month"
     },
     "datasets": {
-      "climate": "Climate 1970–2000",
-      "weather": "Weather 1951–2024"
+      "climate": "Climate",
+      "weather": "Weather"
     },
     "variables": {
       "tmax": "Max temp",
