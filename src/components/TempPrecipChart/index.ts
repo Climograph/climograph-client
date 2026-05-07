@@ -1,2 +1,2 @@
 export { TempPrecipChart } from "./TempPrecipChart";
-export type { TTempPrecipChartProps, TVisibleSeries } from "./TempPrecipChart.type";
+export type { TChartSubtitle, TTempPrecipChartProps, TVisibleSeries } from "./TempPrecipChart.type";

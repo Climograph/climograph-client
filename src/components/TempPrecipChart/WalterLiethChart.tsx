@@ -1,4 +1,5 @@
 import { MONTH_NAMES } from "@/constants";
+import { computeWLAxisTicks } from "@/utils";
 import { useTranslation } from "react-i18next";
 import {
   CartesianGrid,
@@ -23,6 +24,7 @@ export function WalterLiethChart({
   summary,
   colors = WL_COLORS_A,
   title,
+  altitude,
 }: TWalterLiethChartProps) {
   const { t } = useTranslation();
 
@@ -38,6 +40,9 @@ export function WalterLiethChart({
     precScaled: Number(d["prec"] ?? 0) / 2,
   }));
 
+  const leftTicks = scales ? computeWLAxisTicks(scales.tempMin, scales.tempMax) : undefined;
+  const rightTicks = leftTicks ? leftTicks.map((t) => t * 2) : undefined;
+
   return (
     <div>
       {title && (
@@ -45,7 +50,9 @@ export function WalterLiethChart({
           {title}
         </p>
       )}
-      {summary && <SummaryStats summary={summary} />}
+      {summary && (
+        <SummaryStats summary={summary} {...(altitude !== undefined ? { altitude } : {})} />
+      )}
       <div className="overflow-x-auto">
         <div className="h-[300px] sm:h-[360px] md:h-[420px] lg:h-[460px] min-w-[520px]">
           <ResponsiveContainer width="100%" height="100%">
@@ -67,6 +74,7 @@ export function WalterLiethChart({
               <YAxis
                 yAxisId="left"
                 domain={scales ? [scales.tempMin, scales.tempMax] : ["auto", "auto"]}
+                {...(leftTicks ? { ticks: leftTicks } : {})}
                 tickFormatter={(v: unknown) => String(Math.round(Number(v)))}
                 tick={{ fontSize: 12, fill: "var(--color-text-secondary)" }}
                 label={{
@@ -82,6 +90,7 @@ export function WalterLiethChart({
                 yAxisId="right"
                 orientation="right"
                 domain={scales ? [scales.precMin, scales.precMax] : [0, "auto"]}
+                {...(rightTicks ? { ticks: rightTicks } : {})}
                 tickFormatter={(v: unknown) => String(Math.round(Number(v)))}
                 tick={{ fontSize: 12, fill: "var(--color-text-secondary)" }}
                 label={{
@@ -111,6 +120,7 @@ export function WalterLiethChart({
                 dot={false}
                 legendType="none"
               />
+              <Line yAxisId="right" dataKey="prec" strokeWidth={0} dot={false} legendType="none" />
               <Customized
                 component={WLCustomized}
                 wlData={scaledData}

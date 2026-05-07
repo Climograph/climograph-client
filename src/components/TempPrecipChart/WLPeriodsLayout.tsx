@@ -1,4 +1,5 @@
 import { MONTH_NAMES } from "@/constants";
+import { computeWLAxisTicks } from "@/utils";
 import { useTranslation } from "react-i18next";
 import {
   CartesianGrid,
@@ -46,9 +47,14 @@ export function WLPeriodsLayout({
     monthName: ptA.monthName,
     tavgA: ptA.tavg,
     precScaledA: ptA.precScaled,
+    precA: ptA.prec,
     tavgB: scaledB[i]?.tavg ?? 0,
     precScaledB: scaledB[i]?.precScaled ?? 0,
+    precB: scaledB[i]?.prec ?? 0,
   }));
+
+  const leftTicks = scales ? computeWLAxisTicks(scales.tempMin, scales.tempMax) : undefined;
+  const rightTicks = leftTicks ? leftTicks.map((t) => t * 2) : undefined;
 
   return (
     <div className="flex flex-col gap-4">
@@ -79,6 +85,7 @@ export function WLPeriodsLayout({
               <YAxis
                 yAxisId="left"
                 domain={scales ? [scales.tempMin, scales.tempMax] : ["auto", "auto"]}
+                {...(leftTicks ? { ticks: leftTicks } : {})}
                 tickFormatter={(v: unknown) => String(Math.round(Number(v)))}
                 tick={{ fontSize: 12, fill: "var(--color-text-secondary)" }}
                 label={{
@@ -95,6 +102,7 @@ export function WLPeriodsLayout({
                 yAxisId="right"
                 orientation="right"
                 domain={scales ? [scales.precMin, scales.precMax] : [0, "auto"]}
+                {...(rightTicks ? { ticks: rightTicks } : {})}
                 tickFormatter={(v: unknown) => String(Math.round(Number(v)))}
                 tick={{ fontSize: 12, fill: "var(--color-text-secondary)" }}
                 label={{
@@ -121,6 +129,8 @@ export function WLPeriodsLayout({
               {/* invisible lines to init axis scales */}
               <Line yAxisId="left" dataKey="tavgA" strokeWidth={0} dot={false} legendType="none" />
               <Line yAxisId="left" dataKey="tavgB" strokeWidth={0} dot={false} legendType="none" />
+              <Line yAxisId="right" dataKey="precA" strokeWidth={0} dot={false} legendType="none" />
+              <Line yAxisId="right" dataKey="precB" strokeWidth={0} dot={false} legendType="none" />
 
               <Customized
                 component={WLCustomized}

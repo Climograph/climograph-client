@@ -30,6 +30,8 @@ export function StandardClimateChart({
   isCompare,
   labelA,
   labelB,
+  altitude,
+  showAridity = true,
 }: TStandardClimateChartProps) {
   const { t } = useTranslation();
 
@@ -60,7 +62,9 @@ export function StandardClimateChart({
 
   return (
     <>
-      {summary && <SummaryStats summary={summary} />}
+      {summary && (
+        <SummaryStats summary={summary} {...(altitude !== undefined ? { altitude } : {})} />
+      )}
       <div className="overflow-x-auto">
         <div className="h-[300px] sm:h-[360px] md:h-[420px] lg:h-[460px] min-w-[520px]">
           <ResponsiveContainer width="100%" height="100%">
@@ -145,19 +149,20 @@ export function StandardClimateChart({
                   background={false}
                   shape={<PrecipBarShape />}
                 >
-                  {aridity?.map((m, i) => {
-                    const isSelected =
-                      !selectedMonths ||
-                      selectedMonths.length === 0 ||
-                      selectedMonths.includes(m.month);
-                    return (
-                      <Cell
-                        key={`prec-${i}`}
-                        fill={m.isArid ? CHART_COLORS.arid : CHART_COLORS.humid}
-                        fillOpacity={isSelected ? 0.8 : 0.15}
-                      />
-                    );
-                  })}
+                  {showAridity &&
+                    aridity?.map((m, i) => {
+                      const isSelected =
+                        !selectedMonths ||
+                        selectedMonths.length === 0 ||
+                        selectedMonths.includes(m.month);
+                      return (
+                        <Cell
+                          key={`prec-${i}`}
+                          fill={m.isArid ? CHART_COLORS.arid : CHART_COLORS.humid}
+                          fillOpacity={isSelected ? 0.8 : 0.15}
+                        />
+                      );
+                    })}
                 </Bar>
               )}
 
@@ -212,12 +217,13 @@ export function StandardClimateChart({
                   background={false}
                   shape={<PrecipBarShape />}
                 >
-                  {aridityA?.map((m, i) => (
-                    <Cell
-                      key={`precA-${i}`}
-                      fill={m.isArid ? CHART_COLORS.arid : CHART_COLORS.compareA.prec}
-                    />
-                  ))}
+                  {showAridity &&
+                    aridityA?.map((m, i) => (
+                      <Cell
+                        key={`precA-${i}`}
+                        fill={m.isArid ? CHART_COLORS.arid : CHART_COLORS.compareA.prec}
+                      />
+                    ))}
                 </Bar>
               )}
 
@@ -319,7 +325,7 @@ export function StandardClimateChart({
           </ResponsiveContainer>
         </div>
       </div>
-      {visible.prec && <AridityLegend />}
+      {visible.prec && showAridity && <AridityLegend />}
     </>
   );
 }
