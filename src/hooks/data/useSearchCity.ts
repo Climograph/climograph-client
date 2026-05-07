@@ -10,7 +10,7 @@ export function useSearchCity(query: string) {
 
   return useQuery<TWikidataCity[]>({
     queryKey: ["citySearch", trimmed, lang],
-    queryFn: () => WikidataService.searchCity(trimmed, lang),
+    queryFn: () => WikidataService.searchCity(trimmed),
     enabled: trimmed.length >= 2,
     staleTime: 30_000,
   });

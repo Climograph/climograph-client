@@ -1,3 +1,4 @@
+export { useGetAltitude } from "./useGetAltitude";
 export { useGetClimateData } from "./useGetClimateData";
 export { useGetCompareData } from "./useGetCompareData";
 export { useGetComparePeriods } from "./useGetComparePeriods";
