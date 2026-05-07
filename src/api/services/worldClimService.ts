@@ -5,6 +5,7 @@ import type {
   TVariable,
   TWorldClimAvgBoxResponse,
   TWorldClimBoxResponse,
+  TWorldClimCellResource,
   TWorldClimCellResponse,
   TWorldClimPixelResource,
   TWorldClimPointValueResponse,
@@ -14,6 +15,7 @@ import {
   buildGridIri,
   buildVariableIris,
   createWorldClimAuthHeaders,
+  extractCellBySize,
   validateResponseData,
 } from "@/utils";
 import axios from "axios";
@@ -25,6 +27,24 @@ export const WorldClimService = {
       headers: createWorldClimAuthHeaders(),
     });
 
+    validateResponseData(response);
+    return response.data;
+  },
+
+  async getCellForPoint(lat: number, lng: number, gridSize: TCellSize): Promise<string | null> {
+    const response = await axios.get<TWorldClimCellResponse>(`${WORLDCLIM_BASE_URL}/query`, {
+      params: { id: "cellofpoint", lat, lng },
+      headers: createWorldClimAuthHeaders(),
+    });
+    validateResponseData(response);
+    return extractCellBySize(response.data, gridSize);
+  },
+
+  async getCellResource(cellIri: string): Promise<TWorldClimCellResource> {
+    const response = await axios.get<TWorldClimCellResource>(`${WORLDCLIM_BASE_URL}/resource`, {
+      params: { id: "Cell", iri: cellIri },
+      headers: createWorldClimAuthHeaders(),
+    });
     validateResponseData(response);
     return response.data;
   },
