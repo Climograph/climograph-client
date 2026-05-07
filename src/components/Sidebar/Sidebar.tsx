@@ -261,7 +261,7 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
           <div>
             <SectionLabel text={t("sidebar.sections.yearRange")} />
             <PeriodSelectRow
-              label={t("sidebar.sections.yearRange")}
+              label=""
               hideDot={true}
               value={draft.weatherYearInput}
               onChange={handleDraftYearInputChange}
