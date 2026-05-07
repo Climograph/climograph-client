@@ -1,6 +1,8 @@
 import { ENDPOINTS } from "@/constants";
+import i18n from "i18next";
 import type {
   TWikidataCity,
+  TWikidataEntitiesResult,
   TWikidataGeoSearchResult,
   TWikidataSearchResult,
   TWikidataSparqlResult,
@@ -9,7 +11,9 @@ import { isValidString, parseWktPoint } from "@/utils";
 import axios from "axios";
 
 export const WikidataService = {
-  async searchCity(query: string, lang = "en"): Promise<TWikidataCity[]> {
+  async searchCity(query: string): Promise<TWikidataCity[]> {
+    const lang = i18n.language ?? "en";
+
     const searchRes = await axios.get<TWikidataSearchResult>(ENDPOINTS.WIKIDATA, {
       params: {
         action: "wbsearchentities",
@@ -37,7 +41,6 @@ export const WikidataService = {
         ?settlement wikibase:sitelinks ?sitelinks .
         ?settlement wikibase:statements ?statements .
       }
-      ORDER BY DESC(?sitelinks) DESC(?statements)
     `;
 
     const sparqlRes = await axios.get<TWikidataSparqlResult>(ENDPOINTS.WIKIDATA_SPARQL as string, {
@@ -45,29 +48,28 @@ export const WikidataService = {
       headers: { Accept: "application/sparql-results+json" },
     });
 
-    const sparqlData = sparqlRes.data as Record<string, unknown>;
-    // @ts-expect-error - accessing nested property on response
-    const bindings = (sparqlData?.results?.bindings ?? []) as unknown[];
-    if (!Array.isArray(bindings) || bindings.length === 0) {
-      return [];
-    }
+    const bindings = sparqlRes.data.results.bindings;
+    if (bindings.length === 0) return [];
+
+    const sortedBindings = [...bindings].sort((a, b) => {
+      const scoreA = 3 * Number(a.sitelinks.value) + Number(a.statements.value);
+      const scoreB = 3 * Number(b.sitelinks.value) + Number(b.statements.value);
+      return scoreB - scoreA;
+    });
+
     const seen = new Set<string>();
     const results: TWikidataCity[] = [];
 
-    for (const binding of bindings) {
-      const binding_ = binding as Record<string, unknown>;
-      const settlement = binding_?.["settlement"] as Record<string, unknown> | undefined;
-      if (!settlement || !isValidString(settlement["value"])) continue;
+    for (const binding of sortedBindings) {
+      if (!isValidString(binding.settlement.value)) continue;
 
-      const iri = settlement["value"];
-      const id = iri.split("/").pop() ?? iri;
+      const id = binding.settlement.value.split("/").pop() ?? binding.settlement.value;
       if (seen.has(id)) continue;
       seen.add(id);
 
-      const point = binding_?.["point"] as Record<string, unknown> | undefined;
-      if (!point || !isValidString(point["value"])) continue;
+      if (!isValidString(binding.point.value)) continue;
 
-      const coords = parseWktPoint(point["value"]);
+      const coords = parseWktPoint(binding.point.value);
       if (!coords) continue;
 
       const searchItem = items.find((item) => item.id === id);
@@ -84,13 +86,15 @@ export const WikidataService = {
   },
 
   async findNearestCityByCoordinates(lat: number, lng: number): Promise<TWikidataCity | null> {
+    const lang = i18n.language ?? "en";
+
     const geoSearchRes = await axios.get<TWikidataGeoSearchResult>(ENDPOINTS.WIKIDATA, {
       params: {
         action: "query",
         list: "geosearch",
         gscoord: `${lat}|${lng}`,
         gsradius: 10000,
-        gslimit: 10,
+        gslimit: 5,
         format: "json",
         origin: "*",
       },
@@ -101,67 +105,45 @@ export const WikidataService = {
       return null;
     }
 
-    const entityIds: string[] = [];
-    for (const item of geosearch) {
-      if (!item || typeof item.title !== "string") {
-        continue;
-      }
+    const geoItems = geosearch.filter(
+      (item) => item && typeof item.title === "string" && /^Q\d+$/.test(item.title),
+    );
 
-      if (/^Q\d+$/.test(item.title)) {
-        entityIds.push(item.title);
-      }
-    }
+    if (geoItems.length === 0) return null;
 
-    if (entityIds.length === 0) {
-      return null;
-    }
+    const ids = geoItems.map((item) => item.title).join("|");
 
-    const values = entityIds.map((id) => `wd:${id}`).join(" ");
-
-    const sparqlQuery = `
-      SELECT ?settlement ?point ?sitelinks ?statements WHERE {
-        VALUES ?settlement { ${values} }
-        ?settlement wdt:P31/wdt:P279* wd:Q486972 .
-        ?settlement wdt:P625 ?point .
-        ?settlement wikibase:sitelinks ?sitelinks .
-        ?settlement wikibase:statements ?statements .
-      }
-      ORDER BY DESC(?sitelinks) DESC(?statements)
-      LIMIT 1
-    `;
-
-    const sparqlRes = await axios.get<TWikidataSparqlResult>(ENDPOINTS.WIKIDATA_SPARQL as string, {
-      params: { query: sparqlQuery, format: "json" },
-      headers: { Accept: "application/sparql-results+json" },
+    const entitiesRes = await axios.get<TWikidataEntitiesResult>(ENDPOINTS.WIKIDATA, {
+      params: {
+        action: "wbgetentities",
+        ids,
+        props: "labels|descriptions",
+        languages: `${lang}|en`,
+        format: "json",
+        origin: "*",
+      },
     });
 
-    const sparqlData = sparqlRes.data as Record<string, unknown>;
-    // @ts-expect-error - accessing nested property on response
-    const bindings = (sparqlData?.results?.bindings ?? []) as unknown[];
-    if (!Array.isArray(bindings) || bindings.length === 0) {
-      return null;
+    const entities = entitiesRes.data.entities;
+
+    for (const geoItem of geoItems) {
+      const id = geoItem.title;
+      const entity = entities[id];
+      if (!entity) continue;
+
+      const label = entity.labels?.[lang]?.value ?? entity.labels?.["en"]?.value ?? "";
+      const description =
+        entity.descriptions?.[lang]?.value ?? entity.descriptions?.["en"]?.value ?? "";
+
+      return {
+        id,
+        label: label || id,
+        description,
+        lat: geoItem.lat,
+        lng: geoItem.lon,
+      };
     }
 
-    const binding = bindings[0] as Record<string, unknown> | undefined;
-    if (!binding) return null;
-
-    const settlement = binding?.["settlement"] as Record<string, unknown> | undefined;
-    if (!settlement || !isValidString(settlement["value"])) return null;
-
-    const iri = settlement["value"];
-    const id = iri.split("/").pop() ?? iri;
-    const point = binding?.["point"] as Record<string, unknown> | undefined;
-    if (!point || !isValidString(point["value"])) return null;
-
-    const coords = parseWktPoint(point["value"]);
-    if (!coords) return null;
-
-    return {
-      id: id,
-      label: id,
-      description: "",
-      lat: coords.lat,
-      lng: coords.lng,
-    };
+    return null;
   },
 };
