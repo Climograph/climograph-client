@@ -1,18 +1,24 @@
+import type { TClimatePeriod } from "@/constants/worldclim.constant";
 import type { computeCompareStats } from "@/pages/ClimateComparison/ClimateComparison.util";
-import type { TCellSize, TMonthlyTemperature, TWikidataCity } from "@/types";
+import type { TCellSize, TDataset, TMonthlyTemperature, TWikidataCity } from "@/types";
 
 export type TComparePeriodsViewProps = {
   city: TWikidataCity;
-  periodA: number;
-  periodB: number;
+  dataset: TDataset;
+  climatePeriodA: TClimatePeriod;
+  climatePeriodB: TClimatePeriod;
+  yearA: number;
+  yearB: number;
   dataA: TMonthlyTemperature[];
   dataB: TMonthlyTemperature[];
   autoGrid: TCellSize;
   isLoading: boolean;
   error: Error | null;
   onCitySelect: (city: TWikidataCity) => void;
-  onPeriodAChange: (year: number) => void;
-  onPeriodBChange: (year: number) => void;
+  onClimatePeriodAChange: (period: TClimatePeriod) => void;
+  onClimatePeriodBChange: (period: TClimatePeriod) => void;
+  onYearAChange: (year: number) => void;
+  onYearBChange: (year: number) => void;
 };
 
 export type TCitySearchRowProps = {
@@ -21,11 +27,11 @@ export type TCitySearchRowProps = {
   onCitySelect: (city: TWikidataCity) => void;
 };
 
-export type TPeriodSelectRowProps = {
+export type TClimatePeriodRowProps = {
   label: string;
   dotColor: string;
-  value: number;
-  onChange: (year: number) => void;
+  value: TClimatePeriod;
+  onChange: (period: TClimatePeriod) => void;
 };
 
 export type TStatsGridProps = {

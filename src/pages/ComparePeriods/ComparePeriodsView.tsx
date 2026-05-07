@@ -6,8 +6,10 @@ import {
   TempPrecipChart,
   ThreeDotsScaleLoader,
 } from "@/components";
+import { Dropdown } from "@/components/UI";
 import { PageWrapper } from "@/components/UI";
-import { CELL_SIZE_OPTIONS, CLIMATE_RANGE } from "@/constants";
+import { CELL_SIZE_OPTIONS, CLIMATE_PERIOD_LABELS, CLIMATE_PERIODS, DATASETS } from "@/constants";
+import type { TClimatePeriod } from "@/constants/worldclim.constant";
 import {
   CLIMATE_COMPARISON_COLORS,
   computeCompareStats,
@@ -16,10 +18,16 @@ import {
 import { useTranslation } from "react-i18next";
 import type {
   TCitySearchRowProps,
+  TClimatePeriodRowProps,
   TComparePeriodsViewProps,
   TDiffCardProps,
   TStatsGridProps,
 } from "./ComparePeriods.type";
+
+const CLIMATE_PERIOD_OPTIONS = Object.values(CLIMATE_PERIODS).map((period) => ({
+  value: period,
+  label: CLIMATE_PERIOD_LABELS[period],
+}));
 
 function CitySearchRow({ label, dotColor, onCitySelect }: TCitySearchRowProps) {
   return (
@@ -35,6 +43,31 @@ function CitySearchRow({ label, dotColor, onCitySelect }: TCitySearchRowProps) {
         </span>
       </div>
       <SearchBar onCitySelect={onCitySelect} />
+    </div>
+  );
+}
+
+function ClimatePeriodRow({ label, dotColor, value, onChange }: TClimatePeriodRowProps) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-2">
+        <span
+          className="h-3 w-3 shrink-0 rounded-full"
+          style={{ backgroundColor: dotColor }}
+          aria-hidden="true"
+        />
+        <span className="text-[length:var(--font-sm)] font-medium text-[var(--color-text-secondary)]">
+          {label}
+        </span>
+      </div>
+      <Dropdown
+        options={CLIMATE_PERIOD_OPTIONS}
+        value={value}
+        onChange={(v) => {
+          const period = Object.values(CLIMATE_PERIODS).find((p) => p === v);
+          if (period) onChange(period as TClimatePeriod);
+        }}
+      />
     </div>
   );
 }
@@ -138,26 +171,33 @@ function DiffCard({ title, value, sub, valueColor }: TDiffCardProps) {
 
 export function ComparePeriodsView({
   city,
-  periodA,
-  periodB,
+  dataset,
+  climatePeriodA,
+  climatePeriodB,
+  yearA,
+  yearB,
   dataA,
   dataB,
   autoGrid,
   isLoading,
   error,
   onCitySelect,
-  onPeriodAChange,
-  onPeriodBChange,
+  onClimatePeriodAChange,
+  onClimatePeriodBChange,
+  onYearAChange,
+  onYearBChange,
 }: TComparePeriodsViewProps) {
   const { t } = useTranslation();
+
+  const isClimate = dataset === DATASETS.CLIMATE;
+
+  const labelA = isClimate ? CLIMATE_PERIOD_LABELS[climatePeriodA] : String(yearA);
+  const labelB = isClimate ? CLIMATE_PERIOD_LABELS[climatePeriodB] : String(yearB);
 
   const hasBothData = dataA.length > 0 && dataB.length > 0;
   const statsA = hasBothData ? computeCompareStats(dataA) : null;
   const statsB = hasBothData ? computeCompareStats(dataB) : null;
   const diff = hasBothData ? computeDiffStats(dataA, dataB) : null;
-
-  const labelA = `${periodA}–${periodA + CLIMATE_RANGE.WINDOW}`;
-  const labelB = `${periodB}–${periodB + CLIMATE_RANGE.WINDOW}`;
 
   const miniMapLocations: TMiniMapLocation[] = [
     {
@@ -189,24 +229,43 @@ export function ComparePeriodsView({
               onCitySelect={onCitySelect}
             />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <PeriodSelectRow
-                label={t("climateComparison.periodA")}
-                dotColor={CLIMATE_COMPARISON_COLORS.A.tmax}
-                value={String(periodA)}
-                onChange={(val) => {
-                  const n = parseInt(val, 10);
-                  if (!isNaN(n)) onPeriodAChange(n);
-                }}
-              />
-              <PeriodSelectRow
-                label={t("climateComparison.periodB")}
-                dotColor={CLIMATE_COMPARISON_COLORS.B.tmax}
-                value={String(periodB)}
-                onChange={(val) => {
-                  const n = parseInt(val, 10);
-                  if (!isNaN(n)) onPeriodBChange(n);
-                }}
-              />
+              {isClimate ? (
+                <>
+                  <ClimatePeriodRow
+                    label={t("climateComparison.periodA")}
+                    dotColor={CLIMATE_COMPARISON_COLORS.A.tmax}
+                    value={climatePeriodA}
+                    onChange={onClimatePeriodAChange}
+                  />
+                  <ClimatePeriodRow
+                    label={t("climateComparison.periodB")}
+                    dotColor={CLIMATE_COMPARISON_COLORS.B.tmax}
+                    value={climatePeriodB}
+                    onChange={onClimatePeriodBChange}
+                  />
+                </>
+              ) : (
+                <>
+                  <PeriodSelectRow
+                    label={t("climateComparison.periodA")}
+                    dotColor={CLIMATE_COMPARISON_COLORS.A.tmax}
+                    value={String(yearA)}
+                    onChange={(val) => {
+                      const n = parseInt(val, 10);
+                      if (!isNaN(n)) onYearAChange(n);
+                    }}
+                  />
+                  <PeriodSelectRow
+                    label={t("climateComparison.periodB")}
+                    dotColor={CLIMATE_COMPARISON_COLORS.B.tmax}
+                    value={String(yearB)}
+                    onChange={(val) => {
+                      const n = parseInt(val, 10);
+                      if (!isNaN(n)) onYearBChange(n);
+                    }}
+                  />
+                </>
+              )}
             </div>
           </div>
 
@@ -244,6 +303,10 @@ export function ComparePeriodsView({
             labelA={labelA}
             labelB={labelB}
             compareMode="periods"
+            cityName={city.label}
+            subtitle={{ rawLabel: `${labelA} vs ${labelB}` }}
+            showWalterLiethToggle={false}
+            showAridity={false}
           />
         )}
 
