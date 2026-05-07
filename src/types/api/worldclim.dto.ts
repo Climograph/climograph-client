@@ -134,3 +134,8 @@ export type TWorldClimPointValueResponse = {
     bindings: TWorldClimPointValueBinding[];
   };
 };
+
+export type TWorldClimCellResource = {
+  iri: string;
+  elevation?: number;
+};

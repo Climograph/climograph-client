@@ -35,12 +35,17 @@ export const CLIMATE_PERIOD_LABELS: Record<TClimatePeriod, string> = {
   "c1991-2020": "1991–2020",
 };
 
-// tavg excluded — derived as (tmax + tmin) / 2
-// BIO variables excluded from sidebar (reserved for advanced filter)
+/**
+ * tavg excluded — derived as (tmax + tmin) / 2
+ * BIO variables excluded from sidebar (reserved for advanced filter)
+ */
 export const CLIMATE_VARIABLES = ["tmax", "tmin", "prec", "srad", "wind", "vapr"] as const;
 
-// Weather dataset only has these 3 variables
+// * weather dataset only has these 3 variables
 export const WEATHER_VARIABLES = ["tmax", "tmin", "prec"] as const;
+
+// * only available in the c1970-2000 climate period
+export const PERIOD_RESTRICTED_VARIABLES = ["srad", "wind", "vapr"] as const;
 
 export type TClimateVariable = (typeof CLIMATE_VARIABLES)[number];
 export type TWeatherVariable = (typeof WEATHER_VARIABLES)[number];

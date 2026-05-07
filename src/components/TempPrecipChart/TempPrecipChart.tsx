@@ -1,4 +1,5 @@
 import { FilterChip } from "@/components/FilterChip";
+import { CLIMATE_PERIOD_LABELS, DATASETS } from "@/constants";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ModeToggle } from "./components/ModeToggle";
@@ -20,7 +21,9 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
 
   if (!chart.hasData) return null;
 
-  const isWalterLieth = chartMode === "walter-lieth";
+  const canUseWalterLieth = props.showWalterLiethToggle !== false;
+  const isWalterLieth = canUseWalterLieth && chartMode === "walter-lieth";
+  const showAridity = props.showAridity !== false;
   const activeCount = Object.values(visible).filter(Boolean).length;
 
   function handleToggle(key: keyof TVisibleSeries) {
@@ -43,11 +46,25 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
   return (
     <div className="w-full overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg)] p-4 shadow-sm">
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <ModeToggle mode={chartMode} onChange={setChartMode} />
+        {canUseWalterLieth && <ModeToggle mode={chartMode} onChange={setChartMode} />}
         {props.cityName && (
-          <h3 className="font-semibold text-[length:var(--font-md)] md:text-[length:var(--font-lg)] text-[var(--color-text)]">
-            {t("chart.title")}: {props.cityName}
-          </h3>
+          <div className="flex flex-col gap-0.5">
+            <h3 className="font-semibold text-[length:var(--font-md)] md:text-[length:var(--font-lg)] text-[var(--color-text)]">
+              {t("chart.title")}: {props.cityName}
+            </h3>
+            {props.subtitle && (
+              <p className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
+                {props.subtitle.rawLabel ??
+                  (props.subtitle.dataset === DATASETS.CLIMATE && props.subtitle.climatePeriod
+                    ? t("chart.subtitle.climate", {
+                        period: CLIMATE_PERIOD_LABELS[props.subtitle.climatePeriod],
+                      })
+                    : props.subtitle.weatherYear !== undefined
+                      ? t("chart.subtitle.weather", { year: props.subtitle.weatherYear })
+                      : null)}
+              </p>
+            )}
+          </div>
         )}
         {!isWalterLieth && selectedMonthName && (
           <span className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
@@ -79,6 +96,7 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
           chartData={chart.chartData}
           scales={chart.scales}
           summary={chart.summary}
+          {...(props.altitude !== undefined ? { altitude: props.altitude } : {})}
         />
       ) : isWalterLieth && props.compareMode === "periods" ? (
         <WLPeriodsLayout
@@ -110,9 +128,11 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
           summary={chart.summary}
           visible={visible}
           isCompare={chart.isCompare}
+          showAridity={showAridity}
           {...(props.selectedMonths !== undefined ? { selectedMonths: props.selectedMonths } : {})}
           {...(props.labelA !== undefined ? { labelA: props.labelA } : {})}
           {...(props.labelB !== undefined ? { labelB: props.labelB } : {})}
+          {...(props.altitude !== undefined ? { altitude: props.altitude } : {})}
         />
       )}
     </div>

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { TSummaryStatsProps } from "../TempPrecipChart.type";
 
-export function SummaryStats({ summary }: TSummaryStatsProps) {
+export function SummaryStats({ summary, altitude }: TSummaryStatsProps) {
   const { t } = useTranslation();
   return (
     <p className="mb-3 text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
@@ -10,6 +10,12 @@ export function SummaryStats({ summary }: TSummaryStatsProps) {
       {t("chart.annualPrec")}: {summary.totalPrec} mm
       {" | "}
       {t("chart.aridMonths")}: {summary.aridCount}
+      {altitude !== undefined && (
+        <>
+          {" | "}
+          {t("chart.altitude")}: {altitude} m
+        </>
+      )}
     </p>
   );
 }

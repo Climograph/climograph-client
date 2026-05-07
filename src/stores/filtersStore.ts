@@ -4,6 +4,7 @@ import {
   CLIMATE_PERIODS,
   DATASETS,
   DEFAULT_VARIABLES,
+  PERIOD_RESTRICTED_VARIABLES,
   WEATHER_VARIABLES,
 } from "@/constants";
 import type { TCellSize, TDataset, TMonthFilter, TVariable } from "@/types";
@@ -52,14 +53,33 @@ export const useFiltersStore = create<TFiltersState>()(
             if (dataset === DATASETS.WEATHER) {
               const allowed = new Set<string>(WEATHER_VARIABLES);
               const filtered = state.variables.filter((v) => allowed.has(v));
+              const gridSize =
+                state.gridSize === CELL_SIZES.THIRTY_SECONDS
+                  ? CELL_SIZES.TWO_POINT_FIVE_MINUTES
+                  : state.gridSize;
               return {
                 dataset,
                 variables: filtered.length > 0 ? filtered : [...DEFAULT_VARIABLES],
+                gridSize,
               };
             }
             return { dataset };
           }),
-        setClimatePeriod: (climatePeriod) => set({ climatePeriod }),
+        setClimatePeriod: (climatePeriod) =>
+          set((state) => {
+            if (climatePeriod === CLIMATE_PERIODS.C1970_2000) return { climatePeriod };
+            const restricted = new Set<string>(PERIOD_RESTRICTED_VARIABLES);
+            const filtered = state.variables.filter((v) => !restricted.has(v));
+            const gridSize =
+              state.gridSize === CELL_SIZES.THIRTY_SECONDS
+                ? CELL_SIZES.TWO_POINT_FIVE_MINUTES
+                : state.gridSize;
+            return {
+              climatePeriod,
+              variables: filtered.length > 0 ? filtered : [...DEFAULT_VARIABLES],
+              gridSize,
+            };
+          }),
         setWeatherYear: (weatherYear) => set({ weatherYear }),
         toggleVariable: (v) =>
           set((state) => ({

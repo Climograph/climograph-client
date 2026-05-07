@@ -1,4 +1,4 @@
-import type { TCellSize, TMonthlyTemperature } from "@/types";
+import type { TMonthlyTemperature } from "@/types";
 
 export function toCityQueryParam(cityLabel: string) {
   return cityLabel.trim().toLowerCase();
@@ -12,12 +12,10 @@ export type TClimateStats = {
   avgTmax: string;
   avgTmin: string;
   totalPrec: string;
-  resolution: TCellSize;
 };
 
 export function computeClimateStats(
   data: TMonthlyTemperature[],
-  resolution: TCellSize,
   months?: number[] | null,
 ): TClimateStats {
   const filtered =
@@ -30,5 +28,5 @@ export function computeClimateStats(
     count > 0 ? (filtered.reduce((sum, d) => sum + d.tmin, 0) / count).toFixed(1) : "—";
   const totalPrec = count > 0 ? filtered.reduce((sum, d) => sum + d.prec, 0).toFixed(0) : "—";
 
-  return { avgTmax, avgTmin, totalPrec, resolution };
+  return { avgTmax, avgTmin, totalPrec };
 }

@@ -1,4 +1,5 @@
-import type { TMonthlyTemperature } from "@/types";
+import type { TClimatePeriod } from "@/constants";
+import type { TDataset, TMonthlyTemperature } from "@/types";
 import type { TMonthAridity, TWalterLiethScales } from "@/utils";
 import type { ReactNode } from "react";
 
@@ -9,6 +10,13 @@ export type TVisibleSeries = {
   prec: boolean;
 };
 
+export type TChartSubtitle = {
+  dataset?: TDataset;
+  climatePeriod?: TClimatePeriod;
+  weatherYear?: number;
+  rawLabel?: string;
+};
+
 export type TChartMode = "standard" | "walter-lieth";
 
 export type TCompareMode = "cities" | "periods";
@@ -16,12 +24,16 @@ export type TCompareMode = "cities" | "periods";
 export type TTempPrecipChartProps = {
   data?: TMonthlyTemperature[];
   cityName?: string;
+  subtitle?: TChartSubtitle;
+  altitude?: number;
   selectedMonths?: number[];
   dataA?: TMonthlyTemperature[];
   dataB?: TMonthlyTemperature[];
   labelA?: string;
   labelB?: string;
   compareMode?: TCompareMode;
+  showWalterLiethToggle?: boolean;
+  showAridity?: boolean;
 };
 
 export type TBarShape = {
@@ -68,6 +80,7 @@ export type TChartSummary = {
 
 export type TSummaryStatsProps = {
   summary: TChartSummary;
+  altitude?: number;
 };
 
 export type TModeButtonProps = {
@@ -119,6 +132,7 @@ export type TWalterLiethChartProps = {
   summary: TChartSummary | null;
   colors?: TWalterLiethColors;
   title?: string;
+  altitude?: number;
 };
 
 export type TWLCitiesLayoutProps = {
@@ -162,4 +176,6 @@ export type TStandardClimateChartProps = {
   isCompare: boolean;
   labelA?: string;
   labelB?: string;
+  altitude?: number;
+  showAridity?: boolean;
 };
