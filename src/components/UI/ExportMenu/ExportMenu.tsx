@@ -62,6 +62,7 @@ export function ExportMenu({
 }: ExportMenuProps) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -74,19 +75,35 @@ export function ExportMenu({
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
-  const options = [
-    { label: t("exportMenu.png"), icon: <ImageIcon />, handler: onExportPNG },
-    { label: t("exportMenu.svg"), icon: <CodeIcon />, handler: onExportSVG },
-    { label: t("exportMenu.csv"), icon: <TableIcon />, handler: onExportCSV },
-  ];
-
-  function handleOptionClick(handler: () => void) {
-    handler();
+  async function handleExportPNG() {
     setIsOpen(false);
+    setIsExporting(true);
+    await new Promise<void>((resolve) => setTimeout(resolve, 150));
+    await onExportPNG();
+    setIsExporting(false);
   }
 
+  async function handleExportSVG() {
+    setIsOpen(false);
+    setIsExporting(true);
+    await new Promise<void>((resolve) => setTimeout(resolve, 150));
+    onExportSVG();
+    setIsExporting(false);
+  }
+
+  function handleExportCSV() {
+    setIsOpen(false);
+    onExportCSV();
+  }
+
+  const options = [
+    { label: t("exportMenu.png"), icon: <ImageIcon />, handler: () => void handleExportPNG() },
+    { label: t("exportMenu.svg"), icon: <CodeIcon />, handler: () => void handleExportSVG() },
+    { label: t("exportMenu.csv"), icon: <TableIcon />, handler: handleExportCSV },
+  ];
+
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative" style={{ pointerEvents: isExporting ? "none" : "auto" }}>
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -110,7 +127,7 @@ export function ExportMenu({
           <button
             key={label}
             type="button"
-            onClick={() => handleOptionClick(handler)}
+            onClick={handler}
             className="flex w-full items-center gap-2 px-3 py-2 text-left text-[length:var(--font-sm)] text-[var(--color-text)] transition-colors duration-100 hover:bg-[var(--color-bg-secondary)]"
           >
             {icon}
