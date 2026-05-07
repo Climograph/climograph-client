@@ -1,3 +1,4 @@
+import type { TChartSubtitle } from "@/components/TempPrecipChart";
 import type { computeCompareStats } from "@/pages/ClimateComparison/ClimateComparison.util";
 import type { TCellSize, TMonthlyTemperature, TWikidataCity } from "@/types";
 
@@ -7,6 +8,7 @@ export type TCompareCitiesViewProps = {
   dataA: TMonthlyTemperature[];
   dataB: TMonthlyTemperature[];
   autoGrid: TCellSize;
+  subtitle: TChartSubtitle;
   isLoading: boolean;
   error: Error | null;
   onCityASelect: (city: TWikidataCity) => void;

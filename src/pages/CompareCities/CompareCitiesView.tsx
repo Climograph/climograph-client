@@ -137,6 +137,7 @@ export function CompareCitiesView({
   dataA,
   dataB,
   autoGrid,
+  subtitle,
   isLoading,
   error,
   onCityASelect,
@@ -241,6 +242,10 @@ export function CompareCitiesView({
             labelA={labelA}
             labelB={labelB}
             compareMode="cities"
+            cityName={`${labelA} vs ${labelB}`}
+            subtitle={subtitle}
+            showWalterLiethToggle={false}
+            showAridity={false}
           />
         )}
 
