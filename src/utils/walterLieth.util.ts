@@ -30,6 +30,13 @@ export function computeAridityPeriods(data: TMonthlyTemperature[]): TMonthAridit
   });
 }
 
+export function computeWLAxisTicks(min: number, max: number): number[] {
+  const step = max - min <= 30 ? 5 : 10;
+  const ticks: number[] = [];
+  for (let v = min; v <= max; v += step) ticks.push(v);
+  return ticks;
+}
+
 export function getWalterLiethScales(data: TMonthlyTemperature[]): TWalterLiethScales {
   const tavgs = data.map((d) => (d.tmin + d.tmax) / 2);
   const rawTempMin = Math.min(...tavgs.map((t, i) => Math.min(t, data[i].tmin)));
