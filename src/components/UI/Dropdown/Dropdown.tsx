@@ -53,6 +53,7 @@ export default function Dropdown({ options, value, onChange, className }: TDropd
         {options.map((option) => (
           <button
             key={option.value}
+            disabled={option.disabled}
             onClick={() => {
               onChange(option.value);
               setIsOpen(false);
@@ -62,9 +63,11 @@ export default function Dropdown({ options, value, onChange, className }: TDropd
               text-[length:var(--font-base)]
               transition-colors duration-100
               ${
-                option.value === value
-                  ? "bg-[var(--color-primary)] text-[var(--color-bg)]"
-                  : "text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]"
+                option.disabled
+                  ? "cursor-not-allowed opacity-40 text-[var(--color-text-secondary)]"
+                  : option.value === value
+                    ? "bg-[var(--color-primary)] text-[var(--color-bg)]"
+                    : "text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]"
               }
             `}
           >
