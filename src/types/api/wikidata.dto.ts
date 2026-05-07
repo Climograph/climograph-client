@@ -11,6 +11,8 @@ export type TWikidataSearchResult = {
 
 export type TWikidataGeoSearchItem = {
   title: string;
+  lat: number;
+  lon: number;
 };
 
 export type TWikidataGeoSearchResult = {
@@ -23,14 +25,16 @@ export type TWikidataEntityValue = {
   value: string;
 };
 
+export type TWikidataLabelMap = Record<string, TWikidataEntityValue>;
+
 export type TWikidataCoords = {
   latitude: number;
   longitude: number;
 };
 
 export type TWikidataEntity = {
-  labels?: { en?: TWikidataEntityValue };
-  descriptions?: { en?: TWikidataEntityValue };
+  labels?: TWikidataLabelMap;
+  descriptions?: TWikidataLabelMap;
   claims?: {
     P625?: { mainsnak?: { datavalue?: { value?: TWikidataCoords } } }[];
   };
