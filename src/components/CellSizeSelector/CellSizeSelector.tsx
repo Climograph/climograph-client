@@ -11,7 +11,9 @@ export function CellSizeSelector({ activeSize, options, onSelect }: TCellSizeSel
         {t("climateStatistics.cellResolution")}
       </p>
       <Dropdown
-        options={options.map((o) => ({ value: o.value, label: o.label }))}
+        options={options.map(({ value, label, disabled }) =>
+          disabled !== undefined ? { value, label, disabled } : { value, label },
+        )}
         value={activeSize}
         onChange={(v) => onSelect(v as typeof activeSize)}
         className="w-full"
