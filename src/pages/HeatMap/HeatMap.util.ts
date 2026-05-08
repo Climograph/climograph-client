@@ -1,36 +1,9 @@
 import type { TWorldClimAvgBoxBinding, TWorldClimBoxBinding } from "@/types";
+import { GRID_DELTA, iriToCellBounds } from "@/utils";
+import type { TCellBounds } from "@/utils";
 
-// Degrees per grid cell (center-to-edge = delta / 2)
-export const GRID_DELTA: Record<string, number> = {
-  "10m": 10 / 60,
-  "5m": 5 / 60,
-  "2.5m": 2.5 / 60,
-  "30s": 30 / 3600,
-};
-
-export type TCellBounds = {
-  north: number;
-  south: number;
-  west: number;
-  east: number;
-};
-
-// IRI pattern: Pixel_{grid}_r{ROW}c{COL}_{var}_{period}
-const PIXEL_IRI_REGEX = /Pixel_[^_]+_r(\d+)c(\d+)/;
-
-export function iriToCellBounds(iri: string, cellSize: number): TCellBounds | null {
-  const match = PIXEL_IRI_REGEX.exec(iri);
-  if (!match) return null;
-  const row = Number(match[1]);
-  const col = Number(match[2]);
-  const north = 90 - row * cellSize;
-  return {
-    north,
-    south: north - cellSize,
-    west: -180 + col * cellSize,
-    east: -180 + col * cellSize + cellSize,
-  };
-}
+export { GRID_DELTA, iriToCellBounds };
+export type { TCellBounds };
 
 // Candidate key sets to try — the actual SPARQL variable names are API-defined.
 // First set uses the resource-endpoint convention; fallbacks cover common SPARQL naming.
