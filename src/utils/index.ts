@@ -19,5 +19,8 @@ export {
   createWorldClimAuthHeaders,
   extractCellBySize,
   extractPixelIri,
+  GRID_DELTA,
+  iriToCellBounds,
   validateResponseData,
 } from "./worldclim.util";
+export type { TCellBounds } from "./worldclim.util";

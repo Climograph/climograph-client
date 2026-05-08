@@ -8,6 +8,36 @@ import type {
   TWorldClimPointValueBinding,
 } from "@/types";
 
+export const GRID_DELTA: Record<string, number> = {
+  "10m": 10 / 60,
+  "5m": 5 / 60,
+  "2.5m": 2.5 / 60,
+  "30s": 30 / 3600,
+};
+
+export type TCellBounds = {
+  north: number;
+  south: number;
+  west: number;
+  east: number;
+};
+
+const CELL_IRI_ROW_COL_REGEX = /_r(\d+)c(\d+)/;
+
+export function iriToCellBounds(iri: string, cellSize: number): TCellBounds | null {
+  const match = CELL_IRI_ROW_COL_REGEX.exec(iri);
+  if (!match) return null;
+  const row = Number(match[1]);
+  const col = Number(match[2]);
+  const north = 90 - row * cellSize;
+  return {
+    north,
+    south: north - cellSize,
+    west: -180 + col * cellSize,
+    east: -180 + col * cellSize + cellSize,
+  };
+}
+
 export function extractCellBySize(
   response: TWorldClimCellResponse,
   size: TCellSize,
