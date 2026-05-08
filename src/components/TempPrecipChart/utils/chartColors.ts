@@ -36,7 +36,7 @@ export const CHART_COLORS = {
     tmax: "var(--chart-compare-b-max)",
     tmin: "var(--chart-compare-b-min)",
     prec: "var(--chart-compare-b-prec)",
-    tavg: "#1e3a8a",
+    tavg: "#92400e",
   },
   wl: {
     tempStroke: "#F97316",

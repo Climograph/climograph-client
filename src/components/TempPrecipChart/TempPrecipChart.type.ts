@@ -1,5 +1,5 @@
 import type { TClimatePeriod } from "@/constants";
-import type { TDataset, TMonthlyTemperature } from "@/types";
+import type { TDataset, TMonthlyTemperature, TVariable } from "@/types";
 import type { TMonthAridity, TWalterLiethScales } from "@/utils";
 import type { ReactNode } from "react";
 
@@ -34,6 +34,7 @@ export type TTempPrecipChartProps = {
   compareMode?: TCompareMode;
   showWalterLiethToggle?: boolean;
   showAridity?: boolean;
+  variables?: readonly TVariable[];
 };
 
 export type TBarShape = {

@@ -18,6 +18,39 @@ import { SummaryStats } from "./components/SummaryStats";
 import type { TDotRendererProps, TStandardClimateChartProps } from "./TempPrecipChart.type";
 import { CHART_COLORS } from "./utils/chartColors";
 
+function CompareModeLegend({
+  labelA,
+  labelB,
+}: {
+  labelA: string | undefined;
+  labelB: string | undefined;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col items-center gap-1 pt-3" style={{ fontSize: 11 }}>
+      <div className="flex items-center gap-5">
+        <span className="flex items-center gap-1.5">
+          <span
+            className="inline-block h-2.5 w-2.5 rounded-sm"
+            style={{ backgroundColor: CHART_COLORS.compareA.tmax }}
+          />
+          <span style={{ color: CHART_COLORS.compareA.tmax }}>{labelA}</span>
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span
+            className="inline-block h-2.5 w-2.5 rounded-sm"
+            style={{ backgroundColor: CHART_COLORS.compareB.tmax }}
+          />
+          <span style={{ color: CHART_COLORS.compareB.tmax }}>{labelB}</span>
+        </span>
+      </div>
+      <span className="text-[var(--color-text-secondary)]" style={{ fontSize: 10 }}>
+        {t("chart.legend.seriesNote")}
+      </span>
+    </div>
+  );
+}
+
 export function StandardClimateChart({
   chartData,
   aridity,
@@ -137,7 +170,15 @@ export function StandardClimateChart({
                 }}
               />
 
-              <Legend verticalAlign="bottom" height={48} wrapperStyle={{ paddingTop: 24 }} />
+              {isCompare ? (
+                <Legend
+                  verticalAlign="bottom"
+                  height={52}
+                  content={() => <CompareModeLegend labelA={labelA} labelB={labelB} />}
+                />
+              ) : (
+                <Legend verticalAlign="bottom" height={48} wrapperStyle={{ paddingTop: 24 }} />
+              )}
 
               {!isCompare && visible.prec && (
                 <Bar

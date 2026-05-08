@@ -16,6 +16,21 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
   const { t } = useTranslation();
   const [visible, setVisible] = useState<TVisibleSeries>(DEFAULT_VISIBLE);
   const [chartMode, setChartMode] = useState<TChartMode>("standard");
+  const [prevVariables, setPrevVariables] = useState(props.variables);
+
+  // Adjust visible state when the variables prop changes (React render-phase update pattern).
+  if (props.variables !== prevVariables) {
+    setPrevVariables(props.variables);
+    if (props.variables) {
+      const vars = props.variables;
+      setVisible((prev) => ({
+        tmax: vars.includes("tmax"),
+        tmin: vars.includes("tmin"),
+        tavg: prev.tavg,
+        prec: vars.includes("prec"),
+      }));
+    }
+  }
 
   const chart = useTempPrecipChart(props);
 
@@ -35,6 +50,8 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
     !chart.isCompare && props.selectedMonths?.length === 1
       ? (props.data?.find((d) => d.month === props.selectedMonths![0])?.monthName ?? "")
       : "";
+
+  const storeVarSet = new Set<string>(props.variables ?? []);
 
   const chips: { key: keyof TVisibleSeries; label: string }[] = [
     { key: "tmax", label: t("sidebar.variables.tmax") },
@@ -75,14 +92,18 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
           {chips.map(({ key, label }) => {
             const isLastActive = visible[key] && activeCount === 1;
             const isDimmed = isWalterLieth && (key === "tmax" || key === "tmin");
+            const isUnavailable =
+              props.variables !== undefined && key !== "tavg" && !storeVarSet.has(key);
             return (
               <div
                 key={key}
-                className={isLastActive || isDimmed ? "pointer-events-none opacity-40" : ""}
+                className={
+                  isLastActive || isDimmed || isUnavailable ? "pointer-events-none opacity-40" : ""
+                }
               >
                 <FilterChip
                   label={label}
-                  isActive={visible[key] && !isDimmed}
+                  isActive={visible[key] && !isDimmed && !isUnavailable}
                   onClick={() => handleToggle(key)}
                 />
               </div>
