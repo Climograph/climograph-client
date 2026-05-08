@@ -38,10 +38,16 @@
     }
   },
   "compareCities": {
-    "title": "Compare Cities"
+    "title": "Compare Cities",
+    "selectSecondCity": "Select a second city to compare"
   },
   "comparePeriods": {
-    "title": "Compare Periods"
+    "title": "Compare Periods",
+    "trend": {
+      "tempTitle": "Temperature trend",
+      "precipTitle": "Precipitation trend",
+      "noChange": "No change"
+    }
   },
   "climateComparison": {
     "title": "Climate Comparison",
@@ -115,6 +121,9 @@
     "subtitle": {
       "climate": "Climate {{period}}",
       "weather": "Weather {{year}}"
+    },
+    "legend": {
+      "seriesNote": "Solid = tmax · Dashed = tmin · Bars = precip"
     }
   },
   "loading": {

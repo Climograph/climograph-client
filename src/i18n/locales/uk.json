@@ -38,10 +38,16 @@
     }
   },
   "compareCities": {
-    "title": "Порівняти міста"
+    "title": "Порівняти міста",
+    "selectSecondCity": "Оберіть друге місто для порівняння"
   },
   "comparePeriods": {
-    "title": "Порівняти періоди"
+    "title": "Порівняти періоди",
+    "trend": {
+      "tempTitle": "Тенденція температури",
+      "precipTitle": "Тенденція опадів",
+      "noChange": "Без змін"
+    }
   },
   "climateComparison": {
     "title": "Порівняння клімату",
@@ -115,6 +121,9 @@
     "subtitle": {
       "climate": "Клімат {{period}}",
       "weather": "Погода {{year}}"
+    },
+    "legend": {
+      "seriesNote": "Суцільна = tmax · Пунктир = tmin · Стовпці = precip"
     }
   },
   "loading": {

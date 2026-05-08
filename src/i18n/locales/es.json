@@ -38,10 +38,16 @@
     }
   },
   "compareCities": {
-    "title": "Comparar Ciudades"
+    "title": "Comparar Ciudades",
+    "selectSecondCity": "Selecciona una segunda ciudad para comparar"
   },
   "comparePeriods": {
-    "title": "Comparar Períodos"
+    "title": "Comparar Períodos",
+    "trend": {
+      "tempTitle": "Tendencia de temperatura",
+      "precipTitle": "Tendencia de precipitación",
+      "noChange": "Sin cambios"
+    }
   },
   "climateComparison": {
     "title": "Comparacion Climatica",
@@ -115,6 +121,9 @@
     "subtitle": {
       "climate": "Clima {{period}}",
       "weather": "Tiempo {{year}}"
+    },
+    "legend": {
+      "seriesNote": "Sólida = tmax · Discontinua = tmin · Barras = precip"
     }
   },
   "loading": {
