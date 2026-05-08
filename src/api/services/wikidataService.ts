@@ -1,5 +1,4 @@
-import { ENDPOINTS } from "@/constants";
-import i18n from "i18next";
+import { ENDPOINTS, EXCLUDE_DESCRIPTION_KEYWORDS } from "@/constants";
 import type {
   TWikidataCity,
   TWikidataEntitiesResult,
@@ -9,10 +8,12 @@ import type {
 } from "@/types";
 import { isValidString, parseWktPoint } from "@/utils";
 import axios from "axios";
+import i18n from "i18next";
 
 export const WikidataService = {
   async searchCity(query: string): Promise<TWikidataCity[]> {
-    const lang = i18n.language ?? "en";
+    const rawLang = i18n.language ?? "en";
+    const lang = rawLang === "ua" ? "uk" : rawLang;
 
     const searchRes = await axios.get<TWikidataSearchResult>(ENDPOINTS.WIKIDATA, {
       params: {
@@ -21,7 +22,7 @@ export const WikidataService = {
         language: lang,
         uselang: lang,
         type: "item",
-        limit: 50,
+        limit: 100,
         format: "json",
         origin: "*",
       },
@@ -51,9 +52,16 @@ export const WikidataService = {
     const bindings = sparqlRes.data.results.bindings;
     if (bindings.length === 0) return [];
 
+    const itemMap = new Map(items.map((item) => [item.id, item]));
+    const lowerQuery = query.toLowerCase();
+
     const sortedBindings = [...bindings].sort((a, b) => {
-      const scoreA = 3 * Number(a.sitelinks.value) + Number(a.statements.value);
-      const scoreB = 3 * Number(b.sitelinks.value) + Number(b.statements.value);
+      const idA = a.settlement.value.split("/").pop() ?? "";
+      const idB = b.settlement.value.split("/").pop() ?? "";
+      const exactA = (itemMap.get(idA)?.label ?? "").toLowerCase() === lowerQuery ? 10000 : 0;
+      const exactB = (itemMap.get(idB)?.label ?? "").toLowerCase() === lowerQuery ? 10000 : 0;
+      const scoreA = 3 * Number(a.sitelinks.value) + Number(a.statements.value) + exactA;
+      const scoreB = 3 * Number(b.sitelinks.value) + Number(b.statements.value) + exactB;
       return scoreB - scoreA;
     });
 
@@ -61,6 +69,7 @@ export const WikidataService = {
     const results: TWikidataCity[] = [];
 
     for (const binding of sortedBindings) {
+      if (results.length >= 10) break;
       if (!isValidString(binding.settlement.value)) continue;
 
       const id = binding.settlement.value.split("/").pop() ?? binding.settlement.value;
@@ -72,11 +81,16 @@ export const WikidataService = {
       const coords = parseWktPoint(binding.point.value);
       if (!coords) continue;
 
-      const searchItem = items.find((item) => item.id === id);
+      const searchItem = itemMap.get(id);
+      const description = String(searchItem?.description ?? "");
+      const lowerDesc = description.toLowerCase();
+
+      if (EXCLUDE_DESCRIPTION_KEYWORDS.some((k) => lowerDesc.includes(k))) continue;
+
       results.push({
         id,
         label: String(searchItem?.label ?? id),
-        description: String(searchItem?.description ?? ""),
+        description,
         lat: coords.lat,
         lng: coords.lng,
       });
@@ -131,9 +145,9 @@ export const WikidataService = {
       const entity = entities[id];
       if (!entity) continue;
 
-      const label = entity.labels?.[lang]?.value ?? entity.labels?.["en"]?.value ?? "";
+      const label = entity.labels?.[lang]?.value ?? entity.labels?.en?.value ?? "";
       const description =
-        entity.descriptions?.[lang]?.value ?? entity.descriptions?.["en"]?.value ?? "";
+        entity.descriptions?.[lang]?.value ?? entity.descriptions?.en?.value ?? "";
 
       return {
         id,

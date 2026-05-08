@@ -1,4 +1,5 @@
 export { ENDPOINTS, RESULT_STATUSES } from "./api.constant";
+export { EXCLUDE_DESCRIPTION_KEYWORDS } from "./wikidata.constant";
 export {
   MONTH_NAMES,
   WORLDCLIM_BASE_URL,
