@@ -3,8 +3,8 @@ import type { computeCompareStats } from "@/pages/ClimateComparison/ClimateCompa
 import type { TCellSize, TMonthlyTemperature, TWikidataCity } from "@/types";
 
 export type TCompareCitiesViewProps = {
-  cityA: TWikidataCity;
-  cityB: TWikidataCity;
+  cityA: TWikidataCity | null;
+  cityB: TWikidataCity | null;
   dataA: TMonthlyTemperature[];
   dataB: TMonthlyTemperature[];
   autoGrid: TCellSize;
@@ -18,6 +18,7 @@ export type TCompareCitiesViewProps = {
 export type TCitySearchRowProps = {
   label: string;
   dotColor: string;
+  defaultValue: string;
   onCitySelect: (city: TWikidataCity) => void;
 };
 

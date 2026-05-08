@@ -16,7 +16,7 @@ import type {
   TStatsGridProps,
 } from "./CompareCities.type";
 
-function CitySearchRow({ label, dotColor, onCitySelect }: TCitySearchRowProps) {
+function CitySearchRow({ label, dotColor, defaultValue, onCitySelect }: TCitySearchRowProps) {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center gap-2">
@@ -29,7 +29,7 @@ function CitySearchRow({ label, dotColor, onCitySelect }: TCitySearchRowProps) {
           {label}
         </span>
       </div>
-      <SearchBar onCitySelect={onCitySelect} />
+      <SearchBar defaultValue={defaultValue} onCitySelect={onCitySelect} />
     </div>
   );
 }
@@ -74,7 +74,7 @@ function StatsGrid({ labelA, labelB, statsA, statsB, activeColumn }: TStatsGridP
               </span>
             </th>
             <th
-              className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[#EBF4FF]" : ""}`}
+              className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[#FEF3C7]" : ""}`}
               style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
             >
               <span className="flex items-center justify-center gap-1.5">
@@ -101,7 +101,7 @@ function StatsGrid({ labelA, labelB, statsA, statsB, activeColumn }: TStatsGridP
                 {row.a}
               </td>
               <td
-                className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[#EBF4FF]" : ""}`}
+                className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[#FEF3C7]" : ""}`}
                 style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
               >
                 {row.b}
@@ -146,27 +146,36 @@ export function CompareCitiesView({
   const { t } = useTranslation();
   const [activeCity, setActiveCity] = useState(0);
 
+  const canCompare = cityA !== null && cityB !== null;
   const hasBothData = dataA.length > 0 && dataB.length > 0;
   const statsA = hasBothData ? computeCompareStats(dataA) : null;
   const statsB = hasBothData ? computeCompareStats(dataB) : null;
   const diff = hasBothData ? computeDiffStats(dataA, dataB) : null;
 
-  const labelA = cityA.label;
-  const labelB = cityB.label;
+  const labelA = cityA?.label ?? "";
+  const labelB = cityB?.label ?? "";
 
   const miniMapLocations: TMiniMapLocation[] = [
-    {
-      lat: cityA.lat,
-      lng: cityA.lng,
-      label: cityA.label,
-      color: CLIMATE_COMPARISON_COLORS.A.tmax,
-    },
-    {
-      lat: cityB.lat,
-      lng: cityB.lng,
-      label: cityB.label,
-      color: CLIMATE_COMPARISON_COLORS.B.tmax,
-    },
+    ...(cityA !== null
+      ? [
+          {
+            lat: cityA.lat,
+            lng: cityA.lng,
+            label: cityA.label,
+            color: CLIMATE_COMPARISON_COLORS.A.tmax,
+          },
+        ]
+      : []),
+    ...(cityB !== null
+      ? [
+          {
+            lat: cityB.lat,
+            lng: cityB.lng,
+            label: cityB.label,
+            color: CLIMATE_COMPARISON_COLORS.B.tmax,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -186,13 +195,17 @@ export function CompareCitiesView({
           <div className="flex-1">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <CitySearchRow
+                key={cityA?.id ?? "empty-a"}
                 label={t("climateComparison.searchA")}
                 dotColor={CLIMATE_COMPARISON_COLORS.A.tmax}
+                defaultValue={cityA?.label ?? ""}
                 onCitySelect={onCityASelect}
               />
               <CitySearchRow
+                key={cityB?.id ?? "empty-b"}
                 label={t("climateComparison.searchB")}
                 dotColor={CLIMATE_COMPARISON_COLORS.B.tmax}
+                defaultValue={cityB?.label ?? ""}
                 onCitySelect={onCityBSelect}
               />
             </div>
@@ -219,7 +232,13 @@ export function CompareCitiesView({
           </div>
         )}
 
-        {!hasBothData && !isLoading && !error && (
+        {!canCompare && !isLoading && !error && (
+          <p className="text-center text-[var(--color-text-secondary)]">
+            {cityA !== null ? t("compareCities.selectSecondCity") : t("climateComparison.noData")}
+          </p>
+        )}
+
+        {canCompare && !hasBothData && !isLoading && !error && (
           <p className="text-center text-[var(--color-text-secondary)]">
             {t("climateComparison.noData")}
           </p>

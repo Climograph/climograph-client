@@ -13,7 +13,6 @@ import type { TClimatePeriod } from "@/constants/worldclim.constant";
 import {
   CLIMATE_COMPARISON_COLORS,
   computeCompareStats,
-  computeDiffStats,
 } from "@/pages/ClimateComparison/ClimateComparison.util";
 import { useTranslation } from "react-i18next";
 import type {
@@ -29,7 +28,7 @@ const CLIMATE_PERIOD_OPTIONS = Object.values(CLIMATE_PERIODS).map((period) => ({
   label: CLIMATE_PERIOD_LABELS[period],
 }));
 
-function CitySearchRow({ label, dotColor, onCitySelect }: TCitySearchRowProps) {
+function CitySearchRow({ label, dotColor, defaultValue, onCitySelect }: TCitySearchRowProps) {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center gap-2">
@@ -42,7 +41,7 @@ function CitySearchRow({ label, dotColor, onCitySelect }: TCitySearchRowProps) {
           {label}
         </span>
       </div>
-      <SearchBar onCitySelect={onCitySelect} />
+      <SearchBar defaultValue={defaultValue} onCitySelect={onCitySelect} />
     </div>
   );
 }
@@ -197,16 +196,20 @@ export function ComparePeriodsView({
   const hasBothData = dataA.length > 0 && dataB.length > 0;
   const statsA = hasBothData ? computeCompareStats(dataA) : null;
   const statsB = hasBothData ? computeCompareStats(dataB) : null;
-  const diff = hasBothData ? computeDiffStats(dataA, dataB) : null;
+  const tmaxDiff = statsA && statsB ? statsB.avgTmax - statsA.avgTmax : null;
+  const precDiff = statsA && statsB ? statsB.totalPrec - statsA.totalPrec : null;
 
-  const miniMapLocations: TMiniMapLocation[] = [
-    {
-      lat: city.lat,
-      lng: city.lng,
-      label: city.label,
-      color: CLIMATE_COMPARISON_COLORS.A.tmax,
-    },
-  ];
+  const miniMapLocations: TMiniMapLocation[] =
+    city !== null
+      ? [
+          {
+            lat: city.lat,
+            lng: city.lng,
+            label: city.label,
+            color: CLIMATE_COMPARISON_COLORS.A.tmax,
+          },
+        ]
+      : [];
 
   return (
     <PageWrapper>
@@ -224,8 +227,10 @@ export function ComparePeriodsView({
         <div className="flex flex-col gap-4 sm:flex-row">
           <div className="flex-1 flex flex-col gap-4">
             <CitySearchRow
+              key={city?.id ?? "empty"}
               label={t("climateComparison.searchCity")}
               dotColor={CLIMATE_COMPARISON_COLORS.A.tmax}
+              defaultValue={city?.label ?? ""}
               onCitySelect={onCitySelect}
             />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -303,68 +308,46 @@ export function ComparePeriodsView({
             labelA={labelA}
             labelB={labelB}
             compareMode="periods"
-            cityName={city.label}
+            cityName={city?.label ?? ""}
             subtitle={{ rawLabel: `${labelA} vs ${labelB}` }}
             showWalterLiethToggle={false}
             showAridity={false}
           />
         )}
 
-        {hasBothData && diff && (
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {hasBothData && tmaxDiff !== null && precDiff !== null && (
+          <div className="grid grid-cols-2 gap-3">
             <DiffCard
-              title={t("climateComparison.diff.warmerCity")}
+              title={t("comparePeriods.trend.tempTitle")}
               value={
-                diff.warmerCity === "tie"
-                  ? t("climateComparison.diff.tie")
-                  : diff.warmerCity === "A"
-                    ? labelA
-                    : labelB
+                tmaxDiff === 0
+                  ? t("comparePeriods.trend.noChange")
+                  : `${tmaxDiff > 0 ? "+" : ""}${tmaxDiff.toFixed(1)}°C`
               }
-              sub={
-                diff.warmerCity === "tie"
-                  ? "="
-                  : t("climateComparison.diff.byDegrees", { value: diff.tmaxDiff.toFixed(1) })
-              }
+              sub={`${labelB} vs ${labelA}`}
               valueColor={
-                diff.warmerCity === "A"
-                  ? CLIMATE_COMPARISON_COLORS.A.tmax
-                  : diff.warmerCity === "B"
-                    ? CLIMATE_COMPARISON_COLORS.B.tmax
+                tmaxDiff > 0
+                  ? CLIMATE_COMPARISON_COLORS.B.tmax
+                  : tmaxDiff < 0
+                    ? CLIMATE_COMPARISON_COLORS.A.tmax
                     : undefined
               }
             />
             <DiffCard
-              title={t("climateComparison.diff.moreRain")}
+              title={t("comparePeriods.trend.precipTitle")}
               value={
-                diff.moreRainCity === "tie"
-                  ? t("climateComparison.diff.tie")
-                  : diff.moreRainCity === "A"
-                    ? labelA
-                    : labelB
+                precDiff === 0
+                  ? t("comparePeriods.trend.noChange")
+                  : `${precDiff > 0 ? "+" : ""}${precDiff.toFixed(0)} mm`
               }
-              sub={
-                diff.moreRainCity === "tie"
-                  ? "="
-                  : t("climateComparison.diff.byMm", { value: diff.precDiff.toFixed(0) })
-              }
+              sub={`${labelB} vs ${labelA}`}
               valueColor={
-                diff.moreRainCity === "A"
-                  ? CLIMATE_COMPARISON_COLORS.A.tmax
-                  : diff.moreRainCity === "B"
-                    ? CLIMATE_COMPARISON_COLORS.B.tmax
+                precDiff > 0
+                  ? CLIMATE_COMPARISON_COLORS.B.tmax
+                  : precDiff < 0
+                    ? CLIMATE_COMPARISON_COLORS.A.tmax
                     : undefined
               }
-            />
-            <DiffCard
-              title={t("climateComparison.diff.hottestMonth")}
-              value={diff.hottestMonthName}
-              sub={`${labelA}: ${diff.hottestTempA.toFixed(1)}°C / ${labelB}: ${diff.hottestTempB.toFixed(1)}°C`}
-            />
-            <DiffCard
-              title={t("climateComparison.diff.coldestMonth")}
-              value={diff.coldestMonthName}
-              sub={`${labelA}: ${diff.coldestTempA.toFixed(1)}°C / ${labelB}: ${diff.coldestTempB.toFixed(1)}°C`}
             />
           </div>
         )}

@@ -15,8 +15,8 @@ export function ComparePeriods() {
   const [yearB, setYearB] = useState<number>(WEATHER_MAX_YEAR);
 
   const { dataA, dataB, isLoading, error } = useGetComparePeriods(
-    cityA.lat,
-    cityA.lng,
+    cityA?.lat ?? null,
+    cityA?.lng ?? null,
     climatePeriodA,
     climatePeriodB,
     yearA,

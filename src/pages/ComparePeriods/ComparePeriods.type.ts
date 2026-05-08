@@ -3,7 +3,7 @@ import type { computeCompareStats } from "@/pages/ClimateComparison/ClimateCompa
 import type { TCellSize, TDataset, TMonthlyTemperature, TWikidataCity } from "@/types";
 
 export type TComparePeriodsViewProps = {
-  city: TWikidataCity;
+  city: TWikidataCity | null;
   dataset: TDataset;
   climatePeriodA: TClimatePeriod;
   climatePeriodB: TClimatePeriod;
@@ -24,6 +24,7 @@ export type TComparePeriodsViewProps = {
 export type TCitySearchRowProps = {
   label: string;
   dotColor: string;
+  defaultValue: string;
   onCitySelect: (city: TWikidataCity) => void;
 };
 
