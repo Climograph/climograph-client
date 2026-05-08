@@ -2,10 +2,12 @@ import { CellSizeSelector, FilterChip, PeriodSelectRow, SectionLabel } from "@/c
 import { Dropdown } from "@/components/UI";
 import {
   CELL_SIZE_OPTIONS,
+  CELL_SIZES,
   CLIMATE_PERIOD_LABELS,
   CLIMATE_PERIODS,
   CLIMATE_VARIABLES,
   DATASETS,
+  PERIOD_RESTRICTED_VARIABLES,
   ROUTES,
   SIDEBAR_PARAMS,
   WEATHER_MAX_YEAR,
@@ -103,26 +105,48 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
   const cellStatus = cellCount !== null ? getCellCountStatus(cellCount) : null;
   const isTooMany = cellCount !== null && cellCount > 10_000;
 
+  const thirtySecDisabled =
+    draft.dataset === DATASETS.WEATHER ||
+    (draft.dataset === DATASETS.CLIMATE && draft.climatePeriod !== CLIMATE_PERIODS.C1970_2000);
+
   const cellSizeOptions: readonly TCellSizeOption[] = (
     Object.keys(CELL_SIZE_OPTIONS) as TCellSize[]
-  ).map((value) => ({ value, label: t(`cellSizes.${value}`) }));
+  ).map((value) => ({
+    value,
+    label: t(`cellSizes.${value}`),
+    ...(value === CELL_SIZES.THIRTY_SECONDS && thirtySecDisabled ? { disabled: true } : {}),
+  }));
 
   function handleDraftDatasetChange(ds: (typeof DATASETS)[keyof typeof DATASETS]) {
-    setDraft((prev) => ({
-      ...prev,
-      dataset: ds,
-      variables:
+    setDraft((prev) => {
+      const variables =
         ds === DATASETS.WEATHER
           ? prev.variables.filter((v) => (WEATHER_VARIABLES as readonly string[]).includes(v))
-          : prev.variables,
-    }));
+          : prev.variables;
+      const gridSize =
+        ds === DATASETS.WEATHER && prev.gridSize === CELL_SIZES.THIRTY_SECONDS
+          ? CELL_SIZES.TWO_POINT_FIVE_MINUTES
+          : prev.gridSize;
+      return { ...prev, dataset: ds, variables, gridSize };
+    });
   }
 
   function handleDraftClimatePeriodChange(value: string) {
     const period = Object.values(CLIMATE_PERIODS).find((p) => p === value);
-    if (period !== undefined) {
+    if (period === undefined) return;
+    if (period === CLIMATE_PERIODS.C1970_2000) {
       setDraft((prev) => ({ ...prev, climatePeriod: period }));
+      return;
     }
+    const restricted = new Set<string>(PERIOD_RESTRICTED_VARIABLES);
+    setDraft((prev) => {
+      const variables = prev.variables.filter((v) => !restricted.has(v));
+      const gridSize =
+        prev.gridSize === CELL_SIZES.THIRTY_SECONDS
+          ? CELL_SIZES.TWO_POINT_FIVE_MINUTES
+          : prev.gridSize;
+      return { ...prev, climatePeriod: period, variables, gridSize };
+    });
   }
 
   function handleDraftYearInputChange(val: string) {
@@ -279,14 +303,21 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
           <SectionLabel text={t("sidebar.sections.variables")} />
           <div className="flex flex-wrap gap-2">
             {(draft.dataset === DATASETS.WEATHER ? WEATHER_VARIABLES : CLIMATE_VARIABLES).map(
-              (v) => (
-                <FilterChip
-                  key={v}
-                  label={t(`sidebar.variables.${v}`)}
-                  isActive={draft.variables.includes(v)}
-                  onClick={() => handleDraftVariableToggle(v)}
-                />
-              ),
+              (v) => {
+                const isRestricted =
+                  draft.dataset === DATASETS.CLIMATE &&
+                  draft.climatePeriod !== CLIMATE_PERIODS.C1970_2000 &&
+                  (PERIOD_RESTRICTED_VARIABLES as readonly string[]).includes(v);
+                return (
+                  <FilterChip
+                    key={v}
+                    label={t(`sidebar.variables.${v}`)}
+                    isActive={draft.variables.includes(v)}
+                    disabled={isRestricted}
+                    onClick={() => handleDraftVariableToggle(v)}
+                  />
+                );
+              },
             )}
           </div>
           {draft.dataset === DATASETS.WEATHER && (
