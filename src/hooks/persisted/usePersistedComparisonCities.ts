@@ -1,13 +1,13 @@
-import { DEFAULT_COMPARE_CITY_A, DEFAULT_COMPARE_CITY_B, LOCAL_STORAGE_KEYS } from "@/constants";
+import { LOCAL_STORAGE_KEYS } from "@/constants";
 import type { TWikidataCity } from "@/types";
 import { useState } from "react";
 
-function loadCity(key: string, fallback: TWikidataCity): TWikidataCity {
+function loadCity(key: string): TWikidataCity | null {
   try {
     const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as TWikidataCity) : fallback;
+    return raw ? (JSON.parse(raw) as TWikidataCity) : null;
   } catch {
-    return fallback;
+    return null;
   }
 }
 
@@ -20,11 +20,11 @@ function saveCity(key: string, city: TWikidataCity) {
 }
 
 export function usePersistedComparisonCities() {
-  const [cityA, setCityA] = useState<TWikidataCity>(() =>
-    loadCity(LOCAL_STORAGE_KEYS.COMPARE_CITY_A, DEFAULT_COMPARE_CITY_A),
+  const [cityA, setCityA] = useState<TWikidataCity | null>(() =>
+    loadCity(LOCAL_STORAGE_KEYS.COMPARE_CITY_A),
   );
-  const [cityB, setCityB] = useState<TWikidataCity>(() =>
-    loadCity(LOCAL_STORAGE_KEYS.COMPARE_CITY_B, DEFAULT_COMPARE_CITY_B),
+  const [cityB, setCityB] = useState<TWikidataCity | null>(() =>
+    loadCity(LOCAL_STORAGE_KEYS.COMPARE_CITY_B),
   );
 
   function selectCityA(city: TWikidataCity) {
