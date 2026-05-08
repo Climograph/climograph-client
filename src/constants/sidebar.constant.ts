@@ -16,4 +16,6 @@ export const SIDEBAR_PARAMS = {
   BBOX_SOUTH: "south",
   BBOX_WEST: "west",
   BBOX_EAST: "east",
+  COMPARE_CITY_A: "cityA",
+  COMPARE_CITY_B: "cityB",
 } as const;
