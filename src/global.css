@@ -125,9 +125,9 @@ body {
   --chart-compare-a-min: #5dcaa5;
   --chart-compare-a-prec: #9fe1cb;
 
-  --chart-compare-b-max: #378add;
-  --chart-compare-b-min: #93c5fd;
-  --chart-compare-b-prec: #bfdbfe;
+  --chart-compare-b-max: #d97706;
+  --chart-compare-b-min: #f59e0b;
+  --chart-compare-b-prec: #fcd34d;
 }
 
 html.dark {
