@@ -3,6 +3,7 @@ import { DATASETS } from "@/constants";
 import {
   useGeolocation,
   useGetAltitude,
+  useGetCellBounds,
   useGetClimateData,
   usePersistedCity,
   useResolveCityByCoordinates,
@@ -28,7 +29,7 @@ export function ClimateStatistics() {
   const latestMapClickIdRef = useRef(0);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { dataset, climatePeriod, weatherYear, gridSize, months } = useFiltersStore();
+  const { dataset, climatePeriod, weatherYear, gridSize, months, variables } = useFiltersStore();
   const selectedMonths: number[] | null = Array.isArray(months) ? months : null;
 
   const [chartCityName, setChartCityName] = useState<string>(() => resolveCityName(selectedCity));
@@ -117,6 +118,11 @@ export function ClimateStatistics() {
   } = useGetClimateData(selectedCity.lat, selectedCity.lng, gridSize);
 
   const { data: altitude = null } = useGetAltitude(selectedCity.lat, selectedCity.lng, gridSize);
+  const { data: cellBounds = null } = useGetCellBounds(
+    selectedCity.lat,
+    selectedCity.lng,
+    gridSize,
+  );
 
   const resolvedLocationError = locationError !== null ? t(locationError) : null;
 
@@ -128,7 +134,10 @@ export function ClimateStatistics() {
       cityName={chartCityName}
       subtitle={subtitle}
       altitude={altitude}
+      cellBounds={cellBounds}
+      gridSize={gridSize}
       selectedMonths={selectedMonths}
+      variables={variables}
       isLoading={isLoading}
       isFetching={isFetching || isResolving}
       isLocating={isLocating}

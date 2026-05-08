@@ -109,5 +109,5 @@ export function computeDiffStats(
 
 export const CLIMATE_COMPARISON_COLORS = {
   A: { tmax: "#1D9E75", tmin: "#5DCAA5", prec: "#9FE1CB" },
-  B: { tmax: "#378ADD", tmin: "#93c5fd", prec: "#bfdbfe" },
+  B: { tmax: "#D97706", tmin: "#F59E0B", prec: "#FCD34D" },
 } as const;

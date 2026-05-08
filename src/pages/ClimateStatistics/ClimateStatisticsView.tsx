@@ -9,7 +9,10 @@ import { computeClimateStats } from "./ClimateStatistics.util";
 
 function StatCard({ label, value, unit, tooltip }: TStatCardProps) {
   return (
-    <div className="flex flex-col gap-1 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3">
+    <div
+      data-stat-card
+      className="flex flex-col gap-1 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3"
+    >
       <span className="flex items-center gap-1 text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
         {label}
         {tooltip && (
@@ -42,7 +45,10 @@ export function ClimateStatisticsView({
   cityName,
   subtitle,
   altitude,
+  cellBounds,
+  gridSize,
   selectedMonths,
+  variables,
   isLoading,
   isFetching,
   isLocating,
@@ -71,7 +77,7 @@ export function ClimateStatisticsView({
     : null;
 
   function handleExportCSV() {
-    exportToCSV(temperatureData, cityName);
+    exportToCSV(temperatureData, cityName, variables);
   }
 
   function handleExportPNG(): Promise<void> {
@@ -152,6 +158,7 @@ export function ClimateStatisticsView({
             lng={mapCenter.lng}
             onMapClick={onMapClick}
             {...(selectedCity ? { label: selectedCity.label } : {})}
+            {...(cellBounds !== null ? { cellBounds, gridSize } : {})}
           />
         </section>
 
@@ -230,6 +237,7 @@ export function ClimateStatisticsView({
                   data={temperatureData}
                   cityName={cityName}
                   subtitle={subtitle}
+                  variables={variables}
                   {...(altitude !== null ? { altitude } : {})}
                   {...(isFiltered ? { selectedMonths } : {})}
                 />
