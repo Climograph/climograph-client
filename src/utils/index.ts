@@ -10,6 +10,7 @@ export type { TMonthAridity, TWalterLiethScales } from "./walterLieth.util";
 export { estimateCellCount, getCellCountStatus } from "./cellCount.util";
 export type { TCellCountStatus } from "./cellCount.util";
 export { isValidString, parseWktPoint } from "./wikidata.util";
+export { cssVar, hexToRgb } from "./cssVar.util";
 export {
   buildDatasetParams,
   buildGridIri,
