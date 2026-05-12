@@ -4,7 +4,7 @@ import { GLOBAL_CONFIG } from "@/global-config";
 import { useTheme } from "@/hooks";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { FilterIcon, MoonIcon, SunIcon } from "../svg";
 import ClimaticaLogo from "../svg/logos/ClimaticaLogo";
 import type { TTopbarProps } from "./Topbar.type";
@@ -75,12 +75,15 @@ export function Topbar({ isSidebarOpen, onToggleSidebar }: TTopbarProps) {
     >
       <div className="flex h-full items-center px-4">
         {/* Logo */}
-        <div className="flex flex-1 items-center gap-2.5 text-[var(--color-primary)]">
+        <Link
+          to="/"
+          className="flex flex-1 items-center gap-2.5 text-[var(--color-primary)] hover:opacity-80 transition-opacity duration-150"
+        >
           <ClimaticaLogo className="h-8 w-8 md:h-9 md:w-9 lg:h-10 lg:w-10 shrink-0" />
           <span className="text-[length:var(--font-sm)] md:text-[length:var(--font-md)] lg:text-[length:var(--font-lg)] font-semibold tracking-wide leading-none">
             {GLOBAL_CONFIG.appName}
           </span>
-        </div>
+        </Link>
 
         {/* Desktop center nav */}
         <nav className="hidden gap-0.5 lg:flex">

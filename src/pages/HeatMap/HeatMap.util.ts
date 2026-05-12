@@ -1,5 +1,5 @@
 import type { TWorldClimAvgBoxBinding, TWorldClimBoxBinding } from "@/types";
-import { GRID_DELTA, iriToCellBounds } from "@/utils";
+import { cssVar, hexToRgb, GRID_DELTA, iriToCellBounds } from "@/utils";
 import type { TCellBounds } from "@/utils";
 
 export { GRID_DELTA, iriToCellBounds };
@@ -71,25 +71,39 @@ export function computeHeatmapStats(
   return { min, max, avg, count: values.length };
 }
 
-// Five-stop color scale: cold blue → green → warm yellow → orange-red → dark red
-const COLOR_STOPS: { t: number; r: number; g: number; b: number }[] = [
-  { t: 0, r: 133, g: 183, b: 235 }, // #85B7EB
-  { t: 0.25, r: 159, g: 225, b: 203 }, // #9FE1CB
-  { t: 0.5, r: 250, g: 199, b: 117 }, // #FAC775
-  { t: 0.75, r: 216, g: 90, b: 48 }, // #D85A30
-  { t: 1, r: 163, g: 45, b: 45 }, // #A32D2D
-];
+// Five-stop color scale defined as CSS custom properties in global.css
+const HEATMAP_CSS_VARS = [
+  { t: 0, name: "--color-heatmap-0" },
+  { t: 0.25, name: "--color-heatmap-25" },
+  { t: 0.5, name: "--color-heatmap-50" },
+  { t: 0.75, name: "--color-heatmap-75" },
+  { t: 1, name: "--color-heatmap-100" },
+] as const;
+
+type TRgbStop = { t: number; r: number; g: number; b: number };
+
+let colorStopsCache: TRgbStop[] | null = null;
+
+function getColorStops(): TRgbStop[] {
+  if (colorStopsCache !== null) return colorStopsCache;
+  colorStopsCache = HEATMAP_CSS_VARS.map(({ t, name }) => {
+    const { r, g, b } = hexToRgb(cssVar(name));
+    return { t, r, g, b };
+  });
+  return colorStopsCache;
+}
 
 export function interpolateColor(t: number): string {
+  const stops = getColorStops();
   const clamped = Math.max(0, Math.min(1, t));
 
-  let lo = COLOR_STOPS[0];
-  let hi = COLOR_STOPS[COLOR_STOPS.length - 1];
+  let lo = stops[0];
+  let hi = stops[stops.length - 1];
 
-  for (let i = 0; i < COLOR_STOPS.length - 1; i++) {
-    if (clamped <= COLOR_STOPS[i + 1].t) {
-      lo = COLOR_STOPS[i];
-      hi = COLOR_STOPS[i + 1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (clamped <= stops[i + 1].t) {
+      lo = stops[i];
+      hi = stops[i + 1];
       break;
     }
   }

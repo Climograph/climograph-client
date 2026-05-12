@@ -74,7 +74,7 @@ function StatsGrid({ labelA, labelB, statsA, statsB, activeColumn }: TStatsGridP
               </span>
             </th>
             <th
-              className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[#FEF3C7]" : ""}`}
+              className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[var(--color-city-b-tint)]" : ""}`}
               style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
             >
               <span className="flex items-center justify-center gap-1.5">
@@ -101,7 +101,7 @@ function StatsGrid({ labelA, labelB, statsA, statsB, activeColumn }: TStatsGridP
                 {row.a}
               </td>
               <td
-                className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[#FEF3C7]" : ""}`}
+                className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[var(--color-city-b-tint)]" : ""}`}
                 style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
               >
                 {row.b}

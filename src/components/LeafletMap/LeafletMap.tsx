@@ -37,9 +37,9 @@ function CellBoundsLayer({ cellBounds, gridSize }: TCellBoundsLayerProps) {
     <Rectangle
       bounds={bounds}
       pathOptions={{
-        color: "#1D9E75",
+        color: "var(--color-primary)",
         weight: 1.5,
-        fillColor: "#1D9E75",
+        fillColor: "var(--color-primary)",
         fillOpacity: 0.08,
         dashArray: "4 4",
       }}
