@@ -1,12 +1,6 @@
 import { Layout } from "@/components/Layout";
 import { ROUTES } from "@/constants";
-import {
-  ClimateComparison,
-  ClimateStatistics,
-  CompareCities,
-  ComparePeriods,
-  HeatMap,
-} from "@/pages";
+import { ClimateStatistics, CompareCities, ComparePeriods, HeatMap } from "@/pages";
 import { createElement } from "react";
 import { Navigate, createBrowserRouter } from "react-router-dom";
 
@@ -40,10 +34,6 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.COMPARE_PERIODS,
         element: createElement(ComparePeriods),
-      },
-      {
-        path: ROUTES.COMPARE_LEGACY,
-        element: createElement(ClimateComparison),
       },
       {
         path: ROUTES.HEAT_MAP,
