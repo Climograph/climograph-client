@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type { TPeriodSelectRowProps } from "./PeriodSelectRow.type";
 
 export function PeriodSelectRow({
@@ -9,6 +10,19 @@ export function PeriodSelectRow({
   hideDot = false,
   dotColor,
 }: TPeriodSelectRowProps) {
+  const [draft, setDraft] = useState(value);
+
+  /** Sync draft when the value is changed externally (e.g. programmatic reset) */
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value;
+    setDraft(raw);
+    onChange(raw);
+  }
+
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
@@ -30,8 +44,8 @@ export function PeriodSelectRow({
         <div className="flex items-center gap-2">
           <input
             type="number"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
+            value={draft}
+            onChange={handleChange}
             className={`w-24 rounded-[var(--radius-md)] border px-3 py-2 text-[length:var(--font-sm)] transition-all focus:outline-none focus:ring-2 ${
               error
                 ? "border-[var(--color-error)] bg-[var(--color-error-bg)] focus:ring-[var(--color-error)]"
