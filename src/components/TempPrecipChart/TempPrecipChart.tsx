@@ -18,7 +18,7 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
   const [chartMode, setChartMode] = useState<TChartMode>("standard");
   const [prevVariables, setPrevVariables] = useState(props.variables);
 
-  // Adjust visible state when the variables prop changes (React render-phase update pattern).
+  /** Render-phase state update — intentional; avoids a stale-render flash from useEffect */
   if (props.variables !== prevVariables) {
     setPrevVariables(props.variables);
     if (props.variables) {
@@ -114,7 +114,7 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
 
       {isWalterLieth && !chart.isCompare ? (
         <WalterLiethChart
-          chartData={chart.chartData}
+          chartData={chart.chartDataSingle}
           scales={chart.scales}
           summary={chart.summary}
           {...(props.altitude !== undefined ? { altitude: props.altitude } : {})}

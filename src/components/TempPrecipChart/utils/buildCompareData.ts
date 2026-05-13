@@ -8,6 +8,7 @@ export function buildCompareData(
   return dataA.map((a, i) => {
     const b = dataB[i] ?? { tmax: 0, tmin: 0, prec: 0 };
     return {
+      month: a.month,
       monthName: a.monthName,
       tmaxA: a.tmax,
       tminA: a.tmin,

@@ -182,28 +182,22 @@ export function StandardClimateChart({
 
               {!isCompare && visible.prec && (
                 <Bar
+                  key={`prec-bar-${JSON.stringify(selectedMonths)}`}
                   yAxisId="prec"
                   dataKey="prec"
                   name={t("chart.precipitation")}
                   fill={CHART_COLORS.humid}
                   minPointSize={0}
                   background={false}
-                  shape={<PrecipBarShape />}
+                  shape={<PrecipBarShape selectedMonths={selectedMonths} />}
                 >
                   {showAridity &&
-                    aridity?.map((m, i) => {
-                      const isSelected =
-                        !selectedMonths ||
-                        selectedMonths.length === 0 ||
-                        selectedMonths.includes(m.month);
-                      return (
-                        <Cell
-                          key={`prec-${i}`}
-                          fill={m.isArid ? CHART_COLORS.arid : CHART_COLORS.humid}
-                          fillOpacity={isSelected ? 0.8 : 0.15}
-                        />
-                      );
-                    })}
+                    aridity?.map((m, i) => (
+                      <Cell
+                        key={`prec-${i}`}
+                        fill={m.isArid ? CHART_COLORS.arid : CHART_COLORS.humid}
+                      />
+                    ))}
                 </Bar>
               )}
 
@@ -249,14 +243,14 @@ export function StandardClimateChart({
 
               {isCompare && visible.prec && (
                 <Bar
+                  key={`precA-bar-${JSON.stringify(selectedMonths)}`}
                   yAxisId="prec"
                   dataKey="precA"
                   name={`${labelA ?? ""} — ${t("chart.precipitation")}`}
                   fill={CHART_COLORS.compareA.prec}
-                  opacity={0.8}
                   minPointSize={0}
                   background={false}
-                  shape={<PrecipBarShape />}
+                  shape={<PrecipBarShape selectedMonths={selectedMonths} />}
                 >
                   {showAridity &&
                     aridityA?.map((m, i) => (
@@ -311,14 +305,14 @@ export function StandardClimateChart({
 
               {isCompare && visible.prec && (
                 <Bar
+                  key={`precB-bar-${JSON.stringify(selectedMonths)}`}
                   yAxisId="prec"
                   dataKey="precB"
                   name={`${labelB ?? ""} — ${t("chart.precipitation")}`}
                   fill={CHART_COLORS.compareB.prec}
-                  opacity={0.8}
                   minPointSize={0}
                   background={false}
-                  shape={<PrecipBarShape />}
+                  shape={<PrecipBarShape selectedMonths={selectedMonths} />}
                 />
               )}
 

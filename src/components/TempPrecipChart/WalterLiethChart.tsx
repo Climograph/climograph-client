@@ -34,10 +34,10 @@ export function WalterLiethChart({
   }
 
   const scaledData: TWLScaledPoint[] = chartData.map((d) => ({
-    monthName: typeof d["monthName"] === "string" ? d["monthName"] : "",
-    tavg: Number(d["tavg"] ?? 0),
-    prec: Number(d["prec"] ?? 0),
-    precScaled: Number(d["prec"] ?? 0) / 2,
+    monthName: d.monthName,
+    tavg: d.tavg,
+    prec: d.prec,
+    precScaled: d.prec / 2,
   }));
 
   const leftTicks = scales ? computeWLAxisTicks(scales.tempMin, scales.tempMax) : undefined;
