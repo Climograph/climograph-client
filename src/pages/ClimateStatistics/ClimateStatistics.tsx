@@ -84,7 +84,7 @@ export function ClimateStatistics() {
       lng,
     };
 
-    // * update coordinates immediately so climate fetch starts without waiting for Wikidata
+    /** update coordinates immediately so climate fetch starts without waiting for Wikidata */
     selectCity(provisionalCity);
 
     try {
@@ -102,7 +102,7 @@ export function ClimateStatistics() {
         lng,
       });
     } catch {
-      // * keep provisional map label if reverse lookup fails.
+      /** keep provisional map label if reverse lookup fails */
     }
   }
 

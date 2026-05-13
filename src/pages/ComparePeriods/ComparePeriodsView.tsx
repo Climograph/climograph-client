@@ -1,13 +1,14 @@
 import type { TMiniMapLocation } from "@/components";
 import {
+  CompareStatsGrid,
+  DiffCard,
   MiniMap,
   PeriodSelectRow,
   SearchBar,
   TempPrecipChart,
   ThreeDotsScaleLoader,
 } from "@/components";
-import { Dropdown } from "@/components/UI";
-import { PageWrapper } from "@/components/UI";
+import { Dropdown, PageWrapper } from "@/components/UI";
 import { CELL_SIZE_OPTIONS, CLIMATE_PERIOD_LABELS, CLIMATE_PERIODS, DATASETS } from "@/constants";
 import type { TClimatePeriod } from "@/constants/worldclim.constant";
 import {
@@ -19,8 +20,6 @@ import type {
   TCitySearchRowProps,
   TClimatePeriodRowProps,
   TComparePeriodsViewProps,
-  TDiffCardProps,
-  TStatsGridProps,
 } from "./ComparePeriods.type";
 
 const CLIMATE_PERIOD_OPTIONS = Object.values(CLIMATE_PERIODS).map((period) => ({
@@ -71,103 +70,6 @@ function ClimatePeriodRow({ label, dotColor, value, onChange }: TClimatePeriodRo
   );
 }
 
-function StatsGrid({ labelA, labelB, statsA, statsB }: TStatsGridProps) {
-  const { t } = useTranslation();
-
-  const rows = [
-    {
-      label: t("climateComparison.stats.avgTmax"),
-      a: `${statsA.avgTmax.toFixed(1)} °C`,
-      b: `${statsB.avgTmax.toFixed(1)} °C`,
-    },
-    {
-      label: t("climateComparison.stats.avgTmin"),
-      a: `${statsA.avgTmin.toFixed(1)} °C`,
-      b: `${statsB.avgTmin.toFixed(1)} °C`,
-    },
-    {
-      label: t("climateComparison.stats.totalPrec"),
-      a: `${statsA.totalPrec.toFixed(0)} mm`,
-      b: `${statsB.totalPrec.toFixed(0)} mm`,
-    },
-  ];
-
-  return (
-    <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)]">
-      <table className="w-full table-fixed text-[length:var(--font-sm)]">
-        <thead>
-          <tr className="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-            <th className="px-4 py-2.5 text-left font-medium text-[var(--color-text-secondary)]" />
-            <th
-              className="px-4 py-2.5 text-center font-semibold"
-              style={{ color: CLIMATE_COMPARISON_COLORS.A.tmax }}
-            >
-              <span className="flex items-center justify-center gap-1.5">
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: CLIMATE_COMPARISON_COLORS.A.tmax }}
-                />
-                {labelA}
-              </span>
-            </th>
-            <th
-              className="px-4 py-2.5 text-center font-semibold"
-              style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
-            >
-              <span className="flex items-center justify-center gap-1.5">
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: CLIMATE_COMPARISON_COLORS.B.tmax }}
-                />
-                {labelB}
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr
-              key={row.label}
-              className={`border-b border-[var(--color-border)] last:border-0 ${i % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}
-            >
-              <td className="px-4 py-2.5 text-[var(--color-text-secondary)]">{row.label}</td>
-              <td
-                className="px-4 py-2.5 text-center font-semibold"
-                style={{ color: CLIMATE_COMPARISON_COLORS.A.tmax }}
-              >
-                {row.a}
-              </td>
-              <td
-                className="px-4 py-2.5 text-center font-semibold"
-                style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
-              >
-                {row.b}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function DiffCard({ title, value, sub, valueColor }: TDiffCardProps) {
-  return (
-    <div className="flex flex-col gap-1 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3">
-      <span className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
-        {title}
-      </span>
-      <span
-        className="text-[length:var(--font-lg)] font-bold leading-snug"
-        style={valueColor ? { color: valueColor } : undefined}
-      >
-        {value}
-      </span>
-      <span className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">{sub}</span>
-    </div>
-  );
-}
-
 export function ComparePeriodsView({
   city,
   dataset,
@@ -178,6 +80,7 @@ export function ComparePeriodsView({
   dataA,
   dataB,
   autoGrid,
+  selectedMonths,
   isLoading,
   error,
   onCitySelect,
@@ -199,17 +102,9 @@ export function ComparePeriodsView({
   const tmaxDiff = statsA && statsB ? statsB.avgTmax - statsA.avgTmax : null;
   const precDiff = statsA && statsB ? statsB.totalPrec - statsA.totalPrec : null;
 
-  const miniMapLocations: TMiniMapLocation[] =
-    city !== null
-      ? [
-          {
-            lat: city.lat,
-            lng: city.lng,
-            label: city.label,
-            color: CLIMATE_COMPARISON_COLORS.A.tmax,
-          },
-        ]
-      : [];
+  const miniMapLocations: TMiniMapLocation[] = [
+    { lat: city.lat, lng: city.lng, label: city.label, color: CLIMATE_COMPARISON_COLORS.A.tmax },
+  ];
 
   return (
     <PageWrapper>
@@ -227,10 +122,10 @@ export function ComparePeriodsView({
         <div className="flex flex-col gap-4 sm:flex-row">
           <div className="flex-1 flex flex-col gap-4">
             <CitySearchRow
-              key={city?.id ?? "empty"}
+              key={city.id}
               label={t("climateComparison.searchCity")}
               dotColor={CLIMATE_COMPARISON_COLORS.A.tmax}
-              defaultValue={city?.label ?? ""}
+              defaultValue={city.label}
               onCitySelect={onCitySelect}
             />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -298,7 +193,7 @@ export function ComparePeriodsView({
         )}
 
         {hasBothData && statsA && statsB && (
-          <StatsGrid labelA={labelA} labelB={labelB} statsA={statsA} statsB={statsB} />
+          <CompareStatsGrid labelA={labelA} labelB={labelB} statsA={statsA} statsB={statsB} />
         )}
 
         {hasBothData && (
@@ -308,10 +203,11 @@ export function ComparePeriodsView({
             labelA={labelA}
             labelB={labelB}
             compareMode="periods"
-            cityName={city?.label ?? ""}
+            cityName={city.label}
             subtitle={{ rawLabel: `${labelA} vs ${labelB}` }}
             showWalterLiethToggle={false}
             showAridity={false}
+            {...(selectedMonths !== null && selectedMonths.length > 0 ? { selectedMonths } : {})}
           />
         )}
 

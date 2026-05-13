@@ -5,14 +5,10 @@ import type { TCellBounds } from "@/utils";
 export { GRID_DELTA, iriToCellBounds };
 export type { TCellBounds };
 
-// Candidate key sets to try — the actual SPARQL variable names are API-defined.
-// First set uses the resource-endpoint convention; fallbacks cover common SPARQL naming.
+/** Candidate key sets — SPARQL variable names are API-defined; fallbacks cover naming variants */
 const KEY_SETS = [
-  // "valueMonth01" … "valueMonth12"
   Array.from({ length: 12 }, (_, i) => `valueMonth${String(i + 1).padStart(2, "0")}`),
-  // "value01" … "value12"
   Array.from({ length: 12 }, (_, i) => `value${String(i + 1).padStart(2, "0")}`),
-  // "v1" … "v12"
   Array.from({ length: 12 }, (_, i) => `v${i + 1}`),
 ];
 
@@ -30,7 +26,6 @@ function readMonthlySum(binding: TLooseBinding): number {
     }
   }
 
-  // None of the known key patterns matched — log the actual binding shape once.
   if (import.meta.env.DEV) {
     console.warn("[HeatMap] Unknown binding shape. Keys found:", Object.keys(binding));
   }
@@ -71,7 +66,7 @@ export function computeHeatmapStats(
   return { min, max, avg, count: values.length };
 }
 
-// Five-stop color scale defined as CSS custom properties in global.css
+/** Five-stop color scale defined as CSS custom properties in global.css */
 const HEATMAP_CSS_VARS = [
   { t: 0, name: "--color-heatmap-0" },
   { t: 0.25, name: "--color-heatmap-25" },
@@ -127,7 +122,7 @@ export function gridDelta(gridSize: string): number {
   return GRID_DELTA[gridSize] ?? GRID_DELTA["10m"];
 }
 
-// Converts [lat, lng][] vertices to a closed WKT POLYGON string (lng lat order per WKT spec).
+/** lng lat order in WKT spec — note the inversion from the [lat, lng] input */
 export function polygonToWkt(vertices: [number, number][]): string {
   const ring = [...vertices, vertices[0]];
   const coords = ring.map(([lat, lng]) => `${lng} ${lat}`).join(", ");

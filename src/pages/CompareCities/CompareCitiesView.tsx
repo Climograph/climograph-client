@@ -1,5 +1,12 @@
 import type { TMiniMapLocation } from "@/components";
-import { MiniMap, SearchBar, TempPrecipChart, ThreeDotsScaleLoader } from "@/components";
+import {
+  CompareStatsGrid,
+  DiffCard,
+  MiniMap,
+  SearchBar,
+  TempPrecipChart,
+  ThreeDotsScaleLoader,
+} from "@/components";
 import { PageWrapper } from "@/components/UI";
 import { CELL_SIZE_OPTIONS } from "@/constants";
 import {
@@ -9,12 +16,7 @@ import {
 } from "@/pages/ClimateComparison/ClimateComparison.util";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import type {
-  TCitySearchRowProps,
-  TCompareCitiesViewProps,
-  TDiffCardProps,
-  TStatsGridProps,
-} from "./CompareCities.type";
+import type { TCitySearchRowProps, TCompareCitiesViewProps } from "./CompareCities.type";
 
 function CitySearchRow({ label, dotColor, defaultValue, onCitySelect }: TCitySearchRowProps) {
   return (
@@ -34,103 +36,6 @@ function CitySearchRow({ label, dotColor, defaultValue, onCitySelect }: TCitySea
   );
 }
 
-function StatsGrid({ labelA, labelB, statsA, statsB, activeColumn }: TStatsGridProps) {
-  const { t } = useTranslation();
-
-  const rows = [
-    {
-      label: t("climateComparison.stats.avgTmax"),
-      a: `${statsA.avgTmax.toFixed(1)} °C`,
-      b: `${statsB.avgTmax.toFixed(1)} °C`,
-    },
-    {
-      label: t("climateComparison.stats.avgTmin"),
-      a: `${statsA.avgTmin.toFixed(1)} °C`,
-      b: `${statsB.avgTmin.toFixed(1)} °C`,
-    },
-    {
-      label: t("climateComparison.stats.totalPrec"),
-      a: `${statsA.totalPrec.toFixed(0)} mm`,
-      b: `${statsB.totalPrec.toFixed(0)} mm`,
-    },
-  ];
-
-  return (
-    <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)]">
-      <table className="w-full table-fixed text-[length:var(--font-sm)]">
-        <thead>
-          <tr className="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-            <th className="px-4 py-2.5 text-left font-medium text-[var(--color-text-secondary)]" />
-            <th
-              className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 0 ? "bg-[var(--color-chip-active-bg)]" : ""}`}
-              style={{ color: CLIMATE_COMPARISON_COLORS.A.tmax }}
-            >
-              <span className="flex items-center justify-center gap-1.5">
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: CLIMATE_COMPARISON_COLORS.A.tmax }}
-                />
-                {labelA}
-              </span>
-            </th>
-            <th
-              className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[var(--color-city-b-tint)]" : ""}`}
-              style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
-            >
-              <span className="flex items-center justify-center gap-1.5">
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: CLIMATE_COMPARISON_COLORS.B.tmax }}
-                />
-                {labelB}
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr
-              key={row.label}
-              className={`border-b border-[var(--color-border)] last:border-0 ${i % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}
-            >
-              <td className="px-4 py-2.5 text-[var(--color-text-secondary)]">{row.label}</td>
-              <td
-                className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 0 ? "bg-[var(--color-chip-active-bg)]" : ""}`}
-                style={{ color: CLIMATE_COMPARISON_COLORS.A.tmax }}
-              >
-                {row.a}
-              </td>
-              <td
-                className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[var(--color-city-b-tint)]" : ""}`}
-                style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
-              >
-                {row.b}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function DiffCard({ title, value, sub, valueColor }: TDiffCardProps) {
-  return (
-    <div className="flex flex-col gap-1 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3">
-      <span className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
-        {title}
-      </span>
-      <span
-        className="text-[length:var(--font-lg)] font-bold leading-snug"
-        style={valueColor ? { color: valueColor } : undefined}
-      >
-        {value}
-      </span>
-      <span className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">{sub}</span>
-    </div>
-  );
-}
-
 export function CompareCitiesView({
   cityA,
   cityB,
@@ -138,6 +43,7 @@ export function CompareCitiesView({
   dataB,
   autoGrid,
   subtitle,
+  selectedMonths,
   isLoading,
   error,
   onCityASelect,
@@ -146,36 +52,17 @@ export function CompareCitiesView({
   const { t } = useTranslation();
   const [activeCity, setActiveCity] = useState(0);
 
-  const canCompare = cityA !== null && cityB !== null;
   const hasBothData = dataA.length > 0 && dataB.length > 0;
   const statsA = hasBothData ? computeCompareStats(dataA) : null;
   const statsB = hasBothData ? computeCompareStats(dataB) : null;
   const diff = hasBothData ? computeDiffStats(dataA, dataB) : null;
 
-  const labelA = cityA?.label ?? "";
-  const labelB = cityB?.label ?? "";
+  const labelA = cityA.label;
+  const labelB = cityB.label;
 
   const miniMapLocations: TMiniMapLocation[] = [
-    ...(cityA !== null
-      ? [
-          {
-            lat: cityA.lat,
-            lng: cityA.lng,
-            label: cityA.label,
-            color: CLIMATE_COMPARISON_COLORS.A.tmax,
-          },
-        ]
-      : []),
-    ...(cityB !== null
-      ? [
-          {
-            lat: cityB.lat,
-            lng: cityB.lng,
-            label: cityB.label,
-            color: CLIMATE_COMPARISON_COLORS.B.tmax,
-          },
-        ]
-      : []),
+    { lat: cityA.lat, lng: cityA.lng, label: cityA.label, color: CLIMATE_COMPARISON_COLORS.A.tmax },
+    { lat: cityB.lat, lng: cityB.lng, label: cityB.label, color: CLIMATE_COMPARISON_COLORS.B.tmax },
   ];
 
   return (
@@ -195,17 +82,17 @@ export function CompareCitiesView({
           <div className="flex-1">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <CitySearchRow
-                key={cityA?.id ?? "empty-a"}
+                key={cityA.id}
                 label={t("climateComparison.searchA")}
                 dotColor={CLIMATE_COMPARISON_COLORS.A.tmax}
-                defaultValue={cityA?.label ?? ""}
+                defaultValue={cityA.label}
                 onCitySelect={onCityASelect}
               />
               <CitySearchRow
-                key={cityB?.id ?? "empty-b"}
+                key={cityB.id}
                 label={t("climateComparison.searchB")}
                 dotColor={CLIMATE_COMPARISON_COLORS.B.tmax}
-                defaultValue={cityB?.label ?? ""}
+                defaultValue={cityB.label}
                 onCitySelect={onCityBSelect}
               />
             </div>
@@ -232,20 +119,14 @@ export function CompareCitiesView({
           </div>
         )}
 
-        {!canCompare && !isLoading && !error && (
-          <p className="text-center text-[var(--color-text-secondary)]">
-            {cityA !== null ? t("compareCities.selectSecondCity") : t("climateComparison.noData")}
-          </p>
-        )}
-
-        {canCompare && !hasBothData && !isLoading && !error && (
+        {!hasBothData && !isLoading && !error && (
           <p className="text-center text-[var(--color-text-secondary)]">
             {t("climateComparison.noData")}
           </p>
         )}
 
         {hasBothData && statsA && statsB && (
-          <StatsGrid
+          <CompareStatsGrid
             labelA={labelA}
             labelB={labelB}
             statsA={statsA}
@@ -265,6 +146,7 @@ export function CompareCitiesView({
             subtitle={subtitle}
             showWalterLiethToggle={false}
             showAridity={false}
+            {...(selectedMonths !== null && selectedMonths.length > 0 ? { selectedMonths } : {})}
           />
         )}
 

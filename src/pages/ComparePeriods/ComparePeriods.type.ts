@@ -1,10 +1,10 @@
 import type { TClimatePeriod } from "@/constants/worldclim.constant";
-import type { computeCompareStats } from "@/pages/ClimateComparison/ClimateComparison.util";
 import type { TCellSize, TDataset, TMonthlyTemperature, TWikidataCity } from "@/types";
 
 export type TComparePeriodsViewProps = {
-  city: TWikidataCity | null;
+  city: TWikidataCity;
   dataset: TDataset;
+  selectedMonths: number[] | null;
   climatePeriodA: TClimatePeriod;
   climatePeriodB: TClimatePeriod;
   yearA: number;
@@ -33,18 +33,4 @@ export type TClimatePeriodRowProps = {
   dotColor: string;
   value: TClimatePeriod;
   onChange: (period: TClimatePeriod) => void;
-};
-
-export type TStatsGridProps = {
-  labelA: string;
-  labelB: string;
-  statsA: ReturnType<typeof computeCompareStats>;
-  statsB: ReturnType<typeof computeCompareStats>;
-};
-
-export type TDiffCardProps = {
-  title: string;
-  value: string;
-  sub: string;
-  valueColor?: string | undefined;
 };
