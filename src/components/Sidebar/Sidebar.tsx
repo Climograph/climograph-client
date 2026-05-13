@@ -48,8 +48,7 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
       setWeatherYear,
       toggleVariable,
       setGridSize,
-      toggleMonth,
-      selectAllMonths,
+      setMonths,
     },
   } = useFiltersStore();
 
@@ -219,11 +218,7 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
       if (!draft.variables.includes(v)) toggleVariable(v);
     });
     setGridSize(draft.gridSize);
-    if (draft.months === "all") {
-      selectAllMonths();
-    } else {
-      draft.months.forEach((m) => toggleMonth(m));
-    }
+    setMonths(draft.months);
 
     void queryClient.invalidateQueries({ queryKey: ["climate"] });
     void queryClient.invalidateQueries({ queryKey: ["compare"] });

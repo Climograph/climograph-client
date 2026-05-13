@@ -1,4 +1,6 @@
 export { CellSizeSelector } from "./CellSizeSelector";
+export { CompareStatsGrid } from "./CompareStatsGrid";
+export { DiffCard } from "./DiffCard";
 export { FilterChip } from "./FilterChip";
 export { FiltersTab } from "./FiltersTab";
 export { LanguageSwitcher } from "./LanguageSwitcher";
