@@ -23,14 +23,6 @@ export function useGetHeatmapPolygonData(
   const { data, isLoading, error } = useQuery<TPolygonResult, Error>({
     queryKey: ["heatmap-polygon", wkt, gridSize, variable, isClimate ? climatePeriod : year],
     queryFn: async (): Promise<TPolygonResult> => {
-      console.warn("[useGetHeatmapPolygonData] Request params:", {
-        id: "pixelvaluesinpolygonGEO / avgpixelvaluesinpolygonGEO",
-        wkt,
-        grid: gridSize,
-        var: variable,
-        ...(isClimate ? { isClimate: true, climatePeriod } : { isWeather: true, year }),
-      });
-
       const [rawPixels, avg] = await Promise.all([
         WorldClimService.getPixelValuesInPolygon(
           wkt!,
@@ -48,23 +40,9 @@ export function useGetHeatmapPolygonData(
         ),
       ]);
 
-      console.warn(
-        "[useGetHeatmapPolygonData] Bindings received:",
-        rawPixels.results.bindings.length,
-      );
-
-      let filteredBindings = rawPixels.results.bindings;
-      if (isClimate) {
-        filteredBindings = rawPixels.results.bindings.filter((b) =>
-          b.pixel?.value.includes(climatePeriod),
-        );
-        console.warn(
-          `[useGetHeatmapPolygonData] Bindings after '${climatePeriod}' filter:`,
-          filteredBindings.length,
-        );
-      }
-
-      console.warn("[useGetHeatmapPolygonData] First 3 bindings:", filteredBindings.slice(0, 3));
+      const filteredBindings = isClimate
+        ? rawPixels.results.bindings.filter((b) => b.pixel?.value.includes(climatePeriod))
+        : rawPixels.results.bindings;
 
       const pixels: TWorldClimBoxResponse = { results: { bindings: filteredBindings } };
       return { pixels, avg };
