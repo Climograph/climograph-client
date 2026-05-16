@@ -1,6 +1,8 @@
 import { WorldClimService } from "@/api";
 import type { TCellSize } from "@/types";
-import { GRID_DELTA, iriToCellBounds, type TCellBounds } from "@/utils";
+import type { TCellBounds } from "@/types";
+import { GRID_DELTA } from "@/constants";
+import { iriToCellBounds } from "@/utils";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 export function useGetCellBounds(

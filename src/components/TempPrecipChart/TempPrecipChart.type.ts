@@ -1,6 +1,6 @@
 import type { TClimatePeriod } from "@/constants";
 import type { TDataset, TMonthlyTemperature, TVariable } from "@/types";
-import type { TMonthAridity, TWalterLiethScales } from "@/utils";
+import type { TMonthAridity, TWalterLiethScales } from "@/types";
 import type { ReactNode } from "react";
 
 export type TMonthlyTemperatureWithAvg = TMonthlyTemperature & { tavg: number };
@@ -87,7 +87,6 @@ export type TChartSummary = {
   aridCount: number;
   martonne: number | null;
 };
-
 
 export type TSummaryStatsProps = {
   summary: TChartSummary;

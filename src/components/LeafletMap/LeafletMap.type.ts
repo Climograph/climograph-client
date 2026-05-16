@@ -1,5 +1,5 @@
 import type { TCellSize } from "@/types";
-import type { TCellBounds } from "@/utils";
+import type { TCellBounds } from "@/types";
 
 export type TLeafletMapProps = {
   lat: number;

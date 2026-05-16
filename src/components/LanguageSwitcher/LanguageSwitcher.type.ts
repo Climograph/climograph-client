@@ -1,7 +1,4 @@
-export const LANGUAGE_SWITCHER_VARIANTS = {
-  DROPDOWN: "dropdown",
-  INLINE: "inline",
-} as const;
+import { LANGUAGE_SWITCHER_VARIANTS } from "./LanguageSwitcher.constant";
 
 export type TLanguageSwitcherVariant =
   (typeof LANGUAGE_SWITCHER_VARIANTS)[keyof typeof LANGUAGE_SWITCHER_VARIANTS];

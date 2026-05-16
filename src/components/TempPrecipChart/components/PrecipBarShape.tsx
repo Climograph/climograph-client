@@ -1,5 +1,5 @@
 import type { TBarShape } from "../TempPrecipChart.type";
-import { CHART_COLORS } from "../utils/chartColors";
+import { CHART_COLORS } from "../TempPrecipChart.constant";
 
 /**
  * Draws the bar from y=0 to y=value regardless of axis minimum.
@@ -10,7 +10,14 @@ import { CHART_COLORS } from "../utils/chartColors";
  * so it updates correctly when the filter changes without relying on Recharts Cell merging.
  */
 export function PrecipBarShape(props: TBarShape) {
-  const { x = 0, width = 0, fill: propFill = CHART_COLORS.humid, month, selectedMonths, aridityByMonth } = props;
+  const {
+    x = 0,
+    width = 0,
+    fill: propFill = CHART_COLORS.humid,
+    month,
+    selectedMonths,
+    aridityByMonth,
+  } = props;
 
   const fill =
     aridityByMonth !== undefined && month !== undefined

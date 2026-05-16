@@ -35,7 +35,8 @@ export type TDiffStats = {
 
 export function computeCompareStats(data: TMonthlyTemperature[]): TCompareStats {
   const count = data.length;
-  if (count === 0) return { avgTmax: 0, avgTmin: 0, totalPrec: 0, aridMonths: 0, martonneIndex: null };
+  if (count === 0)
+    return { avgTmax: 0, avgTmin: 0, totalPrec: 0, aridMonths: 0, martonneIndex: null };
   const avgTmax = data.reduce((s, d) => s + d.tmax, 0) / count;
   const avgTmin = data.reduce((s, d) => s + d.tmin, 0) / count;
   const totalPrec = data.reduce((s, d) => s + d.prec, 0);
@@ -111,16 +112,3 @@ export function computeDiffStats(
     coldestTempB: cityB[coldestIdx]?.tmin ?? 0,
   };
 }
-
-export const CLIMATE_COMPARISON_COLORS = {
-  A: {
-    tmax: "var(--chart-compare-a-max)",
-    tmin: "var(--chart-compare-a-min)",
-    prec: "var(--chart-compare-a-prec)",
-  },
-  B: {
-    tmax: "var(--chart-compare-b-max)",
-    tmin: "var(--chart-compare-b-min)",
-    prec: "var(--chart-compare-b-prec)",
-  },
-} as const;

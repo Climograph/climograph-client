@@ -1,5 +1,5 @@
 import { getMartonneBadge } from "@/utils/martonne.util";
-import { CLIMATE_COMPARISON_COLORS } from "@/pages/ClimateComparison/ClimateComparison.util";
+import { CLIMATE_COMPARISON_COLORS } from "@/pages/ClimateComparison/ClimateComparison.constant";
 import { useTranslation } from "react-i18next";
 import type { TCompareStatsGridProps } from "./CompareStatsGrid.type";
 
@@ -96,8 +96,12 @@ export function CompareStatsGrid({
             </tr>
           ))}
           {showAltitude && (
-            <tr className={`border-b border-[var(--color-border)] ${rows.length % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}>
-              <td className="px-4 py-2.5 text-[var(--color-text-secondary)]">{t("chart.altitude")}</td>
+            <tr
+              className={`border-b border-[var(--color-border)] ${rows.length % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}
+            >
+              <td className="px-4 py-2.5 text-[var(--color-text-secondary)]">
+                {t("chart.altitude")}
+              </td>
               <td
                 className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 0 ? "bg-[var(--color-chip-active-bg)]" : ""}`}
                 style={{ color: CLIMATE_COMPARISON_COLORS.A.tmax }}
@@ -112,8 +116,12 @@ export function CompareStatsGrid({
               </td>
             </tr>
           )}
-          <tr className={`${(rows.length + (showAltitude ? 1 : 0)) % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}>
-            <td className="px-4 py-2.5 text-[var(--color-text-secondary)]">{t("climateComparison.stats.martonne")}</td>
+          <tr
+            className={`${(rows.length + (showAltitude ? 1 : 0)) % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}
+          >
+            <td className="px-4 py-2.5 text-[var(--color-text-secondary)]">
+              {t("climateComparison.stats.martonne")}
+            </td>
             <td
               className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 0 ? "bg-[var(--color-chip-active-bg)]" : ""}`}
               style={{ color: CLIMATE_COMPARISON_COLORS.A.tmax }}
@@ -123,7 +131,12 @@ export function CompareStatsGrid({
                 {badgeA && (
                   <span
                     className="text-[10px] font-medium"
-                    style={{ backgroundColor: badgeA.bg, color: badgeA.color, padding: "2px 6px", borderRadius: 8 }}
+                    style={{
+                      backgroundColor: badgeA.bg,
+                      color: badgeA.color,
+                      padding: "2px 6px",
+                      borderRadius: 8,
+                    }}
                   >
                     {t(badgeA.labelKey)}
                   </span>
@@ -139,7 +152,12 @@ export function CompareStatsGrid({
                 {badgeB && (
                   <span
                     className="text-[10px] font-medium"
-                    style={{ backgroundColor: badgeB.bg, color: badgeB.color, padding: "2px 6px", borderRadius: 8 }}
+                    style={{
+                      backgroundColor: badgeB.bg,
+                      color: badgeB.color,
+                      padding: "2px 6px",
+                      borderRadius: 8,
+                    }}
                   >
                     {t(badgeB.labelKey)}
                   </span>

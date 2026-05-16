@@ -62,3 +62,10 @@ export const VARIABLE_LABELS: Record<TVariable, string> = {
 
 export const WEATHER_MIN_YEAR = 1951;
 export const WEATHER_MAX_YEAR = 2024;
+
+export const GRID_DELTA: Record<string, number> = {
+  "10m": 10 / 60,
+  "5m": 5 / 60,
+  "2.5m": 2.5 / 60,
+  "30s": 30 / 3600,
+};

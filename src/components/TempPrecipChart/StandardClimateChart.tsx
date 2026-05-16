@@ -16,7 +16,7 @@ import { AridityLegend } from "./components/AridityLegend";
 import { ClimateStatsBar } from "@/components/ClimateStatsBar";
 import { PrecipBarShape } from "./components/PrecipBarShape";
 import type { TDotRendererProps, TStandardClimateChartProps } from "./TempPrecipChart.type";
-import { CHART_COLORS } from "./utils/chartColors";
+import { CHART_COLORS } from "./TempPrecipChart.constant";
 
 function CompareModeLegend({
   labelA,

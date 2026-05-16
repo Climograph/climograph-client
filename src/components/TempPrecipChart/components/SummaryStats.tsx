@@ -12,27 +12,37 @@ export function SummaryStats({ summary, altitude }: TSummaryStatsProps) {
   return (
     <div className="mb-3 flex flex-wrap items-stretch">
       <div className="flex flex-col py-2 pr-4" style={{ borderRight: BORDER_RIGHT }}>
-        <span className="text-[11px] text-[var(--color-text-secondary)]">{t("chart.meanTemp")}</span>
+        <span className="text-[11px] text-[var(--color-text-secondary)]">
+          {t("chart.meanTemp")}
+        </span>
         <span className="text-[16px] font-medium text-[var(--color-text)]">
           {summary.annualAvgTemp.toFixed(1)}°C
         </span>
       </div>
 
       <div className="flex flex-col px-4 py-2" style={{ borderRight: BORDER_RIGHT }}>
-        <span className="text-[11px] text-[var(--color-text-secondary)]">{t("chart.annualPrec")}</span>
+        <span className="text-[11px] text-[var(--color-text-secondary)]">
+          {t("chart.annualPrec")}
+        </span>
         <span className="text-[16px] font-medium text-[var(--color-text)]">
           {summary.totalPrec} mm
         </span>
       </div>
 
       <div className="flex flex-col px-4 py-2" style={{ borderRight: BORDER_RIGHT }}>
-        <span className="text-[11px] text-[var(--color-text-secondary)]">{t("chart.aridMonths")}</span>
-        <span className="text-[16px] font-medium text-[var(--color-text)]">{summary.aridCount}</span>
+        <span className="text-[11px] text-[var(--color-text-secondary)]">
+          {t("chart.aridMonths")}
+        </span>
+        <span className="text-[16px] font-medium text-[var(--color-text)]">
+          {summary.aridCount}
+        </span>
       </div>
 
       {altitude !== undefined && (
         <div className="flex flex-col px-4 py-2" style={{ borderRight: BORDER_RIGHT }}>
-          <span className="text-[11px] text-[var(--color-text-secondary)]">{t("chart.altitude")}</span>
+          <span className="text-[11px] text-[var(--color-text-secondary)]">
+            {t("chart.altitude")}
+          </span>
           <span className="text-[16px] font-medium text-[var(--color-text)]">{altitude} m</span>
         </div>
       )}

@@ -48,36 +48,75 @@ export function ClimateStatsBar({
       className="mb-3 grid overflow-hidden rounded-[var(--radius-md)]"
       style={{ gridTemplateColumns: `repeat(${colCount}, 1fr)`, border: CELL_BORDER }}
     >
-      <div className="flex items-center justify-between px-4 py-[10px]" style={{ borderRight: CELL_BORDER }}>
-        <span className="text-[11px] text-[var(--color-text-secondary)]">{t("chart.meanTemp")}</span>
+      <div
+        className="flex items-center justify-between px-4 py-[10px]"
+        style={{ borderRight: CELL_BORDER }}
+      >
+        <span className="text-[11px] text-[var(--color-text-secondary)]">
+          {t("chart.meanTemp")}
+        </span>
         {isCompare ? (
-          <DualValue a={`${meanTemp.toFixed(1)}°C`} b={`${comparison.meanTemp.toFixed(1)}°C`} aColor={pColor} bColor={comparison.color} />
+          <DualValue
+            a={`${meanTemp.toFixed(1)}°C`}
+            b={`${comparison.meanTemp.toFixed(1)}°C`}
+            aColor={pColor}
+            bColor={comparison.color}
+          />
         ) : (
-          <span className="text-[16px] font-medium text-[var(--color-text)]">{meanTemp.toFixed(1)}°C</span>
+          <span className="text-[16px] font-medium text-[var(--color-text)]">
+            {meanTemp.toFixed(1)}°C
+          </span>
         )}
       </div>
 
-      <div className="flex items-center justify-between px-4 py-[10px]" style={{ borderRight: CELL_BORDER }}>
-        <span className="text-[11px] text-[var(--color-text-secondary)]">{t("chart.annualPrec")}</span>
+      <div
+        className="flex items-center justify-between px-4 py-[10px]"
+        style={{ borderRight: CELL_BORDER }}
+      >
+        <span className="text-[11px] text-[var(--color-text-secondary)]">
+          {t("chart.annualPrec")}
+        </span>
         {isCompare ? (
-          <DualValue a={`${annualPrecip} mm`} b={`${comparison.annualPrecip} mm`} aColor={pColor} bColor={comparison.color} />
+          <DualValue
+            a={`${annualPrecip} mm`}
+            b={`${comparison.annualPrecip} mm`}
+            aColor={pColor}
+            bColor={comparison.color}
+          />
         ) : (
-          <span className="text-[16px] font-medium text-[var(--color-text)]">{annualPrecip} mm</span>
+          <span className="text-[16px] font-medium text-[var(--color-text)]">
+            {annualPrecip} mm
+          </span>
         )}
       </div>
 
-      <div className="flex items-center justify-between px-4 py-[10px]" style={{ borderRight: CELL_BORDER }}>
-        <span className="text-[11px] text-[var(--color-text-secondary)]">{t("chart.aridMonths")}</span>
+      <div
+        className="flex items-center justify-between px-4 py-[10px]"
+        style={{ borderRight: CELL_BORDER }}
+      >
+        <span className="text-[11px] text-[var(--color-text-secondary)]">
+          {t("chart.aridMonths")}
+        </span>
         {isCompare ? (
-          <DualValue a={String(aridMonths)} b={String(comparison.aridMonths)} aColor={pColor} bColor={comparison.color} />
+          <DualValue
+            a={String(aridMonths)}
+            b={String(comparison.aridMonths)}
+            aColor={pColor}
+            bColor={comparison.color}
+          />
         ) : (
           <span className="text-[16px] font-medium text-[var(--color-text)]">{aridMonths}</span>
         )}
       </div>
 
       {showAltitude && (
-        <div className="flex items-center justify-between px-4 py-[10px]" style={{ borderRight: CELL_BORDER }}>
-          <span className="text-[11px] text-[var(--color-text-secondary)]">{t("chart.altitude")}</span>
+        <div
+          className="flex items-center justify-between px-4 py-[10px]"
+          style={{ borderRight: CELL_BORDER }}
+        >
+          <span className="text-[11px] text-[var(--color-text-secondary)]">
+            {t("chart.altitude")}
+          </span>
           {isCompare ? (
             <DualValue
               a={altitude !== undefined ? `${altitude} m` : "—"}

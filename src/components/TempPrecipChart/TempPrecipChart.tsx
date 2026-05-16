@@ -52,13 +52,13 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
 
   const subtitleText = props.subtitle
     ? (props.subtitle.rawLabel ??
-        (props.subtitle.dataset === DATASETS.CLIMATE && props.subtitle.climatePeriod
-          ? t("chart.subtitle.climate", {
-              period: CLIMATE_PERIOD_LABELS[props.subtitle.climatePeriod],
-            })
-          : props.subtitle.weatherYear !== undefined
-            ? t("chart.subtitle.weather", { year: props.subtitle.weatherYear })
-            : null))
+      (props.subtitle.dataset === DATASETS.CLIMATE && props.subtitle.climatePeriod
+        ? t("chart.subtitle.climate", {
+            period: CLIMATE_PERIOD_LABELS[props.subtitle.climatePeriod],
+          })
+        : props.subtitle.weatherYear !== undefined
+          ? t("chart.subtitle.weather", { year: props.subtitle.weatherYear })
+          : null))
     : null;
 
   const storeVarSet = new Set<string>(props.variables ?? []);

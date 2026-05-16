@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { AridityLegend, SummaryStats, WLCustomized, WLPeriodsTooltip } from "./components";
 import type { TWLPeriodsLayoutProps, TWLScaledPoint } from "./TempPrecipChart.type";
-import { WL_COLORS_A, WL_COLORS_B } from "./utils/chartColors";
+import { WL_COLORS_A, WL_COLORS_B } from "./TempPrecipChart.constant";
 
 function toScaledPoint(d: { monthName: string; tavg: number; prec: number }): TWLScaledPoint {
   return {

@@ -16,7 +16,7 @@ import { ClimateStatsBar } from "@/components/ClimateStatsBar";
 import { WLCustomized } from "./components/WLCustomized";
 import { WLTooltip } from "./components/WLTooltip";
 import type { TWLScaledPoint, TWalterLiethChartProps } from "./TempPrecipChart.type";
-import { WL_COLORS_A } from "./utils/chartColors";
+import { WL_COLORS_A } from "./TempPrecipChart.constant";
 
 export function WalterLiethChart({
   chartData,

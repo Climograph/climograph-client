@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { TWLCitiesLayoutProps } from "./TempPrecipChart.type";
 import { WalterLiethChart } from "./WalterLiethChart";
-import { WL_COLORS_A, WL_COLORS_B } from "./utils/chartColors";
+import { WL_COLORS_A, WL_COLORS_B } from "./TempPrecipChart.constant";
 
 export function WLCitiesLayout({
   chartDataA,
@@ -14,8 +14,7 @@ export function WLCitiesLayout({
 }: TWLCitiesLayoutProps) {
   const { t } = useTranslation();
 
-  const tempDiff =
-    summaryA && summaryB ? summaryA.annualAvgTemp - summaryB.annualAvgTemp : null;
+  const tempDiff = summaryA && summaryB ? summaryA.annualAvgTemp - summaryB.annualAvgTemp : null;
   const aridDiff = summaryA && summaryB ? summaryA.aridCount - summaryB.aridCount : null;
 
   const tempLabel =

@@ -6,7 +6,7 @@ import type {
   TVariable,
   TWikidataCity,
 } from "@/types";
-import type { TCellBounds } from "@/utils";
+import type { TCellBounds } from "@/types";
 
 export type TClimateStatisticsViewProps = {
   selectedCity: TWikidataCity | null;

@@ -1,7 +1,7 @@
 import { useXAxisScale, useYAxisScale } from "recharts";
 import type { TWLCustomizedProps } from "../TempPrecipChart.type";
 import { linearPath } from "../utils/catmullRomPath";
-import { WL_COLORS_A } from "../utils/chartColors";
+import { WL_COLORS_A } from "../TempPrecipChart.constant";
 
 // Renders Walter-Lieth fills and curves via SVG clipPath (even-odd winding rule).
 // Uses recharts v3 hooks to access the chart's coordinate systems.

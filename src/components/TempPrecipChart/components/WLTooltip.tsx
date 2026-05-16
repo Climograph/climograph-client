@@ -1,7 +1,7 @@
 import { MONTH_NAMES } from "@/constants";
 import { useTranslation } from "react-i18next";
 import type { TWLTooltipProps } from "../TempPrecipChart.type";
-import { CHART_COLORS } from "../utils/chartColors";
+import { CHART_COLORS } from "../TempPrecipChart.constant";
 
 export function WLTooltip({ active, label, wlData }: TWLTooltipProps) {
   const { t } = useTranslation();

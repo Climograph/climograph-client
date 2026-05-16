@@ -11,10 +11,8 @@ import {
 import { Dropdown, PageWrapper } from "@/components/UI";
 import { CELL_SIZE_OPTIONS, CLIMATE_PERIOD_LABELS, CLIMATE_PERIODS, DATASETS } from "@/constants";
 import type { TClimatePeriod } from "@/constants/worldclim.constant";
-import {
-  CLIMATE_COMPARISON_COLORS,
-  computeCompareStats,
-} from "@/pages/ClimateComparison/ClimateComparison.util";
+import { CLIMATE_COMPARISON_COLORS } from "@/pages/ClimateComparison/ClimateComparison.constant";
+import { computeCompareStats } from "@/pages/ClimateComparison/ClimateComparison.util";
 import { useTranslation } from "react-i18next";
 import type {
   TCitySearchRowProps,
