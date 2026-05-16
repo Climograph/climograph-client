@@ -1,5 +1,7 @@
 export { getColorStops, interpolateColor } from "./colorScale.util";
 export type { TColorScale } from "./colorScale.util";
+export { getMartonneBadge } from "./martonne.util";
+export type { TMartonneBadge } from "./martonne.util";
 export { exportToCSV, exportToPNG, exportToSVG } from "./export.util";
 export {
   computeAridityPeriods,
