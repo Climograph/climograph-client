@@ -6,9 +6,9 @@ import { useTranslation } from "react-i18next";
 import type { TSearchBarProps } from "./SearchBar.type";
 import { tryParseCoords } from "./SearchBar.util";
 
-export function SearchBar({ onCitySelect }: TSearchBarProps) {
+export function SearchBar({ onCitySelect, defaultValue = "" }: TSearchBarProps) {
   const { t } = useTranslation();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(defaultValue);
   const [results, setResults] = useState<TWikidataCity[]>([]);
   const [coordResult, setCoordResult] = useState<TCoordinates | null>(null);
   const [isOpen, setIsOpen] = useState(false);

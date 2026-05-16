@@ -38,10 +38,16 @@
     }
   },
   "compareCities": {
-    "title": "Порівняти міста"
+    "title": "Порівняти міста",
+    "selectSecondCity": "Оберіть друге місто для порівняння"
   },
   "comparePeriods": {
-    "title": "Порівняти періоди"
+    "title": "Порівняти періоди",
+    "trend": {
+      "tempTitle": "Тенденція температури",
+      "precipTitle": "Тенденція опадів",
+      "noChange": "Без змін"
+    }
   },
   "climateComparison": {
     "title": "Порівняння клімату",
@@ -57,7 +63,9 @@
     "stats": {
       "avgTmax": "Серед. макс. темп",
       "avgTmin": "Серед. мін. темп",
-      "totalPrec": "Заг. опади"
+      "totalPrec": "Заг. опади",
+      "aridMonths": "Посушливі місяці",
+      "martonne": "Мартон (M)"
     },
     "diff": {
       "warmerCity": "Тепліше місто",
@@ -93,7 +101,10 @@
       "maxValue": "Макс",
       "avgValue": "Середнє",
       "cellsAnalyzed": "Клітинки"
-    }
+    },
+    "showingVariable": "Показується: {{variable}}",
+    "useMyLocation": "Моє місцезнаходження",
+    "locating": "Визначення..."
   },
   "chart": {
     "title": "Температура",
@@ -106,8 +117,18 @@
     "meanTemp": "Сер. темп",
     "annualPrec": "Річні опади",
     "aridMonths": "Посушливих місяців",
+    "martonne": "Аридність (M)",
+    "martonneTooltip": "Індекс аридності де Мартонна: M = P/(T+10). <5 Гіпераридний | 5–10 Аридний | 10–20 Напіваридний | 20–30 Напівгумідний | >30 Гумідний",
     "aridPeriod": "Посушливий період",
     "humidPeriod": "Вологий період",
+    "martonneClass": {
+      "hyperarid": "Гіпераридний",
+      "arid": "Аридний",
+      "semiArid": "Напіваридний",
+      "subHumid": "Напівгумідний",
+      "humid": "Гумідний",
+      "perhumid": "Пергумідний"
+    },
     "modeStandard": "Стандартний графік",
     "modeWalterLieth": "Діаграма Вальтера-Лієта",
     "selectedMonth": "значення за {{month}}",
@@ -115,6 +136,9 @@
     "subtitle": {
       "climate": "Клімат {{period}}",
       "weather": "Погода {{year}}"
+    },
+    "legend": {
+      "seriesNote": "Суцільна = tmax · Пунктир = tmin · Стовпці = precip"
     }
   },
   "loading": {

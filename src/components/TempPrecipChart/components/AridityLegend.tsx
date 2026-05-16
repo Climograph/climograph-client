@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { CHART_COLORS } from "../utils/chartColors";
+import { CHART_COLORS } from "../TempPrecipChart.constant";
 
 export function AridityLegend() {
   const { t } = useTranslation();

@@ -42,9 +42,10 @@ export function MiniMap({ locations, activeIndex, onToggle }: TMiniMapProps) {
                 onClick={() => onToggle?.(i)}
                 className={`rounded-full px-3 py-1 text-[length:var(--font-xs)] font-medium transition-colors duration-150 ${
                   activeIndex === i
-                    ? "bg-[var(--color-primary)] text-white"
+                    ? "text-white"
                     : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
                 }`}
+                style={activeIndex === i ? { backgroundColor: loc.color } : undefined}
               >
                 {loc.label}
               </button>

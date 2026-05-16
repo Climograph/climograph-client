@@ -1,5 +1,4 @@
 import type { TChartSubtitle } from "@/components/TempPrecipChart";
-import type { computeCompareStats } from "@/pages/ClimateComparison/ClimateComparison.util";
 import type { TCellSize, TMonthlyTemperature, TWikidataCity } from "@/types";
 
 export type TCompareCitiesViewProps = {
@@ -9,8 +8,11 @@ export type TCompareCitiesViewProps = {
   dataB: TMonthlyTemperature[];
   autoGrid: TCellSize;
   subtitle: TChartSubtitle;
+  selectedMonths: number[] | null;
   isLoading: boolean;
   error: Error | null;
+  altitudeA: number | null;
+  altitudeB: number | null;
   onCityASelect: (city: TWikidataCity) => void;
   onCityBSelect: (city: TWikidataCity) => void;
 };
@@ -18,20 +20,6 @@ export type TCompareCitiesViewProps = {
 export type TCitySearchRowProps = {
   label: string;
   dotColor: string;
+  defaultValue: string;
   onCitySelect: (city: TWikidataCity) => void;
-};
-
-export type TStatsGridProps = {
-  labelA: string;
-  labelB: string;
-  statsA: ReturnType<typeof computeCompareStats>;
-  statsB: ReturnType<typeof computeCompareStats>;
-  activeColumn?: number | undefined;
-};
-
-export type TDiffCardProps = {
-  title: string;
-  value: string;
-  sub: string;
-  valueColor?: string | undefined;
 };

@@ -41,10 +41,10 @@ export const CLIMATE_PERIOD_LABELS: Record<TClimatePeriod, string> = {
  */
 export const CLIMATE_VARIABLES = ["tmax", "tmin", "prec", "srad", "wind", "vapr"] as const;
 
-// * weather dataset only has these 3 variables
+/** weather dataset only has these 3 variables */
 export const WEATHER_VARIABLES = ["tmax", "tmin", "prec"] as const;
 
-// * only available in the c1970-2000 climate period
+/** only available in the c1970-2000 climate period */
 export const PERIOD_RESTRICTED_VARIABLES = ["srad", "wind", "vapr"] as const;
 
 export type TClimateVariable = (typeof CLIMATE_VARIABLES)[number];
@@ -62,3 +62,10 @@ export const VARIABLE_LABELS: Record<TVariable, string> = {
 
 export const WEATHER_MIN_YEAR = 1951;
 export const WEATHER_MAX_YEAR = 2024;
+
+export const GRID_DELTA: Record<string, number> = {
+  "10m": 10 / 60,
+  "5m": 5 / 60,
+  "2.5m": 2.5 / 60,
+  "30s": 30 / 3600,
+};

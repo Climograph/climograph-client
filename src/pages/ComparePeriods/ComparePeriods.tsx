@@ -1,13 +1,14 @@
 import { CLIMATE_PERIODS, WEATHER_MAX_YEAR, WEATHER_MIN_YEAR } from "@/constants";
 import type { TClimatePeriod } from "@/constants/worldclim.constant";
-import { useGetComparePeriods, usePersistedComparisonCities } from "@/hooks";
+import { useGetAltitude, useGetComparePeriods, usePersistedComparisonCities } from "@/hooks";
 import { useFiltersStore } from "@/stores";
 import { useState } from "react";
 import { ComparePeriodsView } from "./ComparePeriodsView";
 
 export function ComparePeriods() {
   const { cityA, selectCityA } = usePersistedComparisonCities();
-  const { gridSize, dataset } = useFiltersStore();
+  const { gridSize, dataset, months } = useFiltersStore();
+  const selectedMonths = Array.isArray(months) ? months : null;
 
   const [climatePeriodA, setClimatePeriodA] = useState<TClimatePeriod>(CLIMATE_PERIODS.C1970_2000);
   const [climatePeriodB, setClimatePeriodB] = useState<TClimatePeriod>(CLIMATE_PERIODS.C1991_2020);
@@ -25,9 +26,12 @@ export function ComparePeriods() {
     dataset,
   );
 
+  const { data: altitude = null } = useGetAltitude(cityA.lat, cityA.lng, gridSize);
+
   return (
     <ComparePeriodsView
       city={cityA}
+      altitude={altitude}
       dataset={dataset}
       climatePeriodA={climatePeriodA}
       climatePeriodB={climatePeriodB}
@@ -36,6 +40,7 @@ export function ComparePeriods() {
       dataA={dataA}
       dataB={dataB}
       autoGrid={gridSize}
+      selectedMonths={selectedMonths}
       isLoading={isLoading}
       error={error}
       onCitySelect={selectCityA}

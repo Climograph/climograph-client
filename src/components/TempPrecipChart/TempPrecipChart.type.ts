@@ -1,7 +1,9 @@
 import type { TClimatePeriod } from "@/constants";
-import type { TDataset, TMonthlyTemperature } from "@/types";
-import type { TMonthAridity, TWalterLiethScales } from "@/utils";
+import type { TDataset, TMonthlyTemperature, TVariable } from "@/types";
+import type { TMonthAridity, TWalterLiethScales } from "@/types";
 import type { ReactNode } from "react";
+
+export type TMonthlyTemperatureWithAvg = TMonthlyTemperature & { tavg: number };
 
 export type TVisibleSeries = {
   tmax: boolean;
@@ -34,6 +36,7 @@ export type TTempPrecipChartProps = {
   compareMode?: TCompareMode;
   showWalterLiethToggle?: boolean;
   showAridity?: boolean;
+  variables?: readonly TVariable[];
 };
 
 export type TBarShape = {
@@ -43,7 +46,12 @@ export type TBarShape = {
   height?: number;
   value?: number;
   fill?: string;
-  fillOpacity?: number;
+  /** passed by Recharts from the data entry */
+  month?: number;
+  /** passed via shape={<PrecipBarShape selectedMonths={...} />} */
+  selectedMonths?: readonly number[] | undefined;
+  /** month → isArid lookup, passed via shape prop to avoid Cell children */
+  aridityByMonth?: Record<number, boolean> | undefined;
   yAxis?: { scale?: (v: number) => number };
 };
 
@@ -61,6 +69,7 @@ export type TDotRendererProps = {
 };
 
 export type TComparePoint = {
+  month: number;
   monthName: string;
   tmaxA: number;
   tminA: number;
@@ -73,9 +82,10 @@ export type TComparePoint = {
 };
 
 export type TChartSummary = {
-  annualAvgTemp: string;
+  annualAvgTemp: number;
   totalPrec: number;
   aridCount: number;
+  martonne: number | null;
 };
 
 export type TSummaryStatsProps = {
@@ -127,7 +137,7 @@ export type TWLTooltipProps = {
 };
 
 export type TWalterLiethChartProps = {
-  chartData: Record<string, unknown>[];
+  chartData: TMonthlyTemperatureWithAvg[];
   scales: TWalterLiethScales | null;
   summary: TChartSummary | null;
   colors?: TWalterLiethColors;
@@ -136,8 +146,8 @@ export type TWalterLiethChartProps = {
 };
 
 export type TWLCitiesLayoutProps = {
-  chartDataA: Record<string, unknown>[];
-  chartDataB: Record<string, unknown>[];
+  chartDataA: TMonthlyTemperatureWithAvg[];
+  chartDataB: TMonthlyTemperatureWithAvg[];
   labelA: string;
   labelB: string;
   scales: TWalterLiethScales | null;
@@ -146,8 +156,8 @@ export type TWLCitiesLayoutProps = {
 };
 
 export type TWLPeriodsLayoutProps = {
-  chartDataA: Record<string, unknown>[];
-  chartDataB: Record<string, unknown>[];
+  chartDataA: TMonthlyTemperatureWithAvg[];
+  chartDataB: TMonthlyTemperatureWithAvg[];
   scales: TWalterLiethScales | null;
   labelA: string;
   labelB: string;

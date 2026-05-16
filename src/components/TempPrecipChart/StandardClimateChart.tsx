@@ -1,9 +1,9 @@
 import { MONTH_NAMES } from "@/constants";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Bar,
   CartesianGrid,
-  Cell,
   ComposedChart,
   Legend,
   Line,
@@ -13,10 +13,43 @@ import {
   YAxis,
 } from "recharts";
 import { AridityLegend } from "./components/AridityLegend";
+import { ClimateStatsBar } from "@/components/ClimateStatsBar";
 import { PrecipBarShape } from "./components/PrecipBarShape";
-import { SummaryStats } from "./components/SummaryStats";
 import type { TDotRendererProps, TStandardClimateChartProps } from "./TempPrecipChart.type";
-import { CHART_COLORS } from "./utils/chartColors";
+import { CHART_COLORS } from "./TempPrecipChart.constant";
+
+function CompareModeLegend({
+  labelA,
+  labelB,
+}: {
+  labelA: string | undefined;
+  labelB: string | undefined;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col items-center gap-1 pt-3" style={{ fontSize: 11 }}>
+      <div className="flex items-center gap-5">
+        <span className="flex items-center gap-1.5">
+          <span
+            className="inline-block h-2.5 w-2.5 rounded-sm"
+            style={{ backgroundColor: CHART_COLORS.compareA.tmax }}
+          />
+          <span style={{ color: CHART_COLORS.compareA.tmax }}>{labelA}</span>
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span
+            className="inline-block h-2.5 w-2.5 rounded-sm"
+            style={{ backgroundColor: CHART_COLORS.compareB.tmax }}
+          />
+          <span style={{ color: CHART_COLORS.compareB.tmax }}>{labelB}</span>
+        </span>
+      </div>
+      <span className="text-[var(--color-text-secondary)]" style={{ fontSize: 10 }}>
+        {t("chart.legend.seriesNote")}
+      </span>
+    </div>
+  );
+}
 
 export function StandardClimateChart({
   chartData,
@@ -34,6 +67,16 @@ export function StandardClimateChart({
   showAridity = true,
 }: TStandardClimateChartProps) {
   const { t } = useTranslation();
+
+  const aridityByMonth = useMemo<Record<number, boolean> | undefined>(() => {
+    if (!aridity) return undefined;
+    return Object.fromEntries(aridity.map((m) => [m.month, m.isArid]));
+  }, [aridity]);
+
+  const aridityByMonthA = useMemo<Record<number, boolean> | undefined>(() => {
+    if (!aridityA) return undefined;
+    return Object.fromEntries(aridityA.map((m) => [m.month, m.isArid]));
+  }, [aridityA]);
 
   function localMonthName(v: unknown): string {
     const idx = (MONTH_NAMES as readonly string[]).indexOf(String(v));
@@ -63,7 +106,13 @@ export function StandardClimateChart({
   return (
     <>
       {summary && (
-        <SummaryStats summary={summary} {...(altitude !== undefined ? { altitude } : {})} />
+        <ClimateStatsBar
+          meanTemp={summary.annualAvgTemp}
+          annualPrecip={summary.totalPrec}
+          aridMonths={summary.aridCount}
+          martonneIndex={summary.martonne}
+          {...(altitude !== undefined ? { altitude } : {})}
+        />
       )}
       <div className="overflow-x-auto">
         <div className="h-[300px] sm:h-[360px] md:h-[420px] lg:h-[460px] min-w-[520px]">
@@ -137,7 +186,15 @@ export function StandardClimateChart({
                 }}
               />
 
-              <Legend verticalAlign="bottom" height={48} wrapperStyle={{ paddingTop: 24 }} />
+              {isCompare ? (
+                <Legend
+                  verticalAlign="bottom"
+                  height={52}
+                  content={() => <CompareModeLegend labelA={labelA} labelB={labelB} />}
+                />
+              ) : (
+                <Legend verticalAlign="bottom" height={48} wrapperStyle={{ paddingTop: 24 }} />
+              )}
 
               {!isCompare && visible.prec && (
                 <Bar
@@ -147,23 +204,13 @@ export function StandardClimateChart({
                   fill={CHART_COLORS.humid}
                   minPointSize={0}
                   background={false}
-                  shape={<PrecipBarShape />}
-                >
-                  {showAridity &&
-                    aridity?.map((m, i) => {
-                      const isSelected =
-                        !selectedMonths ||
-                        selectedMonths.length === 0 ||
-                        selectedMonths.includes(m.month);
-                      return (
-                        <Cell
-                          key={`prec-${i}`}
-                          fill={m.isArid ? CHART_COLORS.arid : CHART_COLORS.humid}
-                          fillOpacity={isSelected ? 0.8 : 0.15}
-                        />
-                      );
-                    })}
-                </Bar>
+                  shape={
+                    <PrecipBarShape
+                      selectedMonths={selectedMonths}
+                      aridityByMonth={showAridity ? aridityByMonth : undefined}
+                    />
+                  }
+                />
               )}
 
               {!isCompare && visible.tmax && (
@@ -212,19 +259,15 @@ export function StandardClimateChart({
                   dataKey="precA"
                   name={`${labelA ?? ""} — ${t("chart.precipitation")}`}
                   fill={CHART_COLORS.compareA.prec}
-                  opacity={0.8}
                   minPointSize={0}
                   background={false}
-                  shape={<PrecipBarShape />}
-                >
-                  {showAridity &&
-                    aridityA?.map((m, i) => (
-                      <Cell
-                        key={`precA-${i}`}
-                        fill={m.isArid ? CHART_COLORS.arid : CHART_COLORS.compareA.prec}
-                      />
-                    ))}
-                </Bar>
+                  shape={
+                    <PrecipBarShape
+                      selectedMonths={selectedMonths}
+                      aridityByMonth={showAridity ? aridityByMonthA : undefined}
+                    />
+                  }
+                />
               )}
 
               {isCompare && visible.tmax && (
@@ -274,10 +317,9 @@ export function StandardClimateChart({
                   dataKey="precB"
                   name={`${labelB ?? ""} — ${t("chart.precipitation")}`}
                   fill={CHART_COLORS.compareB.prec}
-                  opacity={0.8}
                   minPointSize={0}
                   background={false}
-                  shape={<PrecipBarShape />}
+                  shape={<PrecipBarShape selectedMonths={selectedMonths} />}
                 />
               )}
 

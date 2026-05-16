@@ -98,6 +98,7 @@ export type TWorldClimBoxResponse = {
 };
 
 export type TWorldClimAvgBoxBinding = {
+  raster?: TSparqlUriValue;
   variable: TSparqlUriValue;
   valueMonth01: TSparqlValue;
   valueMonth02: TSparqlValue;

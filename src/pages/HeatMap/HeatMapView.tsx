@@ -112,7 +112,7 @@ function BboxDrawer({ isDrawMode, onBboxComplete }: TBboxDrawerProps) {
     <Rectangle
       bounds={[start, current]}
       pathOptions={{
-        color: "#1D9E75",
+        color: "var(--color-primary)",
         fillOpacity: 0.12,
         weight: 2,
         dashArray: "6 4",
@@ -130,7 +130,7 @@ function BboxOutline({ bbox }: TBboxOutlineProps) {
         [bbox.south, bbox.west],
         [bbox.north, bbox.east],
       ]}
-      pathOptions={{ color: "#1D9E75", fillOpacity: 0, weight: 2 }}
+      pathOptions={{ color: "var(--color-primary)", fillOpacity: 0, weight: 2 }}
     />
   );
 }
@@ -188,19 +188,24 @@ function PolygonDrawer({ onPolygonComplete }: { onPolygonComplete: (v: TPolygon)
     <>
       <Polyline
         positions={previewPath}
-        pathOptions={{ color: "#1D9E75", weight: 2, dashArray: "6 4" }}
+        pathOptions={{ color: "var(--color-primary)", weight: 2, dashArray: "6 4" }}
       />
       {showClosingLine && (
         <Polyline
           positions={[cursor, vertices[0]]}
-          pathOptions={{ color: "#1D9E75", weight: 1, dashArray: "4 4", opacity: 0.4 }}
+          pathOptions={{ color: "var(--color-primary)", weight: 1, dashArray: "4 4", opacity: 0.4 }}
         />
       )}
       {snapToFirst && (
         <CircleMarker
           center={vertices[0]}
           radius={8}
-          pathOptions={{ color: "#1D9E75", fillColor: "#1D9E75", fillOpacity: 0.4, weight: 2 }}
+          pathOptions={{
+            color: "var(--color-primary)",
+            fillColor: "var(--color-primary)",
+            fillOpacity: 0.4,
+            weight: 2,
+          }}
         />
       )}
     </>
@@ -211,7 +216,10 @@ type TPolygonOutlineProps = { vertices: TPolygon };
 
 function PolygonOutline({ vertices }: TPolygonOutlineProps) {
   return (
-    <Polygon positions={vertices} pathOptions={{ color: "#1D9E75", fillOpacity: 0, weight: 2 }} />
+    <Polygon
+      positions={vertices}
+      pathOptions={{ color: "var(--color-primary)", fillOpacity: 0, weight: 2 }}
+    />
   );
 }
 

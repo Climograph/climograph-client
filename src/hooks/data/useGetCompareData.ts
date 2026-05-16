@@ -45,17 +45,17 @@ export async function fetchCityData(
 }
 
 export function useGetCompareData(
-  latA: number,
-  lngA: number,
-  latB: number,
-  lngB: number,
+  latA: number | null,
+  lngA: number | null,
+  latB: number | null,
+  lngB: number | null,
   gridSize: TCellSize,
 ): TUseGetCompareDataReturn {
   const { dataset, climatePeriod, weatherYear } = useFiltersStore();
   const isClimate = dataset === DATASETS.CLIMATE;
   const year = isClimate ? undefined : weatherYear;
 
-  const enabled = latA !== 0 && lngA !== 0 && latB !== 0 && lngB !== 0;
+  const enabled = latA !== null && lngA !== null && latB !== null && lngB !== null;
 
   const { data, isLoading, error } = useQuery<TCompareData, Error>({
     queryKey: [
@@ -68,6 +68,9 @@ export function useGetCompareData(
       isClimate ? climatePeriod : weatherYear,
     ],
     queryFn: async (): Promise<TCompareData> => {
+      if (latA === null || lngA === null || latB === null || lngB === null) {
+        throw new Error("No locations selected");
+      }
       const [cityA, cityB] = await Promise.all([
         fetchCityData(latA, lngA, gridSize, isClimate, climatePeriod, year),
         fetchCityData(latB, lngB, gridSize, isClimate, climatePeriod, year),

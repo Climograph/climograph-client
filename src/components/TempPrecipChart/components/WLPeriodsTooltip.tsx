@@ -1,7 +1,7 @@
 import { MONTH_NAMES } from "@/constants";
 import { useTranslation } from "react-i18next";
 import type { TWLPeriodsTooltipProps, TWLScaledPoint } from "../TempPrecipChart.type";
-import { WL_COLORS_A, WL_COLORS_B } from "../utils/chartColors";
+import { WL_COLORS_A, WL_COLORS_B } from "../TempPrecipChart.constant";
 
 export function WLPeriodsTooltip({
   active,

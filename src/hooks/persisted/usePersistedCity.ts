@@ -15,7 +15,7 @@ function saveCity(city: TWikidataCity) {
   try {
     localStorage.setItem(LOCAL_STORAGE_KEYS.LAST_SELECTED_CITY, JSON.stringify(city));
   } catch {
-    // ? Ignore write errors
+    return;
   }
 }
 

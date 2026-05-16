@@ -1,12 +1,32 @@
 import { MONTH_NAMES, WORLDCLIM_GRID_BASE, WORLDCLIM_VARIABLE_BASE } from "@/constants";
 import env from "@/env";
 import type {
+  TCellBounds,
   TCellSize,
   TMonthlyTemperature,
   TWorldClimCellResponse,
   TWorldClimPixelResource,
   TWorldClimPointValueBinding,
 } from "@/types";
+
+const CELL_IRI_ROW_COL_REGEX = /_r(\d+)c(\d+)/;
+
+export function iriToCellBounds(iri: string, cellSize: number): TCellBounds | null {
+  const match = CELL_IRI_ROW_COL_REGEX.exec(iri);
+
+  if (!match) return null;
+
+  const row = Number(match[1]);
+  const col = Number(match[2]);
+  const north = 90 - row * cellSize;
+
+  return {
+    north,
+    south: north - cellSize,
+    west: -180 + col * cellSize,
+    east: -180 + col * cellSize + cellSize,
+  };
+}
 
 export function extractCellBySize(
   response: TWorldClimCellResponse,
@@ -28,6 +48,7 @@ export function buildMonthlyTemperatures(
 ): TMonthlyTemperature[] {
   return Array.from({ length: 12 }, (_, i) => {
     const monthKey = `valueMonth${String(i + 1).padStart(2, "0")}` as keyof TWorldClimPixelResource;
+
     return {
       month: i + 1,
       monthName: MONTH_NAMES[i],
@@ -38,40 +59,20 @@ export function buildMonthlyTemperatures(
   });
 }
 
-/**
- * Creates authorization headers for WorldClim API requests
- * @returns Object with Authorization header using bearer token
- */
 export function createWorldClimAuthHeaders(): { Authorization: string } {
   return {
     Authorization: `Bearer ${env.WORLDCLIM_API_KEY}`,
   };
 }
 
-/**
- * Builds a WorldClim grid IRI from a cell size
- * @param gridSize Grid resolution (e.g., "10m", "5m", "2.5m", "30s")
- * @returns Full grid IRI string
- */
 export function buildGridIri(gridSize: TCellSize): string {
   return `${WORLDCLIM_GRID_BASE}${gridSize}`;
 }
 
-/**
- * Builds WorldClim variable IRIs from variable names
- * @param variables Array of variable names (e.g., ["tmax", "tmin", "prec"])
- * @returns Array of full variable IRI strings
- */
 export function buildVariableIris(variables: readonly string[]): string[] {
   return variables.map((v) => `${WORLDCLIM_VARIABLE_BASE}${v}`);
 }
 
-/**
- * Builds dataset query parameters based on climate vs weather flag
- * @param isClimate Whether to query climate (1970-2000) or weather (1951-2024) data
- * @param year Optional year for weather dataset queries
- * @returns Object with dataset parameters for axios query
- */
 export function buildDatasetParams(
   isClimate: boolean,
   year?: number,
@@ -79,14 +80,10 @@ export function buildDatasetParams(
   if (isClimate) {
     return { isClimate: true };
   }
+
   return { isWeather: true, year: year ?? new Date().getFullYear() };
 }
 
-/**
- * Validates that a response has data
- * @param response Response object with data property
- * @throws Error if response.data is falsy
- */
 export function validateResponseData(response: { data: unknown }): void {
   if (!response.data) {
     throw new Error("No data returned from API");
@@ -97,12 +94,14 @@ export function buildMonthlyTemperaturesFromPointValues(
   bindings: TWorldClimPointValueBinding[],
 ): TMonthlyTemperature[] {
   const vals = new Map<string, number>();
+
   for (const b of bindings) {
     const varParts = b.var.value.split("Variable_");
     const varName = varParts[varParts.length - 1] ?? "";
     const monthNum = parseInt(b.month.value.replace("--", ""), 10);
     vals.set(`${varName}_${monthNum}`, Number(b.value.value));
   }
+
   return Array.from({ length: 12 }, (_, i) => ({
     month: i + 1,
     monthName: MONTH_NAMES[i],

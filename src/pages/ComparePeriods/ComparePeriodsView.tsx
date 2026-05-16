@@ -1,27 +1,23 @@
 import type { TMiniMapLocation } from "@/components";
 import {
+  CompareStatsGrid,
+  DiffCard,
   MiniMap,
   PeriodSelectRow,
   SearchBar,
   TempPrecipChart,
   ThreeDotsScaleLoader,
 } from "@/components";
-import { Dropdown } from "@/components/UI";
-import { PageWrapper } from "@/components/UI";
+import { Dropdown, PageWrapper } from "@/components/UI";
 import { CELL_SIZE_OPTIONS, CLIMATE_PERIOD_LABELS, CLIMATE_PERIODS, DATASETS } from "@/constants";
 import type { TClimatePeriod } from "@/constants/worldclim.constant";
-import {
-  CLIMATE_COMPARISON_COLORS,
-  computeCompareStats,
-  computeDiffStats,
-} from "@/pages/ClimateComparison/ClimateComparison.util";
+import { CLIMATE_COMPARISON_COLORS } from "@/pages/ClimateComparison/ClimateComparison.constant";
+import { computeCompareStats } from "@/pages/ClimateComparison/ClimateComparison.util";
 import { useTranslation } from "react-i18next";
 import type {
   TCitySearchRowProps,
   TClimatePeriodRowProps,
   TComparePeriodsViewProps,
-  TDiffCardProps,
-  TStatsGridProps,
 } from "./ComparePeriods.type";
 
 const CLIMATE_PERIOD_OPTIONS = Object.values(CLIMATE_PERIODS).map((period) => ({
@@ -29,7 +25,7 @@ const CLIMATE_PERIOD_OPTIONS = Object.values(CLIMATE_PERIODS).map((period) => ({
   label: CLIMATE_PERIOD_LABELS[period],
 }));
 
-function CitySearchRow({ label, dotColor, onCitySelect }: TCitySearchRowProps) {
+function CitySearchRow({ label, dotColor, defaultValue, onCitySelect }: TCitySearchRowProps) {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center gap-2">
@@ -42,7 +38,7 @@ function CitySearchRow({ label, dotColor, onCitySelect }: TCitySearchRowProps) {
           {label}
         </span>
       </div>
-      <SearchBar onCitySelect={onCitySelect} />
+      <SearchBar defaultValue={defaultValue} onCitySelect={onCitySelect} />
     </div>
   );
 }
@@ -72,103 +68,6 @@ function ClimatePeriodRow({ label, dotColor, value, onChange }: TClimatePeriodRo
   );
 }
 
-function StatsGrid({ labelA, labelB, statsA, statsB }: TStatsGridProps) {
-  const { t } = useTranslation();
-
-  const rows = [
-    {
-      label: t("climateComparison.stats.avgTmax"),
-      a: `${statsA.avgTmax.toFixed(1)} °C`,
-      b: `${statsB.avgTmax.toFixed(1)} °C`,
-    },
-    {
-      label: t("climateComparison.stats.avgTmin"),
-      a: `${statsA.avgTmin.toFixed(1)} °C`,
-      b: `${statsB.avgTmin.toFixed(1)} °C`,
-    },
-    {
-      label: t("climateComparison.stats.totalPrec"),
-      a: `${statsA.totalPrec.toFixed(0)} mm`,
-      b: `${statsB.totalPrec.toFixed(0)} mm`,
-    },
-  ];
-
-  return (
-    <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)]">
-      <table className="w-full table-fixed text-[length:var(--font-sm)]">
-        <thead>
-          <tr className="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
-            <th className="px-4 py-2.5 text-left font-medium text-[var(--color-text-secondary)]" />
-            <th
-              className="px-4 py-2.5 text-center font-semibold"
-              style={{ color: CLIMATE_COMPARISON_COLORS.A.tmax }}
-            >
-              <span className="flex items-center justify-center gap-1.5">
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: CLIMATE_COMPARISON_COLORS.A.tmax }}
-                />
-                {labelA}
-              </span>
-            </th>
-            <th
-              className="px-4 py-2.5 text-center font-semibold"
-              style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
-            >
-              <span className="flex items-center justify-center gap-1.5">
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: CLIMATE_COMPARISON_COLORS.B.tmax }}
-                />
-                {labelB}
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr
-              key={row.label}
-              className={`border-b border-[var(--color-border)] last:border-0 ${i % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}
-            >
-              <td className="px-4 py-2.5 text-[var(--color-text-secondary)]">{row.label}</td>
-              <td
-                className="px-4 py-2.5 text-center font-semibold"
-                style={{ color: CLIMATE_COMPARISON_COLORS.A.tmax }}
-              >
-                {row.a}
-              </td>
-              <td
-                className="px-4 py-2.5 text-center font-semibold"
-                style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
-              >
-                {row.b}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function DiffCard({ title, value, sub, valueColor }: TDiffCardProps) {
-  return (
-    <div className="flex flex-col gap-1 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3">
-      <span className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
-        {title}
-      </span>
-      <span
-        className="text-[length:var(--font-lg)] font-bold leading-snug"
-        style={valueColor ? { color: valueColor } : undefined}
-      >
-        {value}
-      </span>
-      <span className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">{sub}</span>
-    </div>
-  );
-}
-
 export function ComparePeriodsView({
   city,
   dataset,
@@ -179,8 +78,10 @@ export function ComparePeriodsView({
   dataA,
   dataB,
   autoGrid,
+  selectedMonths,
   isLoading,
   error,
+  altitude,
   onCitySelect,
   onClimatePeriodAChange,
   onClimatePeriodBChange,
@@ -197,15 +98,11 @@ export function ComparePeriodsView({
   const hasBothData = dataA.length > 0 && dataB.length > 0;
   const statsA = hasBothData ? computeCompareStats(dataA) : null;
   const statsB = hasBothData ? computeCompareStats(dataB) : null;
-  const diff = hasBothData ? computeDiffStats(dataA, dataB) : null;
+  const tmaxDiff = statsA && statsB ? statsB.avgTmax - statsA.avgTmax : null;
+  const precDiff = statsA && statsB ? statsB.totalPrec - statsA.totalPrec : null;
 
   const miniMapLocations: TMiniMapLocation[] = [
-    {
-      lat: city.lat,
-      lng: city.lng,
-      label: city.label,
-      color: CLIMATE_COMPARISON_COLORS.A.tmax,
-    },
+    { lat: city.lat, lng: city.lng, label: city.label, color: CLIMATE_COMPARISON_COLORS.A.tmax },
   ];
 
   return (
@@ -224,8 +121,10 @@ export function ComparePeriodsView({
         <div className="flex flex-col gap-4 sm:flex-row">
           <div className="flex-1 flex flex-col gap-4">
             <CitySearchRow
+              key={city.id}
               label={t("climateComparison.searchCity")}
               dotColor={CLIMATE_COMPARISON_COLORS.A.tmax}
+              defaultValue={city.label}
               onCitySelect={onCitySelect}
             />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -293,7 +192,14 @@ export function ComparePeriodsView({
         )}
 
         {hasBothData && statsA && statsB && (
-          <StatsGrid labelA={labelA} labelB={labelB} statsA={statsA} statsB={statsB} />
+          <CompareStatsGrid
+            labelA={labelA}
+            labelB={labelB}
+            statsA={statsA}
+            statsB={statsB}
+            altitudeA={altitude}
+            altitudeB={altitude}
+          />
         )}
 
         {hasBothData && (
@@ -307,64 +213,43 @@ export function ComparePeriodsView({
             subtitle={{ rawLabel: `${labelA} vs ${labelB}` }}
             showWalterLiethToggle={false}
             showAridity={false}
+            {...(selectedMonths !== null && selectedMonths.length > 0 ? { selectedMonths } : {})}
           />
         )}
 
-        {hasBothData && diff && (
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {hasBothData && tmaxDiff !== null && precDiff !== null && (
+          <div className="grid grid-cols-2 gap-3">
             <DiffCard
-              title={t("climateComparison.diff.warmerCity")}
+              title={t("comparePeriods.trend.tempTitle")}
               value={
-                diff.warmerCity === "tie"
-                  ? t("climateComparison.diff.tie")
-                  : diff.warmerCity === "A"
-                    ? labelA
-                    : labelB
+                tmaxDiff === 0
+                  ? t("comparePeriods.trend.noChange")
+                  : `${tmaxDiff > 0 ? "+" : ""}${tmaxDiff.toFixed(1)}°C`
               }
-              sub={
-                diff.warmerCity === "tie"
-                  ? "="
-                  : t("climateComparison.diff.byDegrees", { value: diff.tmaxDiff.toFixed(1) })
-              }
+              sub={`${labelB} vs ${labelA}`}
               valueColor={
-                diff.warmerCity === "A"
-                  ? CLIMATE_COMPARISON_COLORS.A.tmax
-                  : diff.warmerCity === "B"
-                    ? CLIMATE_COMPARISON_COLORS.B.tmax
+                tmaxDiff > 0
+                  ? CLIMATE_COMPARISON_COLORS.B.tmax
+                  : tmaxDiff < 0
+                    ? CLIMATE_COMPARISON_COLORS.A.tmax
                     : undefined
               }
             />
             <DiffCard
-              title={t("climateComparison.diff.moreRain")}
+              title={t("comparePeriods.trend.precipTitle")}
               value={
-                diff.moreRainCity === "tie"
-                  ? t("climateComparison.diff.tie")
-                  : diff.moreRainCity === "A"
-                    ? labelA
-                    : labelB
+                precDiff === 0
+                  ? t("comparePeriods.trend.noChange")
+                  : `${precDiff > 0 ? "+" : ""}${precDiff.toFixed(0)} mm`
               }
-              sub={
-                diff.moreRainCity === "tie"
-                  ? "="
-                  : t("climateComparison.diff.byMm", { value: diff.precDiff.toFixed(0) })
-              }
+              sub={`${labelB} vs ${labelA}`}
               valueColor={
-                diff.moreRainCity === "A"
-                  ? CLIMATE_COMPARISON_COLORS.A.tmax
-                  : diff.moreRainCity === "B"
-                    ? CLIMATE_COMPARISON_COLORS.B.tmax
+                precDiff > 0
+                  ? CLIMATE_COMPARISON_COLORS.B.tmax
+                  : precDiff < 0
+                    ? CLIMATE_COMPARISON_COLORS.A.tmax
                     : undefined
               }
-            />
-            <DiffCard
-              title={t("climateComparison.diff.hottestMonth")}
-              value={diff.hottestMonthName}
-              sub={`${labelA}: ${diff.hottestTempA.toFixed(1)}°C / ${labelB}: ${diff.hottestTempB.toFixed(1)}°C`}
-            />
-            <DiffCard
-              title={t("climateComparison.diff.coldestMonth")}
-              value={diff.coldestMonthName}
-              sub={`${labelA}: ${diff.coldestTempA.toFixed(1)}°C / ${labelB}: ${diff.coldestTempB.toFixed(1)}°C`}
             />
           </div>
         )}

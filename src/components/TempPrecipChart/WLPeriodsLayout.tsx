@@ -13,14 +13,14 @@ import {
 } from "recharts";
 import { AridityLegend, SummaryStats, WLCustomized, WLPeriodsTooltip } from "./components";
 import type { TWLPeriodsLayoutProps, TWLScaledPoint } from "./TempPrecipChart.type";
-import { WL_COLORS_A, WL_COLORS_B } from "./utils/chartColors";
+import { WL_COLORS_A, WL_COLORS_B } from "./TempPrecipChart.constant";
 
-function toScaledPoint(d: Record<string, unknown>): TWLScaledPoint {
+function toScaledPoint(d: { monthName: string; tavg: number; prec: number }): TWLScaledPoint {
   return {
-    monthName: typeof d["monthName"] === "string" ? d["monthName"] : "",
-    tavg: Number(d["tavg"] ?? 0),
-    prec: Number(d["prec"] ?? 0),
-    precScaled: Number(d["prec"] ?? 0) / 2,
+    monthName: d.monthName,
+    tavg: d.tavg,
+    prec: d.prec,
+    precScaled: d.prec / 2,
   };
 }
 

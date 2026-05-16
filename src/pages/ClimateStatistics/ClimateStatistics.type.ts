@@ -1,5 +1,12 @@
 import type { TChartSubtitle } from "@/components/TempPrecipChart/TempPrecipChart.type";
-import type { TCoordinates, TMonthlyTemperature, TWikidataCity } from "@/types";
+import type {
+  TCellSize,
+  TCoordinates,
+  TMonthlyTemperature,
+  TVariable,
+  TWikidataCity,
+} from "@/types";
+import type { TCellBounds } from "@/types";
 
 export type TClimateStatisticsViewProps = {
   selectedCity: TWikidataCity | null;
@@ -9,6 +16,9 @@ export type TClimateStatisticsViewProps = {
   subtitle: TChartSubtitle;
   altitude: number | null;
   selectedMonths: number[] | null;
+  variables: readonly TVariable[];
+  cellBounds: TCellBounds | null;
+  gridSize: TCellSize;
   isLoading: boolean;
   isFetching: boolean;
   isLocating: boolean;

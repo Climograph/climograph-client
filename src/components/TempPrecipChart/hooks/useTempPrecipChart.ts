@@ -1,6 +1,6 @@
 import { computeAridityPeriods, getWalterLiethScales } from "@/utils";
 import { useMemo } from "react";
-import type { TTempPrecipChartProps } from "../TempPrecipChart.type";
+import type { TMonthlyTemperatureWithAvg, TTempPrecipChartProps } from "../TempPrecipChart.type";
 import { buildCompareData } from "../utils/buildCompareData";
 import { computeChartSummary } from "../utils/computeChartSummary";
 
@@ -38,12 +38,14 @@ export function useTempPrecipChart({ data, dataA, dataB }: TTempPrecipChartProps
     [scalesData],
   );
 
+  const chartDataSingle = useMemo<TMonthlyTemperatureWithAvg[]>(
+    () => (data ?? []).map((d) => ({ ...d, tavg: (d.tmax + d.tmin) / 2 })),
+    [data],
+  );
+
   const chartData = useMemo<Record<string, unknown>[]>(
-    () =>
-      isCompare
-        ? buildCompareData(dataA ?? [], dataB ?? [])
-        : (data ?? []).map((d) => ({ ...d, tavg: (d.tmax + d.tmin) / 2 })),
-    [data, dataA, dataB, isCompare],
+    () => (isCompare ? buildCompareData(dataA ?? [], dataB ?? []) : chartDataSingle),
+    [chartDataSingle, dataA, dataB, isCompare],
   );
 
   const summary = useMemo(
@@ -51,12 +53,12 @@ export function useTempPrecipChart({ data, dataA, dataB }: TTempPrecipChartProps
     [aridity, data],
   );
 
-  const chartDataA = useMemo<Record<string, unknown>[]>(
+  const chartDataA = useMemo<TMonthlyTemperatureWithAvg[]>(
     () => (isCompare ? (dataA ?? []).map((d) => ({ ...d, tavg: (d.tmax + d.tmin) / 2 })) : []),
     [dataA, isCompare],
   );
 
-  const chartDataB = useMemo<Record<string, unknown>[]>(
+  const chartDataB = useMemo<TMonthlyTemperatureWithAvg[]>(
     () => (isCompare ? (dataB ?? []).map((d) => ({ ...d, tavg: (d.tmax + d.tmin) / 2 })) : []),
     [dataB, isCompare],
   );
@@ -88,6 +90,7 @@ export function useTempPrecipChart({ data, dataA, dataB }: TTempPrecipChartProps
     aridityA,
     scales,
     chartData,
+    chartDataSingle,
     chartDataA,
     chartDataB,
     summary,

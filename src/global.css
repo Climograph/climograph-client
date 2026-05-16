@@ -124,10 +124,34 @@ body {
   --chart-compare-a-max: #1d9e75;
   --chart-compare-a-min: #5dcaa5;
   --chart-compare-a-prec: #9fe1cb;
+  --chart-compare-a-tavg: #0f6e56;
 
-  --chart-compare-b-max: #378add;
-  --chart-compare-b-min: #93c5fd;
-  --chart-compare-b-prec: #bfdbfe;
+  --chart-compare-b-max: #d97706;
+  --chart-compare-b-min: #f59e0b;
+  --chart-compare-b-prec: #fcd34d;
+  --chart-compare-b-tavg: #92400e;
+
+  /* * Walter-Lieth diagram colors */
+  --color-wl-humid-fill: #bfdbfe;
+  --color-wl-arid-fill: #fde68a;
+  --color-wl-temp-line-a: #f97316;
+  --color-wl-prec-line-a: #3b82f6;
+  --color-wl-temp-line-b: #6366f1;
+  --color-wl-prec-line-b: #2563eb;
+  --color-wl-arid-tooltip: #d97706;
+
+  /* * Compare cities */
+  --color-city-b-tint: #fef3c7;
+
+  /* * Active button text (icon on filled primary button) */
+  --color-on-primary: #ffffff;
+
+  /* * Heatmap gradient stops */
+  --color-heatmap-0: #85b7eb;
+  --color-heatmap-25: #9fe1cb;
+  --color-heatmap-50: #fac775;
+  --color-heatmap-75: #d85a30;
+  --color-heatmap-100: #a32d2d;
 }
 
 html.dark {

@@ -13,7 +13,7 @@ function ModeButton({ isActive, onClick, title, children }: TModeButtonProps) {
       style={{
         backgroundColor: isActive ? "var(--color-primary)" : "transparent",
         borderColor: isActive ? "var(--color-primary)" : "var(--color-border)",
-        color: isActive ? "#ffffff" : "var(--color-text-secondary)",
+        color: isActive ? "var(--color-on-primary)" : "var(--color-text-secondary)",
       }}
     >
       {children}

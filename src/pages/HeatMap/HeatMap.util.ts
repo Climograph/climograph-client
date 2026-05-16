@@ -1,45 +1,14 @@
 import type { TWorldClimAvgBoxBinding, TWorldClimBoxBinding } from "@/types";
+import { cssVar, hexToRgb, GRID_DELTA, iriToCellBounds } from "@/utils";
+import type { TCellBounds } from "@/utils";
 
-// Degrees per grid cell (center-to-edge = delta / 2)
-export const GRID_DELTA: Record<string, number> = {
-  "10m": 10 / 60,
-  "5m": 5 / 60,
-  "2.5m": 2.5 / 60,
-  "30s": 30 / 3600,
-};
+export { GRID_DELTA, iriToCellBounds };
+export type { TCellBounds };
 
-export type TCellBounds = {
-  north: number;
-  south: number;
-  west: number;
-  east: number;
-};
-
-// IRI pattern: Pixel_{grid}_r{ROW}c{COL}_{var}_{period}
-const PIXEL_IRI_REGEX = /Pixel_[^_]+_r(\d+)c(\d+)/;
-
-export function iriToCellBounds(iri: string, cellSize: number): TCellBounds | null {
-  const match = PIXEL_IRI_REGEX.exec(iri);
-  if (!match) return null;
-  const row = Number(match[1]);
-  const col = Number(match[2]);
-  const north = 90 - row * cellSize;
-  return {
-    north,
-    south: north - cellSize,
-    west: -180 + col * cellSize,
-    east: -180 + col * cellSize + cellSize,
-  };
-}
-
-// Candidate key sets to try — the actual SPARQL variable names are API-defined.
-// First set uses the resource-endpoint convention; fallbacks cover common SPARQL naming.
+/** Candidate key sets — SPARQL variable names are API-defined; fallbacks cover naming variants */
 const KEY_SETS = [
-  // "valueMonth01" … "valueMonth12"
   Array.from({ length: 12 }, (_, i) => `valueMonth${String(i + 1).padStart(2, "0")}`),
-  // "value01" … "value12"
   Array.from({ length: 12 }, (_, i) => `value${String(i + 1).padStart(2, "0")}`),
-  // "v1" … "v12"
   Array.from({ length: 12 }, (_, i) => `v${i + 1}`),
 ];
 
@@ -57,7 +26,6 @@ function readMonthlySum(binding: TLooseBinding): number {
     }
   }
 
-  // None of the known key patterns matched — log the actual binding shape once.
   if (import.meta.env.DEV) {
     console.warn("[HeatMap] Unknown binding shape. Keys found:", Object.keys(binding));
   }
@@ -98,25 +66,39 @@ export function computeHeatmapStats(
   return { min, max, avg, count: values.length };
 }
 
-// Five-stop color scale: cold blue → green → warm yellow → orange-red → dark red
-const COLOR_STOPS: { t: number; r: number; g: number; b: number }[] = [
-  { t: 0, r: 133, g: 183, b: 235 }, // #85B7EB
-  { t: 0.25, r: 159, g: 225, b: 203 }, // #9FE1CB
-  { t: 0.5, r: 250, g: 199, b: 117 }, // #FAC775
-  { t: 0.75, r: 216, g: 90, b: 48 }, // #D85A30
-  { t: 1, r: 163, g: 45, b: 45 }, // #A32D2D
-];
+/** Five-stop color scale defined as CSS custom properties in global.css */
+const HEATMAP_CSS_VARS = [
+  { t: 0, name: "--color-heatmap-0" },
+  { t: 0.25, name: "--color-heatmap-25" },
+  { t: 0.5, name: "--color-heatmap-50" },
+  { t: 0.75, name: "--color-heatmap-75" },
+  { t: 1, name: "--color-heatmap-100" },
+] as const;
+
+type TRgbStop = { t: number; r: number; g: number; b: number };
+
+let colorStopsCache: TRgbStop[] | null = null;
+
+function getColorStops(): TRgbStop[] {
+  if (colorStopsCache !== null) return colorStopsCache;
+  colorStopsCache = HEATMAP_CSS_VARS.map(({ t, name }) => {
+    const { r, g, b } = hexToRgb(cssVar(name));
+    return { t, r, g, b };
+  });
+  return colorStopsCache;
+}
 
 export function interpolateColor(t: number): string {
+  const stops = getColorStops();
   const clamped = Math.max(0, Math.min(1, t));
 
-  let lo = COLOR_STOPS[0];
-  let hi = COLOR_STOPS[COLOR_STOPS.length - 1];
+  let lo = stops[0];
+  let hi = stops[stops.length - 1];
 
-  for (let i = 0; i < COLOR_STOPS.length - 1; i++) {
-    if (clamped <= COLOR_STOPS[i + 1].t) {
-      lo = COLOR_STOPS[i];
-      hi = COLOR_STOPS[i + 1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (clamped <= stops[i + 1].t) {
+      lo = stops[i];
+      hi = stops[i + 1];
       break;
     }
   }
@@ -140,7 +122,7 @@ export function gridDelta(gridSize: string): number {
   return GRID_DELTA[gridSize] ?? GRID_DELTA["10m"];
 }
 
-// Converts [lat, lng][] vertices to a closed WKT POLYGON string (lng lat order per WKT spec).
+/** lng lat order in WKT spec — note the inversion from the [lat, lng] input */
 export function polygonToWkt(vertices: [number, number][]): string {
   const ring = [...vertices, vertices[0]];
   const coords = ring.map(([lat, lng]) => `${lng} ${lat}`).join(", ");
