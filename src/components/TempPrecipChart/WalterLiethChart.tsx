@@ -56,7 +56,7 @@ export function WalterLiethChart({
       <div className="overflow-x-auto">
         <div className="h-[300px] sm:h-[360px] md:h-[420px] lg:h-[460px] min-w-[520px]">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={scaledData} margin={{ top: 20, right: 60, bottom: 50, left: 20 }}>
+            <ComposedChart data={scaledData} margin={{ top: 20, right: 70, bottom: 50, left: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
               <XAxis
                 dataKey="monthName"
@@ -90,9 +90,12 @@ export function WalterLiethChart({
                 yAxisId="right"
                 orientation="right"
                 domain={scales ? [scales.precMin, scales.precMax] : [0, "auto"]}
+                allowDataOverflow={false}
                 {...(rightTicks ? { ticks: rightTicks } : {})}
                 tickFormatter={(v: unknown) => String(Math.round(Number(v)))}
                 tick={{ fontSize: 12, fill: "var(--color-text-secondary)" }}
+                axisLine={{ stroke: "var(--color-border)" }}
+                tickLine={{ stroke: "var(--color-border)" }}
                 label={{
                   value: "mm",
                   angle: 90,

@@ -1,6 +1,6 @@
 import { useXAxisScale, useYAxisScale } from "recharts";
 import type { TWLCustomizedProps } from "../TempPrecipChart.type";
-import { catmullRomPath } from "../utils/catmullRomPath";
+import { linearPath } from "../utils/catmullRomPath";
 import { WL_COLORS_A } from "../utils/chartColors";
 
 // Renders Walter-Lieth fills and curves via SVG clipPath (even-odd winding rule).
@@ -47,8 +47,8 @@ export function WLCustomized({
   const firstX = tempPts[0].x;
   const lastX = tempPts[tempPts.length - 1].x;
 
-  const tempLine = catmullRomPath(tempPts);
-  const precLine = catmullRomPath(precPts);
+  const tempLine = linearPath(tempPts);
+  const precLine = linearPath(precPts);
 
   const f = (n: number) => n.toFixed(2);
   const tempArea = `${tempLine} L ${f(lastX)},${f(baselineY)} L ${f(firstX)},${f(baselineY)} Z`;

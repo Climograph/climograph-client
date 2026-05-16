@@ -10,7 +10,14 @@ import { CHART_COLORS } from "../utils/chartColors";
  * so it updates correctly when the filter changes without relying on Recharts Cell merging.
  */
 export function PrecipBarShape(props: TBarShape) {
-  const { x = 0, width = 0, fill = CHART_COLORS.humid, month, selectedMonths } = props;
+  const { x = 0, width = 0, fill: propFill = CHART_COLORS.humid, month, selectedMonths, aridityByMonth } = props;
+
+  const fill =
+    aridityByMonth !== undefined && month !== undefined
+      ? aridityByMonth[month]
+        ? CHART_COLORS.arid
+        : CHART_COLORS.humid
+      : propFill;
 
   const fillOpacity =
     !selectedMonths || selectedMonths.length === 0

@@ -49,7 +49,9 @@ export type TBarShape = {
   /** passed by Recharts from the data entry */
   month?: number;
   /** passed via shape={<PrecipBarShape selectedMonths={...} />} */
-  selectedMonths?: readonly number[];
+  selectedMonths?: readonly number[] | undefined;
+  /** month → isArid lookup, passed via shape prop to avoid Cell children */
+  aridityByMonth?: Record<number, boolean> | undefined;
   yAxis?: { scale?: (v: number) => number };
 };
 
