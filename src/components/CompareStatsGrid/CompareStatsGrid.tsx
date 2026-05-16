@@ -1,3 +1,4 @@
+import { getMartonneBadge } from "@/utils/martonne.util";
 import { CLIMATE_COMPARISON_COLORS } from "@/pages/ClimateComparison/ClimateComparison.util";
 import { useTranslation } from "react-i18next";
 import type { TCompareStatsGridProps } from "./CompareStatsGrid.type";
@@ -7,9 +8,14 @@ export function CompareStatsGrid({
   labelB,
   statsA,
   statsB,
+  altitudeA,
+  altitudeB,
   activeColumn,
 }: TCompareStatsGridProps) {
   const { t } = useTranslation();
+
+  const badgeA = getMartonneBadge(statsA.martonneIndex);
+  const badgeB = getMartonneBadge(statsB.martonneIndex);
 
   const rows = [
     {
@@ -27,7 +33,14 @@ export function CompareStatsGrid({
       a: `${statsA.totalPrec.toFixed(0)} mm`,
       b: `${statsB.totalPrec.toFixed(0)} mm`,
     },
+    {
+      label: t("climateComparison.stats.aridMonths"),
+      a: String(statsA.aridMonths),
+      b: String(statsB.aridMonths),
+    },
   ];
+
+  const showAltitude = altitudeA != null || altitudeB != null;
 
   return (
     <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)]">
@@ -65,7 +78,7 @@ export function CompareStatsGrid({
           {rows.map((row, i) => (
             <tr
               key={row.label}
-              className={`border-b border-[var(--color-border)] last:border-0 ${i % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}
+              className={`border-b border-[var(--color-border)] ${i % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}
             >
               <td className="px-4 py-2.5 text-[var(--color-text-secondary)]">{row.label}</td>
               <td
@@ -82,6 +95,58 @@ export function CompareStatsGrid({
               </td>
             </tr>
           ))}
+          {showAltitude && (
+            <tr className={`border-b border-[var(--color-border)] ${rows.length % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}>
+              <td className="px-4 py-2.5 text-[var(--color-text-secondary)]">{t("chart.altitude")}</td>
+              <td
+                className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 0 ? "bg-[var(--color-chip-active-bg)]" : ""}`}
+                style={{ color: CLIMATE_COMPARISON_COLORS.A.tmax }}
+              >
+                {altitudeA != null ? `${altitudeA} m` : "—"}
+              </td>
+              <td
+                className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[var(--color-city-b-tint)]" : ""}`}
+                style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
+              >
+                {altitudeB != null ? `${altitudeB} m` : "—"}
+              </td>
+            </tr>
+          )}
+          <tr className={`${(rows.length + (showAltitude ? 1 : 0)) % 2 === 0 ? "bg-[var(--color-bg)]" : "bg-[var(--color-bg-secondary)]"}`}>
+            <td className="px-4 py-2.5 text-[var(--color-text-secondary)]">{t("climateComparison.stats.martonne")}</td>
+            <td
+              className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 0 ? "bg-[var(--color-chip-active-bg)]" : ""}`}
+              style={{ color: CLIMATE_COMPARISON_COLORS.A.tmax }}
+            >
+              <span className="inline-flex items-center gap-1.5">
+                {statsA.martonneIndex !== null ? statsA.martonneIndex.toFixed(1) : "—"}
+                {badgeA && (
+                  <span
+                    className="text-[10px] font-medium"
+                    style={{ backgroundColor: badgeA.bg, color: badgeA.color, padding: "2px 6px", borderRadius: 8 }}
+                  >
+                    {t(badgeA.labelKey)}
+                  </span>
+                )}
+              </span>
+            </td>
+            <td
+              className={`px-4 py-2.5 text-center font-semibold transition-colors duration-200 ${activeColumn === 1 ? "bg-[var(--color-city-b-tint)]" : ""}`}
+              style={{ color: CLIMATE_COMPARISON_COLORS.B.tmax }}
+            >
+              <span className="inline-flex items-center gap-1.5">
+                {statsB.martonneIndex !== null ? statsB.martonneIndex.toFixed(1) : "—"}
+                {badgeB && (
+                  <span
+                    className="text-[10px] font-medium"
+                    style={{ backgroundColor: badgeB.bg, color: badgeB.color, padding: "2px 6px", borderRadius: 8 }}
+                  >
+                    {t(badgeB.labelKey)}
+                  </span>
+                )}
+              </span>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

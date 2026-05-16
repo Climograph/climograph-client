@@ -5,5 +5,7 @@ export type TCompareStatsGridProps = {
   labelB: string;
   statsA: TCompareStats;
   statsB: TCompareStats;
+  altitudeA?: number | null;
+  altitudeB?: number | null;
   activeColumn?: number | undefined;
 };
