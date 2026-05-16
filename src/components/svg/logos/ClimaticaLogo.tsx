@@ -31,7 +31,7 @@ export default function ClimaticaLogo({ className }: { className?: string }) {
       <path
         d="M156 523C175.176 315.407 395.336 223.695 515.187 223.695C681.536 223.695 696.255 523 908.672 367.057C1039.13 271.284 1108.92 -17.0068 1304 100.861"
         stroke="var(--color-dark)"
-        stroke-width="70"
+        strokeWidth="70"
       />
     </svg>
   );
