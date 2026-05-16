@@ -115,8 +115,18 @@
     "meanTemp": "Mean temp",
     "annualPrec": "Annual precip",
     "aridMonths": "Arid months",
+    "martonne": "Aridity (M)",
+    "martonneTooltip": "De Martonne aridity index: M = P/(T+10). <5 Hyperarid | 5–10 Arid | 10–20 Semi-arid | 20–30 Sub-humid | >30 Humid",
     "aridPeriod": "Arid period",
     "humidPeriod": "Humid period",
+    "martonneClass": {
+      "hyperarid": "Hyperarid",
+      "arid": "Arid",
+      "semiArid": "Semi-arid",
+      "subHumid": "Sub-humid",
+      "humid": "Humid",
+      "perhumid": "Perhumid"
+    },
     "modeStandard": "Standard chart",
     "modeWalterLieth": "Walter-Lieth diagram",
     "selectedMonth": "{{month}} values",

@@ -115,8 +115,18 @@
     "meanTemp": "Temp. media",
     "annualPrec": "Precip. anual",
     "aridMonths": "Meses áridos",
+    "martonne": "Aridez (M)",
+    "martonneTooltip": "Índice de aridez de De Martonne: M = P/(T+10). <5 Hiperárido | 5–10 Árido | 10–20 Semiárido | 20–30 Subhúmedo | >30 Húmedo",
     "aridPeriod": "Período árido",
     "humidPeriod": "Período húmedo",
+    "martonneClass": {
+      "hyperarid": "Hiperárido",
+      "arid": "Árido",
+      "semiArid": "Semiárido",
+      "subHumid": "Subhúmedo",
+      "humid": "Húmedo",
+      "perhumid": "Perhúmedo"
+    },
     "modeStandard": "Gráfico estándar",
     "modeWalterLieth": "Diagrama Walter-Lieth",
     "selectedMonth": "valores de {{month}}",
