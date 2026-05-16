@@ -86,7 +86,7 @@ export function Topbar({ isSidebarOpen, onToggleSidebar }: TTopbarProps) {
         </Link>
 
         {/* Desktop center nav */}
-        <nav className="hidden gap-0.5 lg:flex">
+        <nav className="hidden gap-3 lg:flex">
           {NAV_LINKS.map(({ to, labelKey }) => (
             <NavLink
               key={to}
@@ -95,7 +95,7 @@ export function Topbar({ isSidebarOpen, onToggleSidebar }: TTopbarProps) {
               className={({ isActive }) =>
                 `rounded-[var(--radius-sm)] px-4 py-2 text-[length:var(--font-sm)] font-medium transition-colors duration-150 ${
                   isActive
-                    ? "bg-[var(--color-bg-secondary)] font-medium text-[var(--color-text)]"
+                    ? "bg-[var(--color-primary-muted)] font-medium text-[var(--color-primary)]"
                     : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text)]"
                 }`
               }
