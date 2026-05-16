@@ -1,4 +1,5 @@
 import type { TCellSize } from "@/types";
+import { TCellCountStatus } from "@/types";
 
 const CELL_SIZE_DEGREES: Record<TCellSize, number> = {
   "10m": 0.1667,
@@ -7,10 +8,24 @@ const CELL_SIZE_DEGREES: Record<TCellSize, number> = {
   "30s": 0.00833,
 };
 
-export type TCellCountStatus = {
-  labelKey: string;
-  colorClass: string;
-};
+const CELL_COUNT_THRESHOLDS = [
+  {
+    threshold: 500,
+    status: { labelKey: "sidebar.cellCount.fast", colorClass: "bg-green-100 text-green-700" },
+  },
+  {
+    threshold: 2000,
+    status: { labelKey: "sidebar.cellCount.moderate", colorClass: "bg-yellow-100 text-yellow-700" },
+  },
+  {
+    threshold: 10_000,
+    status: { labelKey: "sidebar.cellCount.slow", colorClass: "bg-orange-100 text-orange-700" },
+  },
+  {
+    threshold: Infinity,
+    status: { labelKey: "sidebar.cellCount.tooMany", colorClass: "bg-red-100 text-red-700" },
+  },
+] as const;
 
 export function estimateCellCount(
   bbox: { north: number; south: number; east: number; west: number },
@@ -21,11 +36,5 @@ export function estimateCellCount(
 }
 
 export function getCellCountStatus(count: number): TCellCountStatus {
-  if (count < 500)
-    return { labelKey: "sidebar.cellCount.fast", colorClass: "bg-green-100 text-green-700" };
-  if (count < 2000)
-    return { labelKey: "sidebar.cellCount.moderate", colorClass: "bg-yellow-100 text-yellow-700" };
-  if (count <= 10_000)
-    return { labelKey: "sidebar.cellCount.slow", colorClass: "bg-orange-100 text-orange-700" };
-  return { labelKey: "sidebar.cellCount.tooMany", colorClass: "bg-red-100 text-red-700" };
+  return CELL_COUNT_THRESHOLDS.find(({ threshold }) => count < threshold)!.status;
 }

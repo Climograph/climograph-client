@@ -1,8 +1,6 @@
-export type TColorScale = "temperature" | "precipitation";
+import { TColorScale, TColorStop } from "@/types";
 
-type TColorStop = { t: number; hex: string };
-
-// 9-stop RdYlBu diverging scale: blue (cold) → red (hot)
+// * 9-stop RdYlBu diverging scale: blue (cold) → red (hot)
 const TEMP_STOPS: TColorStop[] = [
   { t: 0, hex: "#4575B4" },
   { t: 0.125, hex: "#74ADD1" },
@@ -15,7 +13,7 @@ const TEMP_STOPS: TColorStop[] = [
   { t: 1, hex: "#A50026" },
 ];
 
-// Sequential brown scale for precipitation: low=light, high=dark
+// * Sequential brown scale for precipitation: low=light, high=dark
 const PREC_STOPS: TColorStop[] = [
   { t: 0, hex: "#FFF7BC" },
   { t: 0.33, hex: "#FEC44F" },

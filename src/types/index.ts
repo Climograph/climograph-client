@@ -1,11 +1,11 @@
 export type { TApiResponse, TResultStatus } from "./api/common";
 export type {
   TWikidataCoords,
-  TWikidataGeoSearchItem,
-  TWikidataGeoSearchResult,
   TWikidataEntitiesResult,
   TWikidataEntity,
   TWikidataEntityValue,
+  TWikidataGeoSearchItem,
+  TWikidataGeoSearchResult,
   TWikidataLabelMap,
   TWikidataSearchItem,
   TWikidataSearchResult,
@@ -40,3 +40,13 @@ export type {
 } from "./domain/climate";
 export type { TCoordinates, TWikidataCity } from "./domain/location";
 export type { TCellSizeOption } from "./ui/cell-size";
+export type {
+  TCellBounds,
+  TCellCountStatus,
+  TColorScale,
+  TColorStop,
+  TCsvVariable,
+  TMartonneBadge,
+  TMonthAridity,
+  TWalterLiethScales,
+} from "./utils";

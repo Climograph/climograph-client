@@ -1,9 +1,7 @@
 import { VARIABLE_LABELS, WEATHER_VARIABLES } from "@/constants";
-import type { TMonthlyTemperature, TVariable } from "@/types";
+import type { TCsvVariable, TMonthlyTemperature, TVariable } from "@/types";
 import html2canvas from "html2canvas";
 import type { RefObject } from "react";
-
-type TCsvVariable = (typeof WEATHER_VARIABLES)[number];
 
 function isCsvVariable(v: TVariable): v is TCsvVariable {
   return (WEATHER_VARIABLES as readonly string[]).includes(v);
@@ -33,6 +31,7 @@ export function exportToCSV(
   const csv = rows.map((r) => r.join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
+
   triggerDownload(url, `climatica-${cityName}-${date}.csv`);
 }
 
@@ -64,13 +63,18 @@ export function exportToSVG(chartRef: RefObject<HTMLElement | null>, filename: s
   const svg =
     chartRef.current?.querySelector<SVGElement>(".recharts-wrapper svg") ??
     chartRef.current?.querySelector<SVGElement>("svg[width]");
+
   if (!svg) return;
+
   const clone = svg.cloneNode(true) as SVGElement;
+
   clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
   const serialized = new XMLSerializer().serializeToString(clone);
   const blob = new Blob([`<?xml version="1.0" encoding="UTF-8"?>\n${serialized}`], {
     type: "image/svg+xml;charset=utf-8",
   });
   const url = URL.createObjectURL(blob);
+
   triggerDownload(url, `${filename}.svg`);
 }
