@@ -15,9 +15,7 @@ export function WLCitiesLayout({
   const { t } = useTranslation();
 
   const tempDiff =
-    summaryA && summaryB
-      ? parseFloat(summaryA.annualAvgTemp) - parseFloat(summaryB.annualAvgTemp)
-      : null;
+    summaryA && summaryB ? summaryA.annualAvgTemp - summaryB.annualAvgTemp : null;
   const aridDiff = summaryA && summaryB ? summaryA.aridCount - summaryB.aridCount : null;
 
   const tempLabel =

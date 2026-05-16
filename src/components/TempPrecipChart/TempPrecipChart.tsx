@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ModeToggle } from "./components/ModeToggle";
 import { useTempPrecipChart } from "./hooks/useTempPrecipChart";
+import { CalendarIcon, DatabaseIcon } from "./icons";
 import { StandardClimateChart } from "./StandardClimateChart";
 import type { TChartMode, TTempPrecipChartProps, TVisibleSeries } from "./TempPrecipChart.type";
 import { WLCitiesLayout } from "./WLCitiesLayout";
@@ -46,10 +47,19 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
     setVisible((prev) => ({ ...prev, [key]: !prev[key] }));
   }
 
-  const selectedMonthName =
-    !chart.isCompare && props.selectedMonths?.length === 1
-      ? (props.data?.find((d) => d.month === props.selectedMonths![0])?.monthName ?? "")
-      : "";
+  const selectedMonth =
+    !chart.isCompare && props.selectedMonths?.length === 1 ? props.selectedMonths[0] : null;
+
+  const subtitleText = props.subtitle
+    ? (props.subtitle.rawLabel ??
+        (props.subtitle.dataset === DATASETS.CLIMATE && props.subtitle.climatePeriod
+          ? t("chart.subtitle.climate", {
+              period: CLIMATE_PERIOD_LABELS[props.subtitle.climatePeriod],
+            })
+          : props.subtitle.weatherYear !== undefined
+            ? t("chart.subtitle.weather", { year: props.subtitle.weatherYear })
+            : null))
+    : null;
 
   const storeVarSet = new Set<string>(props.variables ?? []);
 
@@ -69,24 +79,34 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
             <h3 className="font-semibold text-[length:var(--font-md)] md:text-[length:var(--font-lg)] text-[var(--color-text)]">
               {t("chart.title")}: {props.cityName}
             </h3>
-            {props.subtitle && (
-              <p className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
-                {props.subtitle.rawLabel ??
-                  (props.subtitle.dataset === DATASETS.CLIMATE && props.subtitle.climatePeriod
-                    ? t("chart.subtitle.climate", {
-                        period: CLIMATE_PERIOD_LABELS[props.subtitle.climatePeriod],
-                      })
-                    : props.subtitle.weatherYear !== undefined
-                      ? t("chart.subtitle.weather", { year: props.subtitle.weatherYear })
-                      : null)}
-              </p>
+            {(!!subtitleText || (!isWalterLieth && selectedMonth !== null)) && (
+              <div className="flex flex-wrap items-center gap-2">
+                {!!subtitleText && (
+                  <span className="flex items-center gap-1 text-[12px] text-[var(--color-text-secondary)]">
+                    <DatabaseIcon />
+                    {subtitleText}
+                  </span>
+                )}
+                {!isWalterLieth && selectedMonth !== null && (
+                  <span className="flex items-center gap-1" style={{ color: "#1a6fa0" }}>
+                    <CalendarIcon />
+                    <span
+                      style={{
+                        fontSize: 12,
+                        padding: "3px 10px",
+                        borderRadius: 20,
+                        background: "#e8f4fd",
+                        border: "0.5px solid #b3d9f5",
+                        color: "#1a6fa0",
+                      }}
+                    >
+                      {t(`months.${selectedMonth}`)}
+                    </span>
+                  </span>
+                )}
+              </div>
             )}
           </div>
-        )}
-        {!isWalterLieth && selectedMonthName && (
-          <span className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
-            {t("chart.selectedMonth", { month: selectedMonthName })}
-          </span>
         )}
         <div className="ml-auto flex flex-wrap gap-2">
           {chips.map(({ key, label }) => {

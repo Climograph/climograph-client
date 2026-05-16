@@ -82,10 +82,12 @@ export type TComparePoint = {
 };
 
 export type TChartSummary = {
-  annualAvgTemp: string;
+  annualAvgTemp: number;
   totalPrec: number;
   aridCount: number;
+  martonne: number | null;
 };
+
 
 export type TSummaryStatsProps = {
   summary: TChartSummary;

@@ -13,8 +13,8 @@ import {
   YAxis,
 } from "recharts";
 import { AridityLegend } from "./components/AridityLegend";
+import { ClimateStatsBar } from "@/components/ClimateStatsBar";
 import { PrecipBarShape } from "./components/PrecipBarShape";
-import { SummaryStats } from "./components/SummaryStats";
 import type { TDotRendererProps, TStandardClimateChartProps } from "./TempPrecipChart.type";
 import { CHART_COLORS } from "./utils/chartColors";
 
@@ -106,7 +106,13 @@ export function StandardClimateChart({
   return (
     <>
       {summary && (
-        <SummaryStats summary={summary} {...(altitude !== undefined ? { altitude } : {})} />
+        <ClimateStatsBar
+          meanTemp={summary.annualAvgTemp}
+          annualPrecip={summary.totalPrec}
+          aridMonths={summary.aridCount}
+          martonneIndex={summary.martonne}
+          {...(altitude !== undefined ? { altitude } : {})}
+        />
       )}
       <div className="overflow-x-auto">
         <div className="h-[300px] sm:h-[360px] md:h-[420px] lg:h-[460px] min-w-[520px]">
