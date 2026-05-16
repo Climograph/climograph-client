@@ -83,6 +83,7 @@ export function ComparePeriodsView({
   selectedMonths,
   isLoading,
   error,
+  altitude,
   onCitySelect,
   onClimatePeriodAChange,
   onClimatePeriodBChange,
@@ -193,7 +194,14 @@ export function ComparePeriodsView({
         )}
 
         {hasBothData && statsA && statsB && (
-          <CompareStatsGrid labelA={labelA} labelB={labelB} statsA={statsA} statsB={statsB} />
+          <CompareStatsGrid
+            labelA={labelA}
+            labelB={labelB}
+            statsA={statsA}
+            statsB={statsB}
+            altitudeA={altitude}
+            altitudeB={altitude}
+          />
         )}
 
         {hasBothData && (

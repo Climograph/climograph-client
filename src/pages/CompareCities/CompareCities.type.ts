@@ -11,6 +11,8 @@ export type TCompareCitiesViewProps = {
   selectedMonths: number[] | null;
   isLoading: boolean;
   error: Error | null;
+  altitudeA: number | null;
+  altitudeB: number | null;
   onCityASelect: (city: TWikidataCity) => void;
   onCityBSelect: (city: TWikidataCity) => void;
 };

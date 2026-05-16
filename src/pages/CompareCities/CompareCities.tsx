@@ -1,6 +1,6 @@
 import type { TChartSubtitle } from "@/components/TempPrecipChart";
 import { DATASETS, SIDEBAR_PARAMS } from "@/constants";
-import { useGetCompareData, usePersistedComparisonCities } from "@/hooks";
+import { useGetAltitude, useGetCompareData, usePersistedComparisonCities } from "@/hooks";
 import { useFiltersStore } from "@/stores";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -36,6 +36,9 @@ export function CompareCities() {
     error,
   } = useGetCompareData(cityA.lat, cityA.lng, cityB.lat, cityB.lng, gridSize);
 
+  const { data: altitudeA = null } = useGetAltitude(cityA.lat, cityA.lng, gridSize);
+  const { data: altitudeB = null } = useGetAltitude(cityB.lat, cityB.lng, gridSize);
+
   return (
     <CompareCitiesView
       cityA={cityA}
@@ -47,6 +50,8 @@ export function CompareCities() {
       selectedMonths={selectedMonths}
       isLoading={isLoading}
       error={error}
+      altitudeA={altitudeA}
+      altitudeB={altitudeB}
       onCityASelect={selectCityA}
       onCityBSelect={selectCityB}
     />

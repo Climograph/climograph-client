@@ -1,6 +1,6 @@
 import { CLIMATE_PERIODS, WEATHER_MAX_YEAR, WEATHER_MIN_YEAR } from "@/constants";
 import type { TClimatePeriod } from "@/constants/worldclim.constant";
-import { useGetComparePeriods, usePersistedComparisonCities } from "@/hooks";
+import { useGetAltitude, useGetComparePeriods, usePersistedComparisonCities } from "@/hooks";
 import { useFiltersStore } from "@/stores";
 import { useState } from "react";
 import { ComparePeriodsView } from "./ComparePeriodsView";
@@ -26,9 +26,12 @@ export function ComparePeriods() {
     dataset,
   );
 
+  const { data: altitude = null } = useGetAltitude(cityA.lat, cityA.lng, gridSize);
+
   return (
     <ComparePeriodsView
       city={cityA}
+      altitude={altitude}
       dataset={dataset}
       climatePeriodA={climatePeriodA}
       climatePeriodB={climatePeriodB}

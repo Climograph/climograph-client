@@ -5,6 +5,7 @@ export type TComparePeriodsViewProps = {
   city: TWikidataCity;
   dataset: TDataset;
   selectedMonths: number[] | null;
+  altitude: number | null;
   climatePeriodA: TClimatePeriod;
   climatePeriodB: TClimatePeriod;
   yearA: number;

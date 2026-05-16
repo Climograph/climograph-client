@@ -46,6 +46,8 @@ export function CompareCitiesView({
   selectedMonths,
   isLoading,
   error,
+  altitudeA,
+  altitudeB,
   onCityASelect,
   onCityBSelect,
 }: TCompareCitiesViewProps) {
@@ -131,6 +133,8 @@ export function CompareCitiesView({
             labelB={labelB}
             statsA={statsA}
             statsB={statsB}
+            altitudeA={altitudeA}
+            altitudeB={altitudeB}
             activeColumn={activeCity}
           />
         )}
