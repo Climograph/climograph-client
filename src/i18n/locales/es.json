@@ -63,7 +63,9 @@
     "stats": {
       "avgTmax": "Temp. máx promedio",
       "avgTmin": "Temp. mín promedio",
-      "totalPrec": "Precipitación total"
+      "totalPrec": "Precipitación total",
+      "aridMonths": "Meses áridos",
+      "martonne": "Martonne (M)"
     },
     "diff": {
       "warmerCity": "Ciudad más cálida",

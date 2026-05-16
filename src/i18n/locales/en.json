@@ -63,7 +63,9 @@
     "stats": {
       "avgTmax": "Avg max temp",
       "avgTmin": "Avg min temp",
-      "totalPrec": "Total precip"
+      "totalPrec": "Total precip",
+      "aridMonths": "Arid months",
+      "martonne": "Martonne (M)"
     },
     "diff": {
       "warmerCity": "Warmer city",

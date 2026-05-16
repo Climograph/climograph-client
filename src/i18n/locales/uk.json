@@ -63,7 +63,9 @@
     "stats": {
       "avgTmax": "Серед. макс. темп",
       "avgTmin": "Серед. мін. темп",
-      "totalPrec": "Заг. опади"
+      "totalPrec": "Заг. опади",
+      "aridMonths": "Посушливі місяці",
+      "martonne": "Мартон (M)"
     },
     "diff": {
       "warmerCity": "Тепліше місто",
