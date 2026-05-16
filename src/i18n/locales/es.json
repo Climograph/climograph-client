@@ -99,7 +99,10 @@
       "maxValue": "Máx",
       "avgValue": "Promedio",
       "cellsAnalyzed": "Celdas"
-    }
+    },
+    "showingVariable": "Mostrando: {{variable}}",
+    "useMyLocation": "Usar mi ubicación",
+    "locating": "Localizando..."
   },
   "chart": {
     "title": "Temperatura",

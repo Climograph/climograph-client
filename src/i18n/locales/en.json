@@ -99,7 +99,10 @@
       "maxValue": "Max",
       "avgValue": "Average",
       "cellsAnalyzed": "Cells"
-    }
+    },
+    "showingVariable": "Showing: {{variable}}",
+    "useMyLocation": "Use my location",
+    "locating": "Locating..."
   },
   "chart": {
     "title": "Temperature",

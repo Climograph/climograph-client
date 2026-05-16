@@ -99,7 +99,10 @@
       "maxValue": "Макс",
       "avgValue": "Середнє",
       "cellsAnalyzed": "Клітинки"
-    }
+    },
+    "showingVariable": "Показується: {{variable}}",
+    "useMyLocation": "Моє місцезнаходження",
+    "locating": "Визначення..."
   },
   "chart": {
     "title": "Температура",
