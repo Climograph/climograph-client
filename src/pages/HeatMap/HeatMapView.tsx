@@ -70,28 +70,20 @@ export function HeatMapView({
         <LocationSearch
           isLocating={isLocating}
           locationError={locationError}
-          showLocateButton={false}
           onCitySelect={onCitySelect}
           onLocate={onLocate}
           onClearLocationError={onClearLocationError}
         />
 
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <Toolbar
-            drawMode={drawMode}
-            hasSelection={hasSelection}
-            isLocating={isLocating}
-            onBboxModeToggle={() => onDrawModeChange(drawMode === "bbox" ? "none" : "bbox")}
-            onPolygonModeToggle={() =>
-              onDrawModeChange(drawMode === "polygon" ? "none" : "polygon")
-            }
-            onClear={handleClear}
-            onLocate={onLocate}
-          />
-          <span className="text-[length:var(--font-sm)] text-[var(--color-text-secondary)]">
-            {t("heatMap.showingVariable", { variable: activeVariable })}
-          </span>
-        </div>
+        <Toolbar
+          drawMode={drawMode}
+          hasSelection={hasSelection}
+          onBboxModeToggle={() => onDrawModeChange(drawMode === "bbox" ? "none" : "bbox")}
+          onPolygonModeToggle={() =>
+            onDrawModeChange(drawMode === "polygon" ? "none" : "polygon")
+          }
+          onClear={handleClear}
+        />
 
         {hasSelection && (
           <StatsLegendBar
@@ -110,6 +102,7 @@ export function HeatMapView({
           drawMode={drawMode}
           gridSize={gridSize}
           colorScale={colorScale}
+          unit={unit}
           mapTarget={mapTarget}
           bindings={pixelBindings}
           isLoading={isLoading}

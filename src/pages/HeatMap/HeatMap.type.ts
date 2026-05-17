@@ -53,6 +53,7 @@ export type THeatmapLayerProps = {
   bindings: TWorldClimBoxBinding[];
   gridSize: string;
   scale: TColorScale;
+  unit: string;
   bbox: TBbox | null;
   polygon: TPolygon | null;
   selectedMonths: number[];
@@ -76,11 +77,9 @@ export type TPolygonOutlineProps = { vertices: TPolygon };
 export type TToolbarProps = {
   drawMode: TDrawMode;
   hasSelection: boolean;
-  isLocating: boolean;
   onBboxModeToggle: () => void;
   onPolygonModeToggle: () => void;
   onClear: () => void;
-  onLocate: () => void;
 };
 
 export type TStatsLegendBarProps = {
@@ -98,6 +97,7 @@ export type TMapCanvasProps = {
   drawMode: TDrawMode;
   gridSize: string;
   colorScale: TColorScale;
+  unit: string;
   mapTarget: TMapTarget | null;
   bindings: TWorldClimBoxBinding[];
   isLoading: boolean;

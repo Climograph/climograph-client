@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 import type { TMapFitterProps, TMapNavigatorProps } from "../HeatMap.type";
 
@@ -13,18 +13,19 @@ export function MapNavigator({ target }: TMapNavigatorProps) {
 
 export function MapFitter({ bbox }: TMapFitterProps) {
   const map = useMap();
-  const fitted = useRef(false);
 
   useEffect(() => {
-    if (!bbox || fitted.current) return;
-    map.fitBounds(
-      [
-        [bbox.south, bbox.west],
-        [bbox.north, bbox.east],
-      ],
-      { padding: [24, 24] },
-    );
-    fitted.current = true;
+    if (!bbox) return;
+    const id = setTimeout(() => {
+      map.fitBounds(
+        [
+          [bbox.south, bbox.west],
+          [bbox.north, bbox.east],
+        ],
+        { padding: [32, 32] },
+      );
+    }, 100);
+    return () => clearTimeout(id);
   }, [bbox, map]);
 
   return null;

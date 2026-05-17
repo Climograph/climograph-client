@@ -3,13 +3,21 @@ import L from "leaflet";
 import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import type { THeatmapLayerProps } from "../HeatMap.type";
-
 import { GRID_DELTA, iriToCellBounds, pixelAnnualAvg, pixelSelectedAvg } from "../HeatMap.util";
+
+const isTouchDevice = "ontouchstart" in window;
+
+function popupContent(value: number, unit: string, centerLat: number, centerLng: number): string {
+  const latDir = centerLat >= 0 ? "N" : "S";
+  const lngDir = centerLng >= 0 ? "E" : "W";
+  return `<div style="font-size:13px;font-weight:500;">${value.toFixed(1)} ${unit}</div><div style="font-size:11px;opacity:.65;">${Math.abs(centerLat).toFixed(3)}°${latDir}, ${Math.abs(centerLng).toFixed(3)}°${lngDir}</div>`;
+}
 
 export function HeatmapLayer({
   bindings,
   gridSize,
   scale,
+  unit,
   bbox,
   polygon,
   selectedMonths,
@@ -70,13 +78,33 @@ export function HeatmapLayer({
       if (!bounds) continue;
 
       const color = interpolateColor(value, min, max, scale);
-      L.rectangle(
-        [
-          [bounds.south, bounds.west],
-          [bounds.north, bounds.east],
-        ],
-        { fillColor: color, fillOpacity: 0.55, stroke: false, weight: 0 },
-      ).addTo(group);
+      const leafletBounds = L.latLngBounds(
+        [bounds.south, bounds.west],
+        [bounds.north, bounds.east],
+      );
+      const rect = L.rectangle(leafletBounds, {
+        fillColor: color,
+        fillOpacity: 0.55,
+        stroke: false,
+        weight: 0,
+      }).addTo(group);
+
+      const center = leafletBounds.getCenter();
+      const content = popupContent(value, unit, center.lat, center.lng);
+      const popup = L.popup({ closeButton: false, offset: [0, -4] }).setContent(content);
+
+      if (isTouchDevice) {
+        rect.on("click", (e) => {
+          popup.setLatLng(e.latlng).openOn(map);
+        });
+      } else {
+        rect.on("mouseover", (e) => {
+          popup.setLatLng(e.latlng).openOn(map);
+        });
+        rect.on("mouseout", () => {
+          map.closePopup();
+        });
+      }
     }
 
     const selectionChanged =
@@ -104,7 +132,7 @@ export function HeatmapLayer({
         { padding: [24, 24] },
       );
     }
-  }, [bindings, gridSize, scale, bbox, polygon, selectedMonths, map]);
+  }, [bindings, gridSize, scale, unit, bbox, polygon, selectedMonths, map]);
 
   return null;
 }
