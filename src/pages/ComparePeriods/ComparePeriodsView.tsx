@@ -2,9 +2,9 @@ import type { TMiniMapLocation } from "@/components";
 import {
   CompareStatsGrid,
   DiffCard,
+  LocationSearch,
   MiniMap,
   PeriodSelectRow,
-  SearchBar,
   TempPrecipChart,
   ThreeDotsScaleLoader,
 } from "@/components";
@@ -15,7 +15,6 @@ import { CLIMATE_COMPARISON_COLORS } from "@/pages/ClimateComparison/ClimateComp
 import { computeCompareStats } from "@/pages/ClimateComparison/ClimateComparison.util";
 import { useTranslation } from "react-i18next";
 import type {
-  TCitySearchRowProps,
   TClimatePeriodRowProps,
   TComparePeriodsViewProps,
 } from "./ComparePeriods.type";
@@ -24,24 +23,6 @@ const CLIMATE_PERIOD_OPTIONS = Object.values(CLIMATE_PERIODS).map((period) => ({
   value: period,
   label: CLIMATE_PERIOD_LABELS[period],
 }));
-
-function CitySearchRow({ label, dotColor, defaultValue, onCitySelect }: TCitySearchRowProps) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-center gap-2">
-        <span
-          className="h-3 w-3 shrink-0 rounded-full"
-          style={{ backgroundColor: dotColor }}
-          aria-hidden="true"
-        />
-        <span className="text-[length:var(--font-sm)] font-medium text-[var(--color-text-secondary)]">
-          {label}
-        </span>
-      </div>
-      <SearchBar defaultValue={defaultValue} onCitySelect={onCitySelect} />
-    </div>
-  );
-}
 
 function ClimatePeriodRow({ label, dotColor, value, onChange }: TClimatePeriodRowProps) {
   return (
@@ -80,9 +61,13 @@ export function ComparePeriodsView({
   autoGrid,
   selectedMonths,
   isLoading,
+  isLocating,
   error,
   altitude,
+  locationError,
   onCitySelect,
+  onLocate,
+  onClearLocationError,
   onClimatePeriodAChange,
   onClimatePeriodBChange,
   onYearAChange,
@@ -120,13 +105,27 @@ export function ComparePeriodsView({
 
         <div className="flex flex-col gap-4 sm:flex-row">
           <div className="flex-1 flex flex-col gap-4">
-            <CitySearchRow
-              key={city.id}
-              label={t("climateComparison.searchCity")}
-              dotColor={CLIMATE_COMPARISON_COLORS.A.tmax}
-              defaultValue={city.label}
-              onCitySelect={onCitySelect}
-            />
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center gap-2">
+                <span
+                  className="h-3 w-3 shrink-0 rounded-full"
+                  style={{ backgroundColor: CLIMATE_COMPARISON_COLORS.A.tmax }}
+                  aria-hidden="true"
+                />
+                <span className="text-[length:var(--font-sm)] font-medium text-[var(--color-text-secondary)]">
+                  {t("climateComparison.searchCity")}
+                </span>
+              </div>
+              <LocationSearch
+                key={city.id}
+                defaultValue={city.label}
+                isLocating={isLocating}
+                locationError={locationError}
+                onCitySelect={onCitySelect}
+                onLocate={onLocate}
+                onClearLocationError={onClearLocationError}
+              />
+            </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {isClimate ? (
                 <>
