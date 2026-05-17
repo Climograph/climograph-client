@@ -1,4 +1,4 @@
-import type { TWorldClimAvgBoxBinding, TWorldClimBoxBinding } from "@/types";
+import type { TWorldClimBoxBinding } from "@/types";
 import { CELL_SIZE_OPTIONS, GRID_DELTA, MONTH_NAMES } from "@/constants";
 import { iriToCellBounds } from "@/utils";
 import type { TCellBounds, TCellSize } from "@/types";
@@ -35,25 +35,25 @@ function extractNumber(raw: unknown): number {
   return NaN;
 }
 
-function readMonthlySum(binding: TLooseBinding): number {
+function readMonthlySumAndCount(binding: TLooseBinding): { sum: number; count: number } {
   for (const keys of KEY_SETS) {
     const first = binding[keys[0]];
     if (first !== undefined) {
-      return keys.reduce((s, k) => {
+      let sum = 0;
+      let count = 0;
+      for (const k of keys) {
         const n = extractNumber(binding[k]);
-        return s + (isNaN(n) ? 0 : n);
-      }, 0);
+        if (!isNaN(n)) { sum += n; count++; }
+      }
+      return { sum, count };
     }
   }
-
-  if (import.meta.env.DEV) {
-    console.warn("[HeatMap] Unknown binding shape. Keys found:", Object.keys(binding));
-  }
-  return 0;
+  return { sum: 0, count: 0 };
 }
 
 export function pixelAnnualAvg(binding: TWorldClimBoxBinding): number {
-  return readMonthlySum(binding as TLooseBinding) / 12;
+  const { sum, count } = readMonthlySumAndCount(binding as TLooseBinding);
+  return count > 0 ? sum / count : NaN;
 }
 
 export function pixelSelectedAvg(binding: TWorldClimBoxBinding, selectedMonths: number[]): number {
@@ -70,27 +70,24 @@ export function pixelSelectedAvg(binding: TWorldClimBoxBinding, selectedMonths: 
   return 0;
 }
 
-export function avgBindingAnnualAvg(binding: TWorldClimAvgBoxBinding): number {
-  return readMonthlySum(binding as TLooseBinding) / 12;
-}
-
-export function computeHeatmapStats(
-  pixelBindings: TWorldClimBoxBinding[],
-  avgBinding: TWorldClimAvgBoxBinding | null,
-): THeatmapStats {
+export function computeHeatmapStats(pixelBindings: TWorldClimBoxBinding[]): THeatmapStats {
   const values = pixelBindings.map(pixelAnnualAvg).filter((v) => !isNaN(v));
 
   if (values.length === 0) {
-    return { min: 0, max: 0, avg: 0, count: 0 };
+    return { min: 0, max: 0, avg: 0, median: 0, stdDev: 0, count: 0 };
   }
 
   const min = Math.min(...values);
   const max = Math.max(...values);
-  const avg = avgBinding
-    ? avgBindingAnnualAvg(avgBinding)
-    : values.reduce((s, v) => s + v, 0) / values.length;
+  const avg = values.reduce((s, v) => s + v, 0) / values.length;
 
-  return { min, max, avg, count: values.length };
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  const median = sorted.length % 2 === 0 ? (sorted[mid - 1]! + sorted[mid]!) / 2 : sorted[mid]!;
+
+  const stdDev = Math.sqrt(values.reduce((s, v) => s + (v - avg) ** 2, 0) / values.length);
+
+  return { min, max, avg, median, stdDev, count: values.length };
 }
 
 export function gridDelta(gridSize: string): number {

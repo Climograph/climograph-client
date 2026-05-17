@@ -2,23 +2,22 @@ import { LocationSearch } from "@/components";
 import { PageWrapper } from "@/components/UI";
 import { useTranslation } from "react-i18next";
 import type { TRegionHeatmapViewProps } from "./HeatMap.type";
-import { computeHeatmapStats, formatSelectedMonths, shortGridLabel } from "./HeatMap.util";
-import { LegendPanel } from "./components/ColorLegend";
+import { computeHeatmapStats, formatSelectedMonths } from "./HeatMap.util";
 import { MapCanvas } from "./components/MapCanvas";
-import { StatsGrid } from "./components/StatCards";
+import { StatsLegendBar } from "./components/StatsLegendBar";
 import { Toolbar } from "./components/Toolbar";
 
 export function HeatMapView({
   bbox,
   polygon,
   pixels,
-  avg,
   gridSize,
   activeVariable,
   colorScale,
   drawMode,
   isLoading,
   isLocating,
+  isClimate,
   error,
   locationError,
   mapTarget,
@@ -34,23 +33,25 @@ export function HeatMapView({
   const { t } = useTranslation();
 
   const pixelBindings = pixels?.results.bindings ?? [];
-  const avgBinding = avg?.results.bindings[0] ?? null;
-  const stats = computeHeatmapStats(pixelBindings, avgBinding);
+  const stats = computeHeatmapStats(pixelBindings);
   const hasData = stats.count > 0;
   const hasNoData = pixelBindings.length > 0 && stats.count === 0;
   const hasSelection = bbox !== null || polygon !== null;
   const unit = colorScale === "precipitation" ? "mm" : "°C";
 
-  const showDataSection = hasData || (hasSelection && isLoading && !hasNoData);
-
   const monthStr = formatSelectedMonths(selectedMonths);
-  const periodPart = monthStr ? `${monthStr} · ${periodLabel}` : periodLabel;
-  const summaryLine = t("heatMap.summaryLine", {
-    count: stats.count,
-    period: periodPart,
-    variable: activeVariable,
-    grid: shortGridLabel(gridSize),
-  });
+
+  const statSubtitle = isClimate
+    ? t("heatMap.stats.contextClimate", { period: periodLabel })
+    : selectedMonths.length === 0
+      ? t("heatMap.stats.contextWeatherAnnual", { year: periodLabel })
+      : t("heatMap.stats.contextWeatherMonth", { month: monthStr, year: periodLabel });
+
+  const avgTooltip = isClimate
+    ? t("heatMap.stats.avgTooltipClimate", { period: periodLabel })
+    : selectedMonths.length === 0
+      ? t("heatMap.stats.avgTooltipWeatherAnnual", { variable: activeVariable })
+      : t("heatMap.stats.avgTooltipWeatherMonth", { variable: activeVariable, month: monthStr, year: periodLabel });
 
   function handleClear() {
     onBboxChange(null);
@@ -92,7 +93,16 @@ export function HeatMapView({
           </span>
         </div>
 
-        {showDataSection && <StatsGrid hasData={hasData} stats={stats} unit={unit} />}
+        {hasSelection && (
+          <StatsLegendBar
+            hasData={hasData}
+            stats={stats}
+            unit={unit}
+            scale={colorScale}
+            statSubtitle={statSubtitle}
+            avgTooltip={avgTooltip}
+          />
+        )}
 
         <MapCanvas
           bbox={bbox}
@@ -122,17 +132,6 @@ export function HeatMapView({
 
         {hasNoData && !isLoading && (
           <p className="text-center text-[var(--color-text-secondary)]">{t("heatMap.noData")}</p>
-        )}
-
-        {showDataSection && (
-          <div className="flex flex-col gap-3">
-            <LegendPanel hasData={hasData} stats={stats} scale={colorScale} unit={unit} />
-            {hasData && (
-              <p className="text-center text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
-                {summaryLine}
-              </p>
-            )}
-          </div>
         )}
       </div>
     </PageWrapper>

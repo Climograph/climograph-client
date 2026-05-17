@@ -46,7 +46,6 @@ export function HeatMap() {
 
   const {
     pixels: bboxPixels,
-    avg: bboxAvg,
     isLoading: bboxLoading,
     error: bboxError,
   } = useGetHeatmapData(
@@ -60,13 +59,11 @@ export function HeatMap() {
 
   const {
     pixels: polyPixels,
-    avg: polyAvg,
     isLoading: polyLoading,
     error: polyError,
   } = useGetHeatmapPolygonData(wkt, grid, activeVariable, isClimate, climatePeriod, year);
 
   const pixels = polygon ? polyPixels : bboxPixels;
-  const avg = polygon ? polyAvg : bboxAvg;
   const isLoading = polygon ? polyLoading : bboxLoading;
   const error = polygon ? polyError : bboxError;
 
@@ -117,7 +114,6 @@ export function HeatMap() {
       bbox={bbox}
       polygon={polygon}
       pixels={pixels}
-      avg={avg}
       gridSize={grid}
       activeVariable={activeVariable}
       colorScale={colorScale}
@@ -130,6 +126,7 @@ export function HeatMap() {
       onDrawModeChange={handleDrawModeChange}
       onBboxChange={handleBboxChange}
       onPolygonChange={handlePolygonChange}
+      isClimate={isClimate}
       selectedMonths={selectedMonths}
       periodLabel={periodLabel}
       onCitySelect={handleCitySelect}

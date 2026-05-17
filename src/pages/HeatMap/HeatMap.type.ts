@@ -3,7 +3,6 @@ import type {
   TCellSize,
   TColorScale,
   TVariable,
-  TWorldClimAvgBoxResponse,
   TWorldClimBoxBinding,
   TWorldClimBoxResponse,
   TWikidataCity,
@@ -19,6 +18,8 @@ export type THeatmapStats = {
   min: number;
   max: number;
   avg: number;
+  median: number;
+  stdDev: number;
   count: number;
 };
 
@@ -26,13 +27,13 @@ export type TRegionHeatmapViewProps = {
   bbox: TBbox | null;
   polygon: TPolygon | null;
   pixels: TWorldClimBoxResponse | null;
-  avg: TWorldClimAvgBoxResponse | null;
   gridSize: TCellSize;
   activeVariable: TVariable;
   colorScale: TColorScale;
   drawMode: TDrawMode;
   isLoading: boolean;
   isLocating: boolean;
+  isClimate: boolean;
   error: Error | null;
   locationError: string | null;
   mapTarget: TMapTarget | null;
@@ -82,18 +83,14 @@ export type TToolbarProps = {
   onLocate: () => void;
 };
 
-export type TColorLegendProps = { min: number; max: number; scale: TColorScale; unit: string };
-
-export type TLegendPanelProps = {
+export type TStatsLegendBarProps = {
   hasData: boolean;
   stats: THeatmapStats;
-  scale: TColorScale;
   unit: string;
+  scale: TColorScale;
+  statSubtitle: string;
+  avgTooltip: string;
 };
-
-export type TStatCardProps = { label: string; value: string };
-
-export type TStatsGridProps = { hasData: boolean; stats: THeatmapStats; unit: string };
 
 export type TMapCanvasProps = {
   bbox: TBbox | null;
