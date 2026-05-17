@@ -1,23 +1,10 @@
 import { WorldClimService } from "@/api";
 import { DATASETS, WEATHER_VARIABLES } from "@/constants";
 import type { TClimatePeriod } from "@/constants/worldclim.constant";
-import type { TDataset } from "@/types";
-import type { TCellSize, TMonthlyTemperature } from "@/types";
+import type { TCellSize, TComparePeriods, TDataset, TUseGetComparePeriodsReturn } from "@/types";
 import { buildMonthlyTemperaturesFromPointValues } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCityData } from "./useGetCompareData";
-
-type TComparePeriods = {
-  dataA: TMonthlyTemperature[];
-  dataB: TMonthlyTemperature[];
-};
-
-type TUseGetComparePeriodsReturn = {
-  dataA: TMonthlyTemperature[];
-  dataB: TMonthlyTemperature[];
-  isLoading: boolean;
-  error: Error | null;
-};
 
 export function useGetComparePeriods(
   lat: number | null,

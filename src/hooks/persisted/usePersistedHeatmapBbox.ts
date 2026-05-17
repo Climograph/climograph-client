@@ -1,6 +1,6 @@
 import { DEFAULT_HEATMAP_BBOX, LOCAL_STORAGE_KEYS } from "@/constants";
+import { TBbox } from "@/types";
 import { useState } from "react";
-import type { TBbox } from "../data/useGetHeatmapData";
 
 function loadBbox(): TBbox | null {
   try {

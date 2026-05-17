@@ -1,21 +1,8 @@
-import { WorldClimService } from "@/api/services/worldClimService";
+import { WorldClimService } from "@/api";
 import type { TClimatePeriod } from "@/constants";
-import type { TCellSize, TVariable } from "@/types";
-import type { TWorldClimAvgBoxResponse, TWorldClimBoxResponse } from "@/types/api/worldclim.dto";
+import type { TBbox, TCellSize, THeatmapResult, TVariable } from "@/types";
 import { groupAvgBindings, groupPixelBindings } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
-
-export type TBbox = {
-  north: number;
-  south: number;
-  west: number;
-  east: number;
-};
-
-type THeatmapResult = {
-  pixels: TWorldClimBoxResponse;
-  avg: TWorldClimAvgBoxResponse;
-};
 
 export function useGetHeatmapData(
   bbox: TBbox | null,
@@ -69,11 +56,6 @@ export function useGetHeatmapData(
       const allPixelBindings = groupPixelBindings(rawPixels.results.bindings);
       const allAvgBindings = groupAvgBindings(rawAvg.results.bindings);
 
-      if (import.meta.env.DEV) {
-        console.warn("[useGetHeatmapData] grouped pixels:", allPixelBindings.length, "| first:", allPixelBindings[0]);
-        console.warn("[useGetHeatmapData] grouped avg:", allAvgBindings.length, "| first:", allAvgBindings[0]);
-      }
-
       // Filter by climate period using pixel/raster IRI
       const pixelBindings = isClimate
         ? allPixelBindings.filter((b) => b.pixel?.value?.includes(climatePeriod))
@@ -84,8 +66,7 @@ export function useGetHeatmapData(
       const avgBindings = isClimate
         ? allAvgBindings.filter((b) => b.raster?.value?.includes(climatePeriod))
         : allAvgBindings;
-      const filteredAvg =
-        isClimate && avgBindings.length === 0 ? allAvgBindings : avgBindings;
+      const filteredAvg = isClimate && avgBindings.length === 0 ? allAvgBindings : avgBindings;
 
       return {
         pixels: { results: { bindings: filteredPixels } },
