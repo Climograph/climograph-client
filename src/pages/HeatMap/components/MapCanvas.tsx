@@ -16,6 +16,7 @@ export function MapCanvas({
   mapTarget,
   bindings,
   isLoading,
+  selectedMonths,
   onBboxComplete,
   onPolygonComplete,
 }: TMapCanvasProps) {
@@ -57,6 +58,7 @@ export function MapCanvas({
           scale={colorScale}
           bbox={bbox}
           polygon={polygon}
+          selectedMonths={selectedMonths}
         />
       </MapContainer>
     </div>

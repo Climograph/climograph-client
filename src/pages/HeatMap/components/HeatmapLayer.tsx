@@ -3,9 +3,9 @@ import L from "leaflet";
 import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import type { THeatmapLayerProps } from "../HeatMap.type";
-import { GRID_DELTA, iriToCellBounds, pixelAnnualAvg } from "../HeatMap.util";
+import { GRID_DELTA, iriToCellBounds, pixelAnnualAvg, pixelSelectedAvg } from "../HeatMap.util";
 
-export function HeatmapLayer({ bindings, gridSize, scale, bbox, polygon }: THeatmapLayerProps) {
+export function HeatmapLayer({ bindings, gridSize, scale, bbox, polygon, selectedMonths }: THeatmapLayerProps) {
   const map = useMap();
   const groupRef = useRef<L.LayerGroup | null>(null);
   const prevSelectionRef = useRef<{ bbox: typeof bbox; polygon: typeof polygon }>({
@@ -35,18 +35,24 @@ export function HeatmapLayer({ bindings, gridSize, scale, bbox, polygon }: THeat
 
     const cellSize = GRID_DELTA[gridSize] ?? GRID_DELTA["10m"];
 
-    const values = bindings.map((b) => pixelAnnualAvg(b)).filter((v) => !isNaN(v));
+    const getValue = (b: (typeof bindings)[number]) =>
+      selectedMonths.length > 0 ? pixelSelectedAvg(b, selectedMonths) : pixelAnnualAvg(b);
+    const values = bindings.map(getValue).filter((v) => !isNaN(v));
     if (values.length === 0) return;
 
     const min = Math.min(...values);
     const max = Math.max(...values);
+
+    if (import.meta.env.DEV && max - min < 0.001) {
+      console.warn("[HeatmapLayer] min≈max — all values identical or zero. First binding:", bindings[0]);
+    }
 
     let drawn = 0;
     let latLngUsed = 0;
     let iriUsed = 0;
 
     for (const b of bindings) {
-      const value = pixelAnnualAvg(b);
+      const value = getValue(b);
       if (isNaN(value)) continue;
 
       // Primary: use lat/lng from binding (center of pixel) — avoids IRI regex dependency
@@ -77,7 +83,7 @@ export function HeatmapLayer({ bindings, gridSize, scale, bbox, polygon }: THeat
           [bounds.south, bounds.west],
           [bounds.north, bounds.east],
         ],
-        { fillColor: color, fillOpacity: 0.75, stroke: false, weight: 0 },
+        { fillColor: color, fillOpacity: 0.55, stroke: false, weight: 0 },
       ).addTo(group);
       drawn++;
     }
@@ -113,7 +119,7 @@ export function HeatmapLayer({ bindings, gridSize, scale, bbox, polygon }: THeat
         { padding: [24, 24] },
       );
     }
-  }, [bindings, gridSize, scale, bbox, polygon, map]);
+  }, [bindings, gridSize, scale, bbox, polygon, selectedMonths, map]);
 
   return null;
 }

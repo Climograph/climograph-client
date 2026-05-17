@@ -1,3 +1,4 @@
+import { LocationIcon, SpinnerIcon } from "@/components/svg";
 import { useTranslation } from "react-i18next";
 import type { TToolbarProps } from "../HeatMap.type";
 
@@ -39,9 +40,11 @@ function ClearIcon() {
 export function Toolbar({
   drawMode,
   hasSelection,
+  isLocating,
   onBboxModeToggle,
   onPolygonModeToggle,
   onClear,
+  onLocate,
 }: TToolbarProps) {
   const { t } = useTranslation();
   const activeClass =
@@ -79,6 +82,18 @@ export function Toolbar({
           {t("heatMap.clearSelection")}
         </button>
       )}
+
+      <button
+        type="button"
+        onClick={onLocate}
+        disabled={isLocating}
+        className={`flex items-center gap-2 rounded-[var(--radius-sm)] border px-3 py-2 text-[length:var(--font-sm)] font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60 ${inactiveClass}`}
+      >
+        {isLocating ? <SpinnerIcon /> : <LocationIcon />}
+        <span className="hidden sm:inline">
+          {isLocating ? t("common.locating") : t("common.useMyLocation")}
+        </span>
+      </button>
 
       {drawMode !== "none" && (
         <span className="text-[length:var(--font-sm)] text-[var(--color-text-secondary)] italic">
