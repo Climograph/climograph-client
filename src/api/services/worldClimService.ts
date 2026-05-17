@@ -2,9 +2,9 @@ import type { TClimatePeriod } from "@/constants";
 import { WORLDCLIM_BASE_URL } from "@/constants";
 import type {
   TCellSize,
+  TRawAvgValueResponse,
+  TRawPixelValueResponse,
   TVariable,
-  TWorldClimAvgBoxResponse,
-  TWorldClimBoxResponse,
   TWorldClimCellResource,
   TWorldClimCellResponse,
   TWorldClimPixelResource,
@@ -117,8 +117,8 @@ export const WorldClimService = {
     variables: string[],
     isClimate: boolean,
     year?: number,
-  ): Promise<TWorldClimBoxResponse> {
-    const response = await axios.get<TWorldClimBoxResponse>(`${WORLDCLIM_BASE_URL}/query`, {
+  ): Promise<TRawPixelValueResponse> {
+    const response = await axios.get<TRawPixelValueResponse>(`${WORLDCLIM_BASE_URL}/query`, {
       params: {
         id: "pixelvaluesinbox",
         north,
@@ -145,8 +145,8 @@ export const WorldClimService = {
     variables: string[],
     isClimate: boolean,
     year?: number,
-  ): Promise<TWorldClimAvgBoxResponse> {
-    const response = await axios.get<TWorldClimAvgBoxResponse>(`${WORLDCLIM_BASE_URL}/query`, {
+  ): Promise<TRawAvgValueResponse> {
+    const response = await axios.get<TRawAvgValueResponse>(`${WORLDCLIM_BASE_URL}/query`, {
       params: {
         id: "avgpixelvaluesinbox",
         north,
@@ -170,8 +170,8 @@ export const WorldClimService = {
     variables: string[],
     isClimate: boolean,
     year?: number,
-  ): Promise<TWorldClimBoxResponse> {
-    const response = await axios.get<TWorldClimBoxResponse>(`${WORLDCLIM_BASE_URL}/query`, {
+  ): Promise<TRawPixelValueResponse> {
+    const response = await axios.get<TRawPixelValueResponse>(`${WORLDCLIM_BASE_URL}/query`, {
       params: {
         id: "pixelvaluesinpolygonGEO",
         polygon: wkt,
@@ -192,8 +192,8 @@ export const WorldClimService = {
     variables: string[],
     isClimate: boolean,
     year?: number,
-  ): Promise<TWorldClimAvgBoxResponse> {
-    const response = await axios.get<TWorldClimAvgBoxResponse>(`${WORLDCLIM_BASE_URL}/query`, {
+  ): Promise<TRawAvgValueResponse> {
+    const response = await axios.get<TRawAvgValueResponse>(`${WORLDCLIM_BASE_URL}/query`, {
       params: {
         id: "avgpixelvaluesinpolygonGEO",
         polygon: wkt,
