@@ -14,7 +14,7 @@ import type {
   TWorldClimPointValueBinding,
 } from "@/types";
 
-const CELL_IRI_ROW_COL_REGEX = /_r(\d+)c(\d+)/;
+const CELL_IRI_ROW_COL_REGEX = /Pixel_[^_]+_r(\d+)c(\d+)/;
 
 export function iriToCellBounds(iri: string, cellSize: number): TCellBounds | null {
   const match = CELL_IRI_ROW_COL_REGEX.exec(iri);
@@ -23,13 +23,12 @@ export function iriToCellBounds(iri: string, cellSize: number): TCellBounds | nu
 
   const row = Number(match[1]);
   const col = Number(match[2]);
-  const north = 90 - row * cellSize;
 
   return {
-    north,
-    south: north - cellSize,
+    north: 90 - row * cellSize,
+    south: 90 - (row + 1) * cellSize,
     west: -180 + col * cellSize,
-    east: -180 + col * cellSize + cellSize,
+    east: -180 + (col + 1) * cellSize,
   };
 }
 
