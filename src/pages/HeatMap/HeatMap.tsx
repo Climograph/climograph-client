@@ -1,24 +1,29 @@
 import { DATASETS, SIDEBAR_PARAMS } from "@/constants";
-import { useGetHeatmapData, useGetHeatmapPolygonData } from "@/hooks";
+import { useGeolocation, useGetHeatmapData, useGetHeatmapPolygonData } from "@/hooks";
 import type { TBbox } from "@/hooks";
 import { useFiltersStore } from "@/stores";
 import type { TWikidataCity } from "@/types";
+import type { TColorScale } from "@/types";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import type { TDrawMode, TMapTarget, TPolygon } from "./HeatMap.type";
 import { polygonToWkt } from "./HeatMap.util";
 import { HeatMapView } from "./HeatMapView";
 
 export function HeatMap() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [drawMode, setDrawMode] = useState<TDrawMode>("none");
   const [polygon, setPolygon] = useState<TPolygon | null>(null);
   const [mapTarget, setMapTarget] = useState<TMapTarget | null>(null);
+  const { locate, isLocating, locationError, clearLocationError } = useGeolocation();
 
   const { dataset, climatePeriod, weatherYear, gridSize: grid, variables } = useFiltersStore();
   const isClimate = dataset === DATASETS.CLIMATE;
   const year = isClimate ? undefined : weatherYear;
   const activeVariable = variables[0] ?? "tmax";
+  const colorScale: TColorScale = activeVariable === "prec" ? "precipitation" : "temperature";
 
   // Bbox from URL search params — null until user draws
   const northRaw = searchParams.get(SIDEBAR_PARAMS.BBOX_NORTH);
@@ -99,6 +104,12 @@ export function HeatMap() {
     setMapTarget({ lat: city.lat, lng: city.lng });
   }
 
+  function handleLocate() {
+    locate(handleCitySelect);
+  }
+
+  const resolvedLocationError = locationError !== null ? t(locationError) : null;
+
   return (
     <HeatMapView
       bbox={bbox}
@@ -106,14 +117,20 @@ export function HeatMap() {
       pixels={pixels}
       avg={avg}
       gridSize={grid}
+      activeVariable={activeVariable}
+      colorScale={colorScale}
       drawMode={drawMode}
       isLoading={isLoading}
+      isLocating={isLocating}
       error={error}
+      locationError={resolvedLocationError}
       mapTarget={mapTarget}
       onDrawModeChange={handleDrawModeChange}
       onBboxChange={handleBboxChange}
       onPolygonChange={handlePolygonChange}
       onCitySelect={handleCitySelect}
+      onLocate={handleLocate}
+      onClearLocationError={clearLocationError}
     />
   );
 }

@@ -1,15 +1,24 @@
 import type { TWorldClimAvgBoxBinding, TWorldClimBoxBinding } from "@/types";
-import { cssVar, hexToRgb, GRID_DELTA, iriToCellBounds } from "@/utils";
-import type { TCellBounds } from "@/utils";
+import { GRID_DELTA } from "@/constants";
+import { iriToCellBounds } from "@/utils";
+import type { TCellBounds } from "@/types";
+import type { THeatmapStats } from "./HeatMap.type";
 
 export { GRID_DELTA, iriToCellBounds };
 export type { TCellBounds };
 
 /** Candidate key sets — SPARQL variable names are API-defined; fallbacks cover naming variants */
 const KEY_SETS = [
-  Array.from({ length: 12 }, (_, i) => `valueMonth${String(i + 1).padStart(2, "0")}`),
-  Array.from({ length: 12 }, (_, i) => `value${String(i + 1).padStart(2, "0")}`),
-  Array.from({ length: 12 }, (_, i) => `v${i + 1}`),
+  Array.from({ length: 12 }, (_, i) => `valueMonth${String(i + 1).padStart(2, "0")}`), // valueMonth01..12
+  Array.from({ length: 12 }, (_, i) => `valueMonth${i + 1}`), // valueMonth1..12
+  Array.from({ length: 12 }, (_, i) => `value${String(i + 1).padStart(2, "0")}`), // value01..12
+  Array.from({ length: 12 }, (_, i) => `value${i + 1}`), // value1..12
+  Array.from({ length: 12 }, (_, i) => `vm${String(i + 1).padStart(2, "0")}`), // vm01..12
+  Array.from({ length: 12 }, (_, i) => `vm${i + 1}`), // vm1..12
+  Array.from({ length: 12 }, (_, i) => `v${String(i + 1).padStart(2, "0")}`), // v01..12
+  Array.from({ length: 12 }, (_, i) => `v${i + 1}`), // v1..12
+  Array.from({ length: 12 }, (_, i) => `month${String(i + 1).padStart(2, "0")}`), // month01..12
+  Array.from({ length: 12 }, (_, i) => `month${i + 1}`), // month1..12
 ];
 
 type TLooseBinding = Record<string, { value: string } | undefined>;
@@ -40,18 +49,11 @@ export function avgBindingAnnualAvg(binding: TWorldClimAvgBoxBinding): number {
   return readMonthlySum(binding as TLooseBinding) / 12;
 }
 
-export type THeatmapStats = {
-  min: number;
-  max: number;
-  avg: number;
-  count: number;
-};
-
 export function computeHeatmapStats(
   pixelBindings: TWorldClimBoxBinding[],
   avgBinding: TWorldClimAvgBoxBinding | null,
 ): THeatmapStats {
-  const values = pixelBindings.map(pixelAnnualAvg).filter((v) => !isNaN(v) && v !== 0);
+  const values = pixelBindings.map(pixelAnnualAvg).filter((v) => !isNaN(v));
 
   if (values.length === 0) {
     return { min: 0, max: 0, avg: 0, count: 0 };
@@ -64,58 +66,6 @@ export function computeHeatmapStats(
     : values.reduce((s, v) => s + v, 0) / values.length;
 
   return { min, max, avg, count: values.length };
-}
-
-/** Five-stop color scale defined as CSS custom properties in global.css */
-const HEATMAP_CSS_VARS = [
-  { t: 0, name: "--color-heatmap-0" },
-  { t: 0.25, name: "--color-heatmap-25" },
-  { t: 0.5, name: "--color-heatmap-50" },
-  { t: 0.75, name: "--color-heatmap-75" },
-  { t: 1, name: "--color-heatmap-100" },
-] as const;
-
-type TRgbStop = { t: number; r: number; g: number; b: number };
-
-let colorStopsCache: TRgbStop[] | null = null;
-
-function getColorStops(): TRgbStop[] {
-  if (colorStopsCache !== null) return colorStopsCache;
-  colorStopsCache = HEATMAP_CSS_VARS.map(({ t, name }) => {
-    const { r, g, b } = hexToRgb(cssVar(name));
-    return { t, r, g, b };
-  });
-  return colorStopsCache;
-}
-
-export function interpolateColor(t: number): string {
-  const stops = getColorStops();
-  const clamped = Math.max(0, Math.min(1, t));
-
-  let lo = stops[0];
-  let hi = stops[stops.length - 1];
-
-  for (let i = 0; i < stops.length - 1; i++) {
-    if (clamped <= stops[i + 1].t) {
-      lo = stops[i];
-      hi = stops[i + 1];
-      break;
-    }
-  }
-
-  const range = hi.t - lo.t;
-  const localT = range === 0 ? 0 : (clamped - lo.t) / range;
-
-  const r = Math.round(lo.r + (hi.r - lo.r) * localT);
-  const g = Math.round(lo.g + (hi.g - lo.g) * localT);
-  const b = Math.round(lo.b + (hi.b - lo.b) * localT);
-
-  return `rgb(${r},${g},${b})`;
-}
-
-export function valueToColor(value: number, min: number, max: number): string {
-  const t = max === min ? 0.5 : (value - min) / (max - min);
-  return interpolateColor(t);
 }
 
 export function gridDelta(gridSize: string): number {
