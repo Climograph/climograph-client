@@ -21,6 +21,7 @@ export {
   DEFAULT_COMPARE_CITY_A,
   DEFAULT_COMPARE_CITY_B,
   DEFAULT_HEATMAP_BBOX,
+  DEFAULT_HEATMAP_LOCATION,
 } from "./defaultCity.constant";
 export { ERROR_CONSTANTS } from "./error.constant";
 export { LOCAL_STORAGE_KEYS } from "./keys.constants";

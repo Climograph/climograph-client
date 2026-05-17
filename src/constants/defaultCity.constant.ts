@@ -7,6 +7,11 @@ export const DEFAULT_HEATMAP_BBOX = {
   east: 55.84,
 } as const;
 
+export const DEFAULT_HEATMAP_LOCATION = {
+  lat: 51.5074,
+  lng: -0.1278,
+} as const;
+
 export const DEFAULT_CITY: TWikidataCity = {
   id: "Q2807",
   label: "Madrid",
