@@ -15,6 +15,10 @@ export type {
 export type {
   TSparqlUriValue,
   TSparqlValue,
+  TRawAvgValueBinding,
+  TRawAvgValueResponse,
+  TRawPixelValueBinding,
+  TRawPixelValueResponse,
   TWorldClimAvgBoxBinding,
   TWorldClimAvgBoxResponse,
   TWorldClimBoxBinding,
