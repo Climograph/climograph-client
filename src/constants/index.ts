@@ -24,6 +24,7 @@ export {
   DEFAULT_HEATMAP_LOCATION,
 } from "./defaultCity.constant";
 export { ERROR_CONSTANTS } from "./error.constant";
+export { GEOLOCATION_ERRORS } from "./hooks.constant";
 export { LOCAL_STORAGE_KEYS } from "./keys.constants";
 export { DEFAULT_LANGUAGE, LANGUAGES, SUPPORTED_LANGUAGE_CODES } from "./language.constant";
 export { NAV_LINKS } from "./navlink.constant";
