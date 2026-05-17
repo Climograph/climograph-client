@@ -105,7 +105,9 @@ export function ClimateStatsBar({
             bColor={comparison.color}
           />
         ) : (
-          <span className="text-[16px] font-medium tabular-nums text-[var(--color-text)]">{aridMonths}</span>
+          <span className="text-[16px] font-medium tabular-nums text-[var(--color-text)]">
+            {aridMonths}
+          </span>
         )}
       </div>
 
@@ -125,7 +127,9 @@ export function ClimateStatsBar({
               bColor={comparison.color}
             />
           ) : (
-            <span className="text-[16px] font-medium tabular-nums text-[var(--color-text)]">{altitude} m</span>
+            <span className="text-[16px] font-medium tabular-nums text-[var(--color-text)]">
+              {altitude} m
+            </span>
           )}
         </div>
       )}
