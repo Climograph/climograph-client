@@ -36,6 +36,8 @@ export type TRegionHeatmapViewProps = {
   error: Error | null;
   locationError: string | null;
   mapTarget: TMapTarget | null;
+  selectedMonths: number[];
+  periodLabel: string;
   onDrawModeChange: (mode: TDrawMode) => void;
   onBboxChange: (bbox: TBbox | null) => void;
   onPolygonChange: (polygon: TPolygon | null) => void;
@@ -52,6 +54,7 @@ export type THeatmapLayerProps = {
   scale: TColorScale;
   bbox: TBbox | null;
   polygon: TPolygon | null;
+  selectedMonths: number[];
 };
 
 export type TMapNavigatorProps = { target: TMapTarget | null };
@@ -72,9 +75,11 @@ export type TPolygonOutlineProps = { vertices: TPolygon };
 export type TToolbarProps = {
   drawMode: TDrawMode;
   hasSelection: boolean;
+  isLocating: boolean;
   onBboxModeToggle: () => void;
   onPolygonModeToggle: () => void;
   onClear: () => void;
+  onLocate: () => void;
 };
 
 export type TColorLegendProps = { min: number; max: number; scale: TColorScale; unit: string };
@@ -99,6 +104,7 @@ export type TMapCanvasProps = {
   mapTarget: TMapTarget | null;
   bindings: TWorldClimBoxBinding[];
   isLoading: boolean;
+  selectedMonths: number[];
   onBboxComplete: (bbox: TBbox) => void;
   onPolygonComplete: (polygon: TPolygon) => void;
 };

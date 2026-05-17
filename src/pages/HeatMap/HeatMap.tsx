@@ -1,4 +1,4 @@
-import { DATASETS, SIDEBAR_PARAMS } from "@/constants";
+import { CLIMATE_PERIOD_LABELS, DATASETS, SIDEBAR_PARAMS } from "@/constants";
 import { useGeolocation, useGetHeatmapData, useGetHeatmapPolygonData } from "@/hooks";
 import type { TBbox } from "@/hooks";
 import { useFiltersStore } from "@/stores";
@@ -19,9 +19,11 @@ export function HeatMap() {
   const [mapTarget, setMapTarget] = useState<TMapTarget | null>(null);
   const { locate, isLocating, locationError, clearLocationError } = useGeolocation();
 
-  const { dataset, climatePeriod, weatherYear, gridSize: grid, variables } = useFiltersStore();
+  const { dataset, climatePeriod, weatherYear, gridSize: grid, variables, months } = useFiltersStore();
   const isClimate = dataset === DATASETS.CLIMATE;
   const year = isClimate ? undefined : weatherYear;
+  const selectedMonths: number[] = months === "all" ? [] : months;
+  const periodLabel = isClimate ? CLIMATE_PERIOD_LABELS[climatePeriod] : String(weatherYear);
   const activeVariable = variables[0] ?? "tmax";
   const colorScale: TColorScale = activeVariable === "prec" ? "precipitation" : "temperature";
 
@@ -128,6 +130,8 @@ export function HeatMap() {
       onDrawModeChange={handleDrawModeChange}
       onBboxChange={handleBboxChange}
       onPolygonChange={handlePolygonChange}
+      selectedMonths={selectedMonths}
+      periodLabel={periodLabel}
       onCitySelect={handleCitySelect}
       onLocate={handleLocate}
       onClearLocationError={clearLocationError}

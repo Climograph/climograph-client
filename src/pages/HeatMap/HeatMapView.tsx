@@ -2,7 +2,7 @@ import { LocationSearch } from "@/components";
 import { PageWrapper } from "@/components/UI";
 import { useTranslation } from "react-i18next";
 import type { TRegionHeatmapViewProps } from "./HeatMap.type";
-import { computeHeatmapStats } from "./HeatMap.util";
+import { computeHeatmapStats, formatSelectedMonths, shortGridLabel } from "./HeatMap.util";
 import { LegendPanel } from "./components/ColorLegend";
 import { MapCanvas } from "./components/MapCanvas";
 import { StatsGrid } from "./components/StatCards";
@@ -22,6 +22,8 @@ export function HeatMapView({
   error,
   locationError,
   mapTarget,
+  selectedMonths,
+  periodLabel,
   onDrawModeChange,
   onBboxChange,
   onPolygonChange,
@@ -38,6 +40,17 @@ export function HeatMapView({
   const hasNoData = pixelBindings.length > 0 && stats.count === 0;
   const hasSelection = bbox !== null || polygon !== null;
   const unit = colorScale === "precipitation" ? "mm" : "°C";
+
+  const showDataSection = hasData || (hasSelection && isLoading && !hasNoData);
+
+  const monthStr = formatSelectedMonths(selectedMonths);
+  const periodPart = monthStr ? `${monthStr} · ${periodLabel}` : periodLabel;
+  const summaryLine = t("heatMap.summaryLine", {
+    count: stats.count,
+    period: periodPart,
+    variable: activeVariable,
+    grid: shortGridLabel(gridSize),
+  });
 
   function handleClear() {
     onBboxChange(null);
@@ -56,6 +69,7 @@ export function HeatMapView({
         <LocationSearch
           isLocating={isLocating}
           locationError={locationError}
+          showLocateButton={false}
           onCitySelect={onCitySelect}
           onLocate={onLocate}
           onClearLocationError={onClearLocationError}
@@ -65,16 +79,20 @@ export function HeatMapView({
           <Toolbar
             drawMode={drawMode}
             hasSelection={hasSelection}
+            isLocating={isLocating}
             onBboxModeToggle={() => onDrawModeChange(drawMode === "bbox" ? "none" : "bbox")}
             onPolygonModeToggle={() =>
               onDrawModeChange(drawMode === "polygon" ? "none" : "polygon")
             }
             onClear={handleClear}
+            onLocate={onLocate}
           />
           <span className="text-[length:var(--font-sm)] text-[var(--color-text-secondary)]">
             {t("heatMap.showingVariable", { variable: activeVariable })}
           </span>
         </div>
+
+        {showDataSection && <StatsGrid hasData={hasData} stats={stats} unit={unit} />}
 
         <MapCanvas
           bbox={bbox}
@@ -85,6 +103,7 @@ export function HeatMapView({
           mapTarget={mapTarget}
           bindings={pixelBindings}
           isLoading={isLoading}
+          selectedMonths={selectedMonths}
           onBboxComplete={onBboxChange}
           onPolygonComplete={onPolygonChange}
         />
@@ -105,10 +124,14 @@ export function HeatMapView({
           <p className="text-center text-[var(--color-text-secondary)]">{t("heatMap.noData")}</p>
         )}
 
-        {(hasData || (hasSelection && isLoading && !hasNoData)) && (
-          <div className="flex flex-col gap-4">
+        {showDataSection && (
+          <div className="flex flex-col gap-3">
             <LegendPanel hasData={hasData} stats={stats} scale={colorScale} unit={unit} />
-            <StatsGrid hasData={hasData} stats={stats} unit={unit} />
+            {hasData && (
+              <p className="text-center text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
+                {summaryLine}
+              </p>
+            )}
           </div>
         )}
       </div>
