@@ -7,6 +7,7 @@ export function LocationSearch({
   isLocating,
   locationError,
   defaultValue,
+  showLocateButton = true,
   onCitySelect,
   onLocate,
   onClearLocationError,
@@ -19,18 +20,20 @@ export function LocationSearch({
         <div className="flex-1">
           <SearchBar onCitySelect={onCitySelect} {...(defaultValue !== undefined ? { defaultValue } : {})} />
         </div>
-        <button
-          type="button"
-          onClick={onLocate}
-          disabled={isLocating}
-          aria-label={t("common.useMyLocation")}
-          className="flex h-10 shrink-0 items-center gap-1.5 px-3 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-bg)] text-[length:var(--font-sm)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-150 hover:bg-[var(--color-bg-secondary)] disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isLocating ? <SpinnerIcon /> : <LocationIcon />}
-          <span className="hidden sm:inline">
-            {isLocating ? t("common.locating") : t("common.useMyLocation")}
-          </span>
-        </button>
+        {showLocateButton && (
+          <button
+            type="button"
+            onClick={onLocate}
+            disabled={isLocating}
+            aria-label={t("common.useMyLocation")}
+            className="flex h-10 shrink-0 items-center gap-1.5 px-3 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-bg)] text-[length:var(--font-sm)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-150 hover:bg-[var(--color-bg-secondary)] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLocating ? <SpinnerIcon /> : <LocationIcon />}
+            <span className="hidden sm:inline">
+              {isLocating ? t("common.locating") : t("common.useMyLocation")}
+            </span>
+          </button>
+        )}
       </div>
 
       {locationError && (
