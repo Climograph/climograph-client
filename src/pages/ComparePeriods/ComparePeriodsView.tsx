@@ -14,10 +14,7 @@ import type { TClimatePeriod } from "@/constants/worldclim.constant";
 import { CLIMATE_COMPARISON_COLORS } from "@/pages/ClimateComparison/ClimateComparison.constant";
 import { computeCompareStats } from "@/pages/ClimateComparison/ClimateComparison.util";
 import { useTranslation } from "react-i18next";
-import type {
-  TClimatePeriodRowProps,
-  TComparePeriodsViewProps,
-} from "./ComparePeriods.type";
+import type { TClimatePeriodRowProps, TComparePeriodsViewProps } from "./ComparePeriods.type";
 
 const CLIMATE_PERIOD_OPTIONS = Object.values(CLIMATE_PERIODS).map((period) => ({
   value: period,

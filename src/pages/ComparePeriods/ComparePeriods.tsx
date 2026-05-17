@@ -1,6 +1,11 @@
 import { CLIMATE_PERIODS, WEATHER_MAX_YEAR, WEATHER_MIN_YEAR } from "@/constants";
 import type { TClimatePeriod } from "@/constants/worldclim.constant";
-import { useGeolocation, useGetAltitude, useGetComparePeriods, usePersistedComparisonCities } from "@/hooks";
+import {
+  useGeolocation,
+  useGetAltitude,
+  useGetComparePeriods,
+  usePersistedComparisonCities,
+} from "@/hooks";
 import { useFiltersStore } from "@/stores";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
