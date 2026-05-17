@@ -301,8 +301,8 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
               (v) => {
                 const isRestricted =
                   draft.dataset === DATASETS.CLIMATE &&
-                  draft.climatePeriod !== CLIMATE_PERIODS.C1970_2000 &&
-                  (PERIOD_RESTRICTED_VARIABLES as readonly string[]).includes(v);
+                  (PERIOD_RESTRICTED_VARIABLES as readonly string[]).includes(v) &&
+                  (draft.climatePeriod !== CLIMATE_PERIODS.C1970_2000 || isHeatmapPage);
                 return (
                   <FilterChip
                     key={v}
@@ -318,6 +318,11 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
           {draft.dataset === DATASETS.WEATHER && (
             <p className="mt-1.5 text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
               {t("sidebar.notes.weatherVariables")}
+            </p>
+          )}
+          {isHeatmapPage && draft.dataset === DATASETS.CLIMATE && (
+            <p className="mt-1.5 text-[11px] italic text-[var(--color-text-secondary)]">
+              {t("sidebar.notes.notAvailableHeatmap")}
             </p>
           )}
         </div>
@@ -347,8 +352,13 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
         </div>
 
         {/* // * Section 5 — Months */}
-        <div>
+        <div className={isHeatmapPage ? "pointer-events-none opacity-40" : ""}>
           <SectionLabel text={t("sidebar.sections.months")} />
+          {isHeatmapPage && (
+            <p className="mb-1.5 text-[11px] italic text-[var(--color-text-secondary)]">
+              {t("sidebar.notes.notAvailableHeatmap")}
+            </p>
+          )}
           <div className="flex flex-wrap gap-2">
             <FilterChip
               label={t("sidebar.months.all")}
