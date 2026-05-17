@@ -7,6 +7,8 @@ export { FilterChip } from "./FilterChip";
 export { FiltersTab } from "./FiltersTab";
 export { LanguageSwitcher } from "./LanguageSwitcher";
 export { LeafletMap } from "./LeafletMap";
+export { LocationSearch } from "./LocationSearch";
+export type { TLocationSearchProps } from "./LocationSearch";
 export { Navbar } from "./Navbar";
 export { PeriodSelectRow } from "./PeriodSelectRow";
 export { PeriodSlider } from "./PeriodSlider";
