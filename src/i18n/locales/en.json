@@ -104,7 +104,8 @@
     },
     "showingVariable": "Showing: {{variable}}",
     "useMyLocation": "Use my location",
-    "locating": "Locating..."
+    "locating": "Locating...",
+    "summaryLine": "{{count}} cells analyzed · {{period}} · {{variable}} · {{grid}} grid"
   },
   "chart": {
     "title": "Temperature",

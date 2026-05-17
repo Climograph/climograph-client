@@ -104,7 +104,8 @@
     },
     "showingVariable": "Mostrando: {{variable}}",
     "useMyLocation": "Usar mi ubicación",
-    "locating": "Localizando..."
+    "locating": "Localizando...",
+    "summaryLine": "{{count}} celdas analizadas · {{period}} · {{variable}} · cuadrícula {{grid}}"
   },
   "chart": {
     "title": "Temperatura",

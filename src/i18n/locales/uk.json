@@ -104,7 +104,8 @@
     },
     "showingVariable": "Показується: {{variable}}",
     "useMyLocation": "Моє місцезнаходження",
-    "locating": "Визначення..."
+    "locating": "Визначення...",
+    "summaryLine": "{{count}} комірок проаналізовано · {{period}} · {{variable}} · сітка {{grid}}"
   },
   "chart": {
     "title": "Температура",
