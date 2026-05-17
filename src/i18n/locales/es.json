@@ -244,5 +244,9 @@
       "weatherData": "Datos meteorológicos anuales (CRU-TS-4.09)",
       "weatherVariables": "Los datos meteorológicos solo incluyen temperatura y precipitación"
     }
+  },
+  "common": {
+    "useMyLocation": "Usar mi ubicación",
+    "locating": "Localizando..."
   }
 }
