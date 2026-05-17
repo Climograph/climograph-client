@@ -40,12 +40,22 @@ export function useGetHeatmapPolygonData(
         ),
       ]);
 
-      const filteredBindings = isClimate
-        ? rawPixels.results.bindings.filter((b) => b.pixel?.value.includes(climatePeriod))
-        : rawPixels.results.bindings;
+      // Filter by period client-side; fall back to all bindings if IRIs don't embed the period
+      const allPixelBindings = rawPixels.results.bindings;
+      const periodPixelBindings = isClimate
+        ? allPixelBindings.filter((b) => b.pixel?.value?.includes(climatePeriod))
+        : allPixelBindings;
+      const filteredBindings =
+        isClimate && periodPixelBindings.length === 0 ? allPixelBindings : periodPixelBindings;
+
+      const allAvgBindings = avg.results.bindings;
+      const filteredAvgBindings = isClimate
+        ? allAvgBindings.filter((b) => b.raster?.value?.includes(climatePeriod))
+        : allAvgBindings;
 
       const pixels: TWorldClimBoxResponse = { results: { bindings: filteredBindings } };
-      return { pixels, avg };
+      const filteredAvg: typeof avg = { results: { bindings: filteredAvgBindings } };
+      return { pixels, avg: filteredAvg };
     },
     enabled,
     staleTime: Infinity,

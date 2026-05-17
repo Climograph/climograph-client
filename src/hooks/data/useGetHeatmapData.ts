@@ -64,12 +64,31 @@ export function useGetHeatmapData(
         ),
       ]);
 
-      const filteredBindings = isClimate
-        ? rawPixels.results.bindings.filter((b) => b.pixel?.value.includes(climatePeriod))
-        : rawPixels.results.bindings;
+      if (import.meta.env.DEV) {
+        const sample = rawPixels.results.bindings.slice(0, 3);
+        console.warn("[useGetHeatmapData] raw bindings sample:", sample);
+        if (sample[0]) {
+          console.warn("[useGetHeatmapData] binding keys:", Object.keys(sample[0]));
+          console.warn("[useGetHeatmapData] first binding:", JSON.stringify(sample[0], null, 2));
+        }
+      }
+
+      // Filter by period client-side; fall back to all bindings if IRIs don't embed the period
+      const allPixelBindings = rawPixels.results.bindings;
+      const periodPixelBindings = isClimate
+        ? allPixelBindings.filter((b) => b.pixel?.value?.includes(climatePeriod))
+        : allPixelBindings;
+      const filteredBindings =
+        isClimate && periodPixelBindings.length === 0 ? allPixelBindings : periodPixelBindings;
+
+      const allAvgBindings = avg.results.bindings;
+      const filteredAvgBindings = isClimate
+        ? allAvgBindings.filter((b) => b.raster?.value?.includes(climatePeriod))
+        : allAvgBindings;
 
       const pixels: TWorldClimBoxResponse = { results: { bindings: filteredBindings } };
-      return { pixels, avg };
+      const filteredAvg: typeof avg = { results: { bindings: filteredAvgBindings } };
+      return { pixels, avg: filteredAvg };
     },
     enabled,
     staleTime: Infinity,
