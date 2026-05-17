@@ -18,6 +18,8 @@ export {
   createWorldClimAuthHeaders,
   extractCellBySize,
   extractPixelIri,
+  groupAvgBindings,
+  groupPixelBindings,
   iriToCellBounds,
   validateResponseData,
 } from "./worldclim.util";
