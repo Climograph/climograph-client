@@ -6,7 +6,7 @@ const CELL_BORDER = "0.5px solid var(--color-border)";
 
 function DualValue({ a, b, aColor, bColor }: TDualValueProps) {
   return (
-    <span className="flex items-center gap-0.5 text-[16px] font-medium">
+    <span className="flex items-center gap-0.5 text-[16px] font-medium tabular-nums">
       <span style={{ color: aColor }}>{a}</span>
       <span style={{ color: "var(--color-border)" }}>/</span>
       <span style={{ color: bColor }}>{b}</span>
@@ -63,7 +63,7 @@ export function ClimateStatsBar({
             bColor={comparison.color}
           />
         ) : (
-          <span className="text-[16px] font-medium text-[var(--color-text)]">
+          <span className="text-[16px] font-medium tabular-nums text-[var(--color-text)]">
             {meanTemp.toFixed(1)}°C
           </span>
         )}
@@ -84,7 +84,7 @@ export function ClimateStatsBar({
             bColor={comparison.color}
           />
         ) : (
-          <span className="text-[16px] font-medium text-[var(--color-text)]">
+          <span className="text-[16px] font-medium tabular-nums text-[var(--color-text)]">
             {annualPrecip} mm
           </span>
         )}
@@ -105,7 +105,9 @@ export function ClimateStatsBar({
             bColor={comparison.color}
           />
         ) : (
-          <span className="text-[16px] font-medium text-[var(--color-text)]">{aridMonths}</span>
+          <span className="text-[16px] font-medium tabular-nums text-[var(--color-text)]">
+            {aridMonths}
+          </span>
         )}
       </div>
 
@@ -125,7 +127,9 @@ export function ClimateStatsBar({
               bColor={comparison.color}
             />
           ) : (
-            <span className="text-[16px] font-medium text-[var(--color-text)]">{altitude} m</span>
+            <span className="text-[16px] font-medium tabular-nums text-[var(--color-text)]">
+              {altitude} m
+            </span>
           )}
         </div>
       )}
@@ -151,7 +155,7 @@ export function ClimateStatsBar({
         ) : (
           <span className="flex items-center gap-1.5">
             <span
-              className="text-[16px] font-medium"
+              className="text-[16px] font-medium tabular-nums"
               style={{ color: badge ? badge.color : "var(--color-text)", cursor: "help" }}
             >
               {martonneIndex !== null ? martonneIndex.toFixed(1) : "—"}

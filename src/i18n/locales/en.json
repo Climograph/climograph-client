@@ -100,11 +100,27 @@
       "minValue": "Min",
       "maxValue": "Max",
       "avgValue": "Average",
-      "cellsAnalyzed": "Cells"
+      "median": "Median",
+      "stdDev": "Std dev",
+      "cellsAnalyzed": "Cells",
+      "contextClimate": "30yr avg · {{period}}",
+      "contextWeatherAnnual": "Annual avg · {{year}}",
+      "contextWeatherMonth": "{{month}} {{year}} avg",
+      "avgTooltipClimate": "30-year climatological average ({{period}}) across all cells",
+      "avgTooltipWeatherAnnual": "Annual average: mean of all 12 monthly averages across all cells",
+      "avgTooltipWeatherMonth": "Monthly average: mean {{variable}} for {{month}} {{year}} across all cells"
     },
     "showingVariable": "Showing: {{variable}}",
     "useMyLocation": "Use my location",
-    "locating": "Locating..."
+    "locating": "Locating...",
+    "summaryLine": "{{count}} cells analyzed · {{period}} · {{variable}} · {{grid}} grid",
+    "summaryLineClimate": "{{count}} cells · 30yr avg {{variable}} · {{period}} · {{grid}}",
+    "summaryLineWeatherAnnual": "{{count}} cells · Annual avg {{variable}} · {{year}} · {{grid}}",
+    "summaryLineWeatherMonth": "{{count}} cells · {{variable}} in {{period}} · {{grid}}",
+    "profile": {
+      "subtitle": "Regional climate profile · {{count}} cells · {{period}}",
+      "subtitleWeather": "Regional climate profile · {{count}} cells · {{year}} · not a climate normal"
+    }
   },
   "chart": {
     "title": "Temperature",
@@ -242,7 +258,12 @@
     "notes": {
       "climateNormals": "30-year climate normals",
       "weatherData": "Annual weather data (CRU-TS-4.09)",
-      "weatherVariables": "Weather data only includes temperature and precipitation"
+      "weatherVariables": "Weather data only includes temperature and precipitation",
+      "notAvailableHeatmap": "Not available for region heatmap"
     }
+  },
+  "common": {
+    "useMyLocation": "Use my location",
+    "locating": "Locating..."
   }
 }

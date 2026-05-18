@@ -4,12 +4,17 @@ import type {
   TCellBounds,
   TCellSize,
   TMonthlyTemperature,
+  TRawAvgValueBinding,
+  TRawPixelValueBinding,
+  TSparqlValue,
+  TWorldClimAvgBoxBinding,
+  TWorldClimBoxBinding,
   TWorldClimCellResponse,
   TWorldClimPixelResource,
   TWorldClimPointValueBinding,
 } from "@/types";
 
-const CELL_IRI_ROW_COL_REGEX = /_r(\d+)c(\d+)/;
+const CELL_IRI_ROW_COL_REGEX = /Pixel_[^_]+_r(\d+)c(\d+)/;
 
 export function iriToCellBounds(iri: string, cellSize: number): TCellBounds | null {
   const match = CELL_IRI_ROW_COL_REGEX.exec(iri);
@@ -18,13 +23,12 @@ export function iriToCellBounds(iri: string, cellSize: number): TCellBounds | nu
 
   const row = Number(match[1]);
   const col = Number(match[2]);
-  const north = 90 - row * cellSize;
 
   return {
-    north,
-    south: north - cellSize,
+    north: 90 - row * cellSize,
+    south: 90 - (row + 1) * cellSize,
     west: -180 + col * cellSize,
-    east: -180 + col * cellSize + cellSize,
+    east: -180 + (col + 1) * cellSize,
   };
 }
 
@@ -109,4 +113,64 @@ export function buildMonthlyTemperaturesFromPointValues(
     tmax: vals.get(`tmax_${i + 1}`) ?? 0,
     prec: vals.get(`prec_${i + 1}`) ?? 0,
   }));
+}
+
+/** Parses XSD gMonth "--01" → 1, "--12" → 12. Returns null if invalid. */
+function parseGMonth(gMonth: string | undefined): number | null {
+  if (!gMonth) return null;
+  const m = parseInt(gMonth.replace(/^--/, ""), 10);
+  return m >= 1 && m <= 12 ? m : null;
+}
+
+/**
+ * Transforms raw per-month pixel rows from pixelvaluesinbox into one
+ * TWorldClimBoxBinding per unique pixel IRI (with valueMonth01..12 populated).
+ */
+export function groupPixelBindings(raw: TRawPixelValueBinding[]): TWorldClimBoxBinding[] {
+  const map = new Map<string, Map<number, TSparqlValue>>();
+
+  for (const b of raw) {
+    const iri = b.pixel?.value;
+    if (!iri) continue;
+    const monthNum = parseGMonth(b.month?.value);
+    if (monthNum === null) continue;
+    if (!map.has(iri)) map.set(iri, new Map());
+    map.get(iri)!.set(monthNum, b.value);
+  }
+
+  const result: TWorldClimBoxBinding[] = [];
+  for (const [iri, monthValues] of map) {
+    const binding: Record<string, unknown> = { pixel: { type: "uri", value: iri } };
+    for (const [m, v] of monthValues) {
+      binding[`valueMonth${String(m).padStart(2, "0")}`] = v;
+    }
+    result.push(binding as TWorldClimBoxBinding);
+  }
+  return result;
+}
+
+/**
+ * Transforms raw per-month avg rows from avgpixelvaluesinbox into one
+ * TWorldClimAvgBoxBinding per unique raster IRI (with valueMonth01..12 populated).
+ */
+export function groupAvgBindings(raw: TRawAvgValueBinding[]): TWorldClimAvgBoxBinding[] {
+  const map = new Map<string, Map<number, TSparqlValue>>();
+
+  for (const b of raw) {
+    const rasterIri = b.raster?.value ?? "unknown";
+    const monthNum = parseGMonth(b.month?.value);
+    if (monthNum === null) continue;
+    if (!map.has(rasterIri)) map.set(rasterIri, new Map());
+    map.get(rasterIri)!.set(monthNum, b.avgval);
+  }
+
+  const result: TWorldClimAvgBoxBinding[] = [];
+  for (const [rasterIri, monthValues] of map) {
+    const binding: Record<string, unknown> = { raster: { type: "uri", value: rasterIri } };
+    for (const [m, v] of monthValues) {
+      binding[`valueMonth${String(m).padStart(2, "0")}`] = v;
+    }
+    result.push(binding as TWorldClimAvgBoxBinding);
+  }
+  return result;
 }

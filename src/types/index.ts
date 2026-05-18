@@ -1,5 +1,12 @@
-export type { TApiResponse, TResultStatus } from "./api/common";
 export type {
+  TApiResponse,
+  TRawAvgValueBinding,
+  TRawAvgValueResponse,
+  TRawPixelValueBinding,
+  TRawPixelValueResponse,
+  TResultStatus,
+  TSparqlUriValue,
+  TSparqlValue,
   TWikidataCoords,
   TWikidataEntitiesResult,
   TWikidataEntity,
@@ -11,10 +18,6 @@ export type {
   TWikidataSearchResult,
   TWikidataSparqlBinding,
   TWikidataSparqlResult,
-} from "./api/wikidata.dto";
-export type {
-  TSparqlUriValue,
-  TSparqlValue,
   TWorldClimAvgBoxBinding,
   TWorldClimAvgBoxResponse,
   TWorldClimBoxBinding,
@@ -30,16 +33,29 @@ export type {
   TWorldClimTemperatureBinding,
   TWorldClimTemperatureResponse,
   TWorldClimTemperatureResponseResults,
-} from "./api/worldclim.dto";
+} from "./api";
 export type {
   TCellSize,
+  TCoordinates,
   TDataset,
   TMonthFilter,
   TMonthlyTemperature,
   TVariable,
-} from "./domain/climate";
-export type { TCoordinates, TWikidataCity } from "./domain/location";
-export type { TCellSizeOption } from "./ui/cell-size";
+  TWikidataCity,
+} from "./domain";
+export type {
+  TBbox,
+  TCompareData,
+  TComparePeriods,
+  TGeolocationError,
+  THeatmapResult,
+  TPolygonResult,
+  TProfileResult,
+  TUseGeolocationReturn,
+  TUseGetCompareDataReturn,
+  TUseGetComparePeriodsReturn,
+} from "./hooks";
+export type { TCellSizeOption } from "./ui";
 export type {
   TCellBounds,
   TCellCountStatus,

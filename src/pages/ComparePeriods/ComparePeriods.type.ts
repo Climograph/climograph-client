@@ -14,19 +14,16 @@ export type TComparePeriodsViewProps = {
   dataB: TMonthlyTemperature[];
   autoGrid: TCellSize;
   isLoading: boolean;
+  isLocating: boolean;
   error: Error | null;
+  locationError: string | null;
   onCitySelect: (city: TWikidataCity) => void;
+  onLocate: () => void;
+  onClearLocationError: () => void;
   onClimatePeriodAChange: (period: TClimatePeriod) => void;
   onClimatePeriodBChange: (period: TClimatePeriod) => void;
   onYearAChange: (year: number) => void;
   onYearBChange: (year: number) => void;
-};
-
-export type TCitySearchRowProps = {
-  label: string;
-  dotColor: string;
-  defaultValue: string;
-  onCitySelect: (city: TWikidataCity) => void;
 };
 
 export type TClimatePeriodRowProps = {

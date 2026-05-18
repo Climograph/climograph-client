@@ -1,20 +1,8 @@
-import { WorldClimService } from "@/api/services/worldClimService";
+import { WorldClimService } from "@/api";
 import type { TClimatePeriod } from "@/constants";
-import type { TCellSize, TVariable } from "@/types";
-import type { TWorldClimAvgBoxResponse, TWorldClimBoxResponse } from "@/types/api/worldclim.dto";
+import type { TBbox, TCellSize, THeatmapResult, TVariable } from "@/types";
+import { groupAvgBindings, groupPixelBindings } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
-
-export type TBbox = {
-  north: number;
-  south: number;
-  west: number;
-  east: number;
-};
-
-type THeatmapResult = {
-  pixels: TWorldClimBoxResponse;
-  avg: TWorldClimAvgBoxResponse;
-};
 
 export function useGetHeatmapData(
   bbox: TBbox | null,
@@ -41,7 +29,7 @@ export function useGetHeatmapData(
       const { north, south, west, east } = bbox!;
       const variables = [`${variable}`];
 
-      const [rawPixels, avg] = await Promise.all([
+      const [rawPixels, rawAvg] = await Promise.all([
         WorldClimService.getPixelValuesInBox(
           north,
           south,
@@ -64,12 +52,26 @@ export function useGetHeatmapData(
         ),
       ]);
 
-      const filteredBindings = isClimate
-        ? rawPixels.results.bindings.filter((b) => b.pixel?.value.includes(climatePeriod))
-        : rawPixels.results.bindings;
+      // Group per-month rows into per-pixel bindings
+      const allPixelBindings = groupPixelBindings(rawPixels.results.bindings);
+      const allAvgBindings = groupAvgBindings(rawAvg.results.bindings);
 
-      const pixels: TWorldClimBoxResponse = { results: { bindings: filteredBindings } };
-      return { pixels, avg };
+      // Filter by climate period using pixel/raster IRI
+      const pixelBindings = isClimate
+        ? allPixelBindings.filter((b) => b.pixel?.value?.includes(climatePeriod))
+        : allPixelBindings;
+      const filteredPixels =
+        isClimate && pixelBindings.length === 0 ? allPixelBindings : pixelBindings;
+
+      const avgBindings = isClimate
+        ? allAvgBindings.filter((b) => b.raster?.value?.includes(climatePeriod))
+        : allAvgBindings;
+      const filteredAvg = isClimate && avgBindings.length === 0 ? allAvgBindings : avgBindings;
+
+      return {
+        pixels: { results: { bindings: filteredPixels } },
+        avg: { results: { bindings: filteredAvg } },
+      };
     },
     enabled,
     staleTime: Infinity,

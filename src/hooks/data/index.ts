@@ -4,6 +4,6 @@ export { useGetClimateData } from "./useGetClimateData";
 export { useGetCompareData } from "./useGetCompareData";
 export { useGetComparePeriods } from "./useGetComparePeriods";
 export { useGetHeatmapData } from "./useGetHeatmapData";
-export type { TBbox } from "./useGetHeatmapData";
 export { useGetHeatmapPolygonData } from "./useGetHeatmapPolygonData";
+export { useGetRegionalProfile } from "./useGetRegionalProfile";
 export { useResolveCityByCoordinates } from "./useResolveCityByCoordinates";

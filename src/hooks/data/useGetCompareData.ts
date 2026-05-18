@@ -1,22 +1,15 @@
 import { WorldClimService } from "@/api";
+import type { TClimatePeriod } from "@/constants";
 import { DATASETS, WEATHER_VARIABLES } from "@/constants";
-import type { TClimatePeriod } from "@/constants/worldclim.constant";
 import { useFiltersStore } from "@/stores";
-import type { TCellSize, TMonthlyTemperature } from "@/types";
+import type {
+  TCellSize,
+  TCompareData,
+  TMonthlyTemperature,
+  TUseGetCompareDataReturn,
+} from "@/types";
 import { buildMonthlyTemperaturesFromPointValues } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
-
-type TCompareData = {
-  cityA: TMonthlyTemperature[];
-  cityB: TMonthlyTemperature[];
-};
-
-type TUseGetCompareDataReturn = {
-  cityA: TMonthlyTemperature[];
-  cityB: TMonthlyTemperature[];
-  isLoading: boolean;
-  error: Error | null;
-};
 
 export async function fetchCityData(
   lat: number,

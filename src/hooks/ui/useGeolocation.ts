@@ -1,24 +1,7 @@
 import { WikidataService } from "@/api/services/wikidataService";
-import type { TWikidataCity } from "@/types";
+import { GEOLOCATION_ERRORS } from "@/constants";
+import type { TGeolocationError, TUseGeolocationReturn, TWikidataCity } from "@/types";
 import { useState } from "react";
-
-const GEOLOCATION_ERRORS = {
-  NOT_SUPPORTED: "geolocation.notSupported",
-  HTTPS_REQUIRED: "geolocation.httpsRequired",
-  PERMISSION_DENIED: "geolocation.permissionDenied",
-  UNAVAILABLE: "geolocation.unavailable",
-  TIMEOUT: "geolocation.timeout",
-  UNKNOWN: "geolocation.unknown",
-} as const;
-
-type TGeolocationError = (typeof GEOLOCATION_ERRORS)[keyof typeof GEOLOCATION_ERRORS] | null;
-
-type TUseGeolocationReturn = {
-  locate: (onSuccess: (city: TWikidataCity) => void) => void;
-  isLocating: boolean;
-  locationError: TGeolocationError;
-  clearLocationError: () => void;
-};
 
 function getGeolocationErrorMessage(code: GeolocationPositionError["code"]): TGeolocationError {
   const errorMap: Record<GeolocationPositionError["code"], TGeolocationError> = {
