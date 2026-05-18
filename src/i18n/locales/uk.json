@@ -100,12 +100,27 @@
       "minValue": "Мін",
       "maxValue": "Макс",
       "avgValue": "Середнє",
-      "cellsAnalyzed": "Клітинки"
+      "median": "Медіана",
+      "stdDev": "Ст. відх.",
+      "cellsAnalyzed": "Клітинки",
+      "contextClimate": "Сер. 30 р. · {{period}}",
+      "contextWeatherAnnual": "Річне сер. · {{year}}",
+      "contextWeatherMonth": "Сер. {{month}} {{year}}",
+      "avgTooltipClimate": "30-річне кліматологічне середнє ({{period}}) по всіх клітинках",
+      "avgTooltipWeatherAnnual": "Річне середнє: середнє з 12 місячних значень по всіх клітинках",
+      "avgTooltipWeatherMonth": "Місячне середнє: середнє {{variable}} за {{month}} {{year}} по всіх клітинках"
     },
     "showingVariable": "Показується: {{variable}}",
     "useMyLocation": "Моє місцезнаходження",
     "locating": "Визначення...",
-    "summaryLine": "{{count}} комірок проаналізовано · {{period}} · {{variable}} · сітка {{grid}}"
+    "summaryLine": "{{count}} комірок проаналізовано · {{period}} · {{variable}} · сітка {{grid}}",
+    "summaryLineClimate": "{{count}} клітинок · Сер. 30 р. {{variable}} · {{period}} · {{grid}}",
+    "summaryLineWeatherAnnual": "{{count}} клітинок · Річне сер. {{variable}} · {{year}} · {{grid}}",
+    "summaryLineWeatherMonth": "{{count}} клітинок · {{variable}} за {{period}} · {{grid}}",
+    "profile": {
+      "subtitle": "Кліматичний профіль регіону · {{count}} клітинок · {{period}}",
+      "subtitleWeather": "Кліматичний профіль регіону · {{count}} клітинок · {{year}} · не є кліматичною нормою"
+    }
   },
   "chart": {
     "title": "Температура",
@@ -243,7 +258,8 @@
     "notes": {
       "climateNormals": "30-річні кліматичні норми",
       "weatherData": "Річні метеодані (CRU-TS-4.09)",
-      "weatherVariables": "Метеодані включають лише температуру та опади"
+      "weatherVariables": "Метеодані включають лише температуру та опади",
+      "notAvailableHeatmap": "Недоступно для теплової мапи регіону"
     }
   },
   "common": {

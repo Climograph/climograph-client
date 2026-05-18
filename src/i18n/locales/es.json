@@ -100,12 +100,27 @@
       "minValue": "Mín",
       "maxValue": "Máx",
       "avgValue": "Promedio",
-      "cellsAnalyzed": "Celdas"
+      "median": "Mediana",
+      "stdDev": "Desv. típ.",
+      "cellsAnalyzed": "Celdas",
+      "contextClimate": "Prom. 30 años · {{period}}",
+      "contextWeatherAnnual": "Prom. anual · {{year}}",
+      "contextWeatherMonth": "Prom. {{month}} {{year}}",
+      "avgTooltipClimate": "Promedio climatológico de 30 años ({{period}}) en todas las celdas",
+      "avgTooltipWeatherAnnual": "Promedio anual: media de los 12 promedios mensuales en todas las celdas",
+      "avgTooltipWeatherMonth": "Promedio mensual: media de {{variable}} para {{month}} {{year}} en todas las celdas"
     },
     "showingVariable": "Mostrando: {{variable}}",
     "useMyLocation": "Usar mi ubicación",
     "locating": "Localizando...",
-    "summaryLine": "{{count}} celdas analizadas · {{period}} · {{variable}} · cuadrícula {{grid}}"
+    "summaryLine": "{{count}} celdas analizadas · {{period}} · {{variable}} · cuadrícula {{grid}}",
+    "summaryLineClimate": "{{count}} celdas · Prom. 30 años {{variable}} · {{period}} · {{grid}}",
+    "summaryLineWeatherAnnual": "{{count}} celdas · Prom. anual {{variable}} · {{year}} · {{grid}}",
+    "summaryLineWeatherMonth": "{{count}} celdas · {{variable}} en {{period}} · {{grid}}",
+    "profile": {
+      "subtitle": "Perfil climático regional · {{count}} celdas · {{period}}",
+      "subtitleWeather": "Perfil climático regional · {{count}} celdas · {{year}} · no es una normal climática"
+    }
   },
   "chart": {
     "title": "Temperatura",
@@ -243,7 +258,8 @@
     "notes": {
       "climateNormals": "Normales climáticas de 30 años",
       "weatherData": "Datos meteorológicos anuales (CRU-TS-4.09)",
-      "weatherVariables": "Los datos meteorológicos solo incluyen temperatura y precipitación"
+      "weatherVariables": "Los datos meteorológicos solo incluyen temperatura y precipitación",
+      "notAvailableHeatmap": "No disponible para el mapa de calor regional"
     }
   },
   "common": {
