@@ -22,9 +22,7 @@ export function MapCanvas({
   onPolygonComplete,
 }: TMapCanvasProps) {
   return (
-    <div
-      className="relative overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] shadow-md h-[70vh] sm:h-[520px]"
-    >
+    <div className="relative overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] shadow-md h-[70vh] sm:h-[520px]">
       {isLoading && (
         <div className="absolute inset-0 z-[1500] flex flex-col items-center justify-center gap-3 bg-[var(--color-bg)]/70 backdrop-blur-sm">
           <ThreeDotsScaleLoader className="text-[var(--color-primary)]" size={80} />

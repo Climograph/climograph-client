@@ -5,7 +5,11 @@ function BoxIcon({ active }: { active: boolean }) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 shrink-0" aria-hidden="true">
       <rect
-        x="3" y="3" width="14" height="14" rx="1"
+        x="3"
+        y="3"
+        width="14"
+        height="14"
+        rx="1"
         stroke="currentColor"
         strokeWidth="1.8"
         strokeDasharray={active ? "none" : "4 2"}
@@ -31,7 +35,12 @@ function PolygonIcon({ active }: { active: boolean }) {
 function ClearIcon() {
   return (
     <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 shrink-0" aria-hidden="true">
-      <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path
+        d="M5 5l10 10M15 5L5 15"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }

@@ -12,7 +12,10 @@ type TStatBlockProps = {
 
 function StatBlock({ label, value, subtitle, tooltip, className = "" }: TStatBlockProps) {
   return (
-    <div className={`flex flex-col gap-0.5 px-3 py-2.5 border-[var(--color-border)] ${className}`} title={tooltip}>
+    <div
+      className={`flex flex-col gap-0.5 px-3 py-2.5 border-[var(--color-border)] ${className}`}
+      title={tooltip}
+    >
       <span className="text-[10px] leading-none text-[var(--color-text-secondary)]">{label}</span>
       <span className="text-[length:var(--font-base)] sm:text-[18px] font-medium leading-snug text-[var(--color-text)]">
         {value}
@@ -41,15 +44,22 @@ function SkeletonBlock({ className = "" }: { className?: string }) {
 // border-r on positions 1,2,4,5; sm:border-r also on position 3 (last in mobile row 1 → no border-r)
 // border-b on positions 1,2,3 (mobile row 1); removed at sm+
 const CELL_BORDERS = [
-  "border-r border-b sm:border-b-0",             // 1 Min
-  "border-r border-b sm:border-b-0",             // 2 Max
-  "border-b sm:border-b-0 sm:border-r",          // 3 Avg — no border-r on mobile (last in 3-col row)
-  "border-r",                                    // 4 Median
-  "border-r",                                    // 5 Std dev
-  "",                                            // 6 Cells — last in both layouts
+  "border-r border-b sm:border-b-0", // 1 Min
+  "border-r border-b sm:border-b-0", // 2 Max
+  "border-b sm:border-b-0 sm:border-r", // 3 Avg — no border-r on mobile (last in 3-col row)
+  "border-r", // 4 Median
+  "border-r", // 5 Std dev
+  "", // 6 Cells — last in both layouts
 ] as const;
 
-export function StatsLegendBar({ hasData, stats, unit, scale, statSubtitle, avgTooltip }: TStatsLegendBarProps) {
+export function StatsLegendBar({
+  hasData,
+  stats,
+  unit,
+  scale,
+  statSubtitle,
+  avgTooltip,
+}: TStatsLegendBarProps) {
   const { t } = useTranslation();
 
   const gradientColors = Array.from({ length: 10 }, (_, i) =>
@@ -65,12 +75,42 @@ export function StatsLegendBar({ hasData, stats, unit, scale, statSubtitle, avgT
       <div className="grid grid-cols-3 sm:grid-cols-6">
         {hasData ? (
           <>
-            <StatBlock label={t("heatMap.stats.minValue")} value={fmt(stats.min)} subtitle={statSubtitle} className={CELL_BORDERS[0]} />
-            <StatBlock label={t("heatMap.stats.maxValue")} value={fmt(stats.max)} subtitle={statSubtitle} className={CELL_BORDERS[1]} />
-            <StatBlock label={t("heatMap.stats.avgValue")} value={fmt(stats.avg)} subtitle={statSubtitle} tooltip={avgTooltip} className={CELL_BORDERS[2]} />
-            <StatBlock label={t("heatMap.stats.median")} value={fmt(stats.median)} subtitle={statSubtitle} className={CELL_BORDERS[3]} />
-            <StatBlock label={t("heatMap.stats.stdDev")} value={`±${stats.stdDev.toFixed(1)} ${unit}`} subtitle={statSubtitle} className={CELL_BORDERS[4]} />
-            <StatBlock label={t("heatMap.stats.cellsAnalyzed")} value={String(stats.count)} className={CELL_BORDERS[5]} />
+            <StatBlock
+              label={t("heatMap.stats.minValue")}
+              value={fmt(stats.min)}
+              subtitle={statSubtitle}
+              className={CELL_BORDERS[0]}
+            />
+            <StatBlock
+              label={t("heatMap.stats.maxValue")}
+              value={fmt(stats.max)}
+              subtitle={statSubtitle}
+              className={CELL_BORDERS[1]}
+            />
+            <StatBlock
+              label={t("heatMap.stats.avgValue")}
+              value={fmt(stats.avg)}
+              subtitle={statSubtitle}
+              tooltip={avgTooltip}
+              className={CELL_BORDERS[2]}
+            />
+            <StatBlock
+              label={t("heatMap.stats.median")}
+              value={fmt(stats.median)}
+              subtitle={statSubtitle}
+              className={CELL_BORDERS[3]}
+            />
+            <StatBlock
+              label={t("heatMap.stats.stdDev")}
+              value={`±${stats.stdDev.toFixed(1)} ${unit}`}
+              subtitle={statSubtitle}
+              className={CELL_BORDERS[4]}
+            />
+            <StatBlock
+              label={t("heatMap.stats.cellsAnalyzed")}
+              value={String(stats.count)}
+              className={CELL_BORDERS[5]}
+            />
           </>
         ) : (
           <>
@@ -90,8 +130,12 @@ export function StatsLegendBar({ hasData, stats, unit, scale, statSubtitle, avgT
           <>
             <div className="h-[10px] sm:h-[12px] w-full rounded" style={{ background: gradient }} />
             <div className="mt-1 flex justify-between">
-              <span className="text-[11px] text-[var(--color-text-secondary)]">{fmt(stats.min)}</span>
-              <span className="text-[11px] text-[var(--color-text-secondary)]">{fmt(stats.max)}</span>
+              <span className="text-[11px] text-[var(--color-text-secondary)]">
+                {fmt(stats.min)}
+              </span>
+              <span className="text-[11px] text-[var(--color-text-secondary)]">
+                {fmt(stats.max)}
+              </span>
             </div>
           </>
         ) : (

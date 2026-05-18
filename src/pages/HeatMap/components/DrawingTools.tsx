@@ -61,7 +61,12 @@ export function BboxDrawer({ isDrawMode, onBboxComplete }: TBboxDrawerProps) {
   return (
     <Rectangle
       bounds={[start, current]}
-      pathOptions={{ color: "var(--color-primary)", fillOpacity: 0.12, weight: 2, dashArray: "6 4" }}
+      pathOptions={{
+        color: "var(--color-primary)",
+        fillOpacity: 0.12,
+        weight: 2,
+        dashArray: "6 4",
+      }}
     />
   );
 }
@@ -69,7 +74,10 @@ export function BboxDrawer({ isDrawMode, onBboxComplete }: TBboxDrawerProps) {
 export function BboxOutline({ bbox }: TBboxOutlineProps) {
   return (
     <Rectangle
-      bounds={[[bbox.south, bbox.west], [bbox.north, bbox.east]]}
+      bounds={[
+        [bbox.south, bbox.west],
+        [bbox.north, bbox.east],
+      ]}
       pathOptions={{ color: "var(--color-primary)", fillOpacity: 0, weight: 2 }}
     />
   );
