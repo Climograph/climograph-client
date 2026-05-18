@@ -1,12 +1,19 @@
-import type { TBbox } from "@/hooks";
 import type {
+  TBbox,
   TCellSize,
   TColorScale,
   TVariable,
+  TWikidataCity,
   TWorldClimBoxBinding,
   TWorldClimBoxResponse,
-  TWikidataCity,
 } from "@/types";
+
+export type TRegionalProfile = {
+  meanTemp: number;
+  annualPrecip: number;
+  aridMonths: number;
+  martonneIndex: number | null;
+};
 
 export type TDrawMode = "none" | "bbox" | "polygon";
 
@@ -39,6 +46,8 @@ export type TRegionHeatmapViewProps = {
   mapTarget: TMapTarget | null;
   selectedMonths: number[];
   periodLabel: string;
+  profile: TRegionalProfile | null;
+  isProfileLoading: boolean;
   onDrawModeChange: (mode: TDrawMode) => void;
   onBboxChange: (bbox: TBbox | null) => void;
   onPolygonChange: (polygon: TPolygon | null) => void;
@@ -104,4 +113,12 @@ export type TMapCanvasProps = {
   selectedMonths: number[];
   onBboxComplete: (bbox: TBbox) => void;
   onPolygonComplete: (polygon: TPolygon) => void;
+};
+
+export type TRegionalClimateProfileProps = {
+  profile: TRegionalProfile | null;
+  isLoading: boolean;
+  isClimate: boolean;
+  periodLabel: string;
+  cellCount: number;
 };

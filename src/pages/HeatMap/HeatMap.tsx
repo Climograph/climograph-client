@@ -1,14 +1,17 @@
 import { CLIMATE_PERIOD_LABELS, DATASETS, SIDEBAR_PARAMS } from "@/constants";
-import { useGeolocation, useGetHeatmapData, useGetHeatmapPolygonData } from "@/hooks";
-import type { TBbox } from "@/hooks";
+import {
+  useGeolocation,
+  useGetHeatmapData,
+  useGetHeatmapPolygonData,
+  useGetRegionalProfile,
+} from "@/hooks";
 import { useFiltersStore } from "@/stores";
-import type { TWikidataCity } from "@/types";
-import type { TColorScale } from "@/types";
+import type { TBbox, TColorScale, TWikidataCity } from "@/types";
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import type { TDrawMode, TMapTarget, TPolygon } from "./HeatMap.type";
-import { polygonToWkt } from "./HeatMap.util";
+import { computeRegionalProfile, polygonToWkt } from "./HeatMap.util";
 import { HeatMapView } from "./HeatMapView";
 
 export function HeatMap() {
@@ -19,7 +22,14 @@ export function HeatMap() {
   const [mapTarget, setMapTarget] = useState<TMapTarget | null>(null);
   const { locate, isLocating, locationError, clearLocationError } = useGeolocation();
 
-  const { dataset, climatePeriod, weatherYear, gridSize: grid, variables, months } = useFiltersStore();
+  const {
+    dataset,
+    climatePeriod,
+    weatherYear,
+    gridSize: grid,
+    variables,
+    months,
+  } = useFiltersStore();
   const isClimate = dataset === DATASETS.CLIMATE;
   const year = isClimate ? undefined : weatherYear;
   const selectedMonths: number[] = months === "all" ? [] : months;
@@ -66,6 +76,22 @@ export function HeatMap() {
   const pixels = polygon ? polyPixels : bboxPixels;
   const isLoading = polygon ? polyLoading : bboxLoading;
   const error = polygon ? polyError : bboxError;
+
+  const hasData = (pixels?.results.bindings.length ?? 0) > 0;
+
+  const { profileData, isProfileLoading } = useGetRegionalProfile(
+    polygon ? null : bbox,
+    wkt,
+    grid,
+    isClimate,
+    climatePeriod,
+    year,
+    hasData,
+  );
+
+  const profile = profileData
+    ? computeRegionalProfile(profileData.tmax, profileData.tmin, profileData.prec)
+    : null;
 
   function handleDrawModeChange(mode: TDrawMode) {
     setDrawMode(mode);
@@ -129,6 +155,8 @@ export function HeatMap() {
       isClimate={isClimate}
       selectedMonths={selectedMonths}
       periodLabel={periodLabel}
+      profile={profile}
+      isProfileLoading={isProfileLoading}
       onCitySelect={handleCitySelect}
       onLocate={handleLocate}
       onClearLocationError={clearLocationError}

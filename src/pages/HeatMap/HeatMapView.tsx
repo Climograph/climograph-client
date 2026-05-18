@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { TRegionHeatmapViewProps } from "./HeatMap.type";
 import { computeHeatmapStats, formatSelectedMonths } from "./HeatMap.util";
 import { MapCanvas } from "./components/MapCanvas";
+import { RegionalClimateProfile } from "./components/RegionalClimateProfile";
 import { StatsLegendBar } from "./components/StatsLegendBar";
 import { Toolbar } from "./components/Toolbar";
 
@@ -23,6 +24,8 @@ export function HeatMapView({
   mapTarget,
   selectedMonths,
   periodLabel,
+  profile,
+  isProfileLoading,
   onDrawModeChange,
   onBboxChange,
   onPolygonChange,
@@ -51,7 +54,11 @@ export function HeatMapView({
     ? t("heatMap.stats.avgTooltipClimate", { period: periodLabel })
     : selectedMonths.length === 0
       ? t("heatMap.stats.avgTooltipWeatherAnnual", { variable: activeVariable })
-      : t("heatMap.stats.avgTooltipWeatherMonth", { variable: activeVariable, month: monthStr, year: periodLabel });
+      : t("heatMap.stats.avgTooltipWeatherMonth", {
+          variable: activeVariable,
+          month: monthStr,
+          year: periodLabel,
+        });
 
   function handleClear() {
     onBboxChange(null);
@@ -79,9 +86,7 @@ export function HeatMapView({
           drawMode={drawMode}
           hasSelection={hasSelection}
           onBboxModeToggle={() => onDrawModeChange(drawMode === "bbox" ? "none" : "bbox")}
-          onPolygonModeToggle={() =>
-            onDrawModeChange(drawMode === "polygon" ? "none" : "polygon")
-          }
+          onPolygonModeToggle={() => onDrawModeChange(drawMode === "polygon" ? "none" : "polygon")}
           onClear={handleClear}
         />
 
@@ -110,6 +115,16 @@ export function HeatMapView({
           onBboxComplete={onBboxChange}
           onPolygonComplete={onPolygonChange}
         />
+
+        {hasSelection && (
+          <RegionalClimateProfile
+            profile={profile}
+            isLoading={isProfileLoading}
+            isClimate={isClimate}
+            periodLabel={periodLabel}
+            cellCount={stats.count}
+          />
+        )}
 
         {error && !isLoading && (
           <div className="rounded-[var(--radius-md)] border border-[var(--color-error-border)] bg-[var(--color-error-bg)] px-4 py-3 text-center text-[var(--color-error)]">

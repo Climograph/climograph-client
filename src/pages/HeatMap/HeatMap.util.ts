@@ -1,8 +1,8 @@
-import type { TWorldClimBoxBinding } from "@/types";
+import type { TWorldClimAvgBoxBinding, TWorldClimBoxBinding } from "@/types";
 import { CELL_SIZE_OPTIONS, GRID_DELTA, MONTH_NAMES } from "@/constants";
 import { iriToCellBounds } from "@/utils";
 import type { TCellBounds, TCellSize } from "@/types";
-import type { THeatmapStats } from "./HeatMap.type";
+import type { THeatmapStats, TRegionalProfile } from "./HeatMap.type";
 
 export { GRID_DELTA, iriToCellBounds };
 export type { TCellBounds, TCellSize };
@@ -43,7 +43,10 @@ function readMonthlySumAndCount(binding: TLooseBinding): { sum: number; count: n
       let count = 0;
       for (const k of keys) {
         const n = extractNumber(binding[k]);
-        if (!isNaN(n)) { sum += n; count++; }
+        if (!isNaN(n)) {
+          sum += n;
+          count++;
+        }
       }
       return { sum, count };
     }
@@ -83,11 +86,53 @@ export function computeHeatmapStats(pixelBindings: TWorldClimBoxBinding[]): THea
 
   const sorted = [...values].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
-  const median = sorted.length % 2 === 0 ? (sorted[mid - 1]! + sorted[mid]!) / 2 : sorted[mid]!;
+  const lo = sorted[mid - 1] ?? 0;
+  const hi = sorted[mid] ?? 0;
+  const median = sorted.length % 2 === 0 ? (lo + hi) / 2 : hi;
 
   const stdDev = Math.sqrt(values.reduce((s, v) => s + (v - avg) ** 2, 0) / values.length);
 
   return { min, max, avg, median, stdDev, count: values.length };
+}
+
+function extractMonthlyNums(binding: TWorldClimAvgBoxBinding | null): number[] {
+  if (!binding) return Array.from({ length: 12 }, () => NaN);
+  return Array.from({ length: 12 }, (_, i) => {
+    const key = `valueMonth${String(i + 1).padStart(2, "0")}`;
+    return extractNumber((binding as Record<string, unknown>)[key]);
+  });
+}
+
+export function computeRegionalProfile(
+  tmax: TWorldClimAvgBoxBinding | null,
+  tmin: TWorldClimAvgBoxBinding | null,
+  prec: TWorldClimAvgBoxBinding | null,
+): TRegionalProfile | null {
+  const tmaxVals = extractMonthlyNums(tmax);
+  const tminVals = extractMonthlyNums(tmin);
+  const precVals = extractMonthlyNums(prec);
+
+  const tavgVals = tmaxVals.map((mx, i) => {
+    const mn = tminVals[i];
+    return !isNaN(mx) && mn !== undefined && !isNaN(mn) ? (mx + mn) / 2 : NaN;
+  });
+
+  const validTavg = tavgVals.filter((v) => !isNaN(v));
+  const validPrec = precVals.filter((v) => !isNaN(v));
+
+  if (validTavg.length === 0 || validPrec.length === 0) return null;
+
+  const meanTemp = validTavg.reduce((s, v) => s + v, 0) / validTavg.length;
+  const annualPrecip = Math.round(validPrec.reduce((s, v) => s + v, 0));
+
+  const aridMonths = tavgVals.filter((tavg, i) => {
+    const p = precVals[i];
+    return !isNaN(tavg) && p !== undefined && !isNaN(p) && p < 2 * tavg;
+  }).length;
+
+  const martonneIndex = meanTemp + 10 > 0 ? annualPrecip / (meanTemp + 10) : null;
+
+  return { meanTemp, annualPrecip, aridMonths, martonneIndex };
 }
 
 export function gridDelta(gridSize: string): number {
