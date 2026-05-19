@@ -1,4 +1,7 @@
 import type { TMonthlyTemperature } from "@/types";
+import type { TClimateStats } from "./ClimateStatistics.type";
+
+export type { TClimateStats };
 
 export function toCityQueryParam(cityLabel: string) {
   return cityLabel.trim().toLowerCase();
@@ -7,12 +10,6 @@ export function toCityQueryParam(cityLabel: string) {
 export function formatCoordinate(value: number) {
   return value.toFixed(4);
 }
-
-export type TClimateStats = {
-  avgTmax: string;
-  avgTmin: string;
-  totalPrec: string;
-};
 
 export function computeClimateStats(
   data: TMonthlyTemperature[],
