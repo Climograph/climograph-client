@@ -241,9 +241,9 @@ export const WikidataService = {
       const entity = entities[id];
       if (!entity) continue;
 
-      const label = entity.labels?.[lang]?.value ?? entity.labels?.en?.value ?? "";
+      const label = entity.labels?.[lang]?.value ?? entity.labels?.["en"]?.value ?? "";
       const description =
-        entity.descriptions?.[lang]?.value ?? entity.descriptions?.en?.value ?? "";
+        entity.descriptions?.[lang]?.value ?? entity.descriptions?.["en"]?.value ?? "";
 
       return {
         id,
