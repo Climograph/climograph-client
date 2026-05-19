@@ -1,5 +1,6 @@
 export type {
   TApiResponse,
+  TPopulationResult,
   TRawAvgValueBinding,
   TRawAvgValueResponse,
   TRawPixelValueBinding,

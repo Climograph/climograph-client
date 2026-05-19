@@ -12,6 +12,7 @@ export type {
   TWikidataSparqlBinding,
   TWikidataSparqlResult,
 } from "./wikidata.dto";
+export type { TPopulationResult } from "./wikidata.dto";
 export type {
   TRawAvgValueBinding,
   TRawAvgValueResponse,

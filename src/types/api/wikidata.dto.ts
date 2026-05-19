@@ -56,3 +56,12 @@ export type TWikidataSparqlResult = {
     bindings: TWikidataSparqlBinding[];
   };
 };
+
+export type TPopulationBinding = {
+  settlement: { value: string };
+  population?: { value: string };
+};
+
+export type TPopulationResult = {
+  results: { bindings: TPopulationBinding[] };
+};

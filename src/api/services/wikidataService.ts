@@ -1,5 +1,6 @@
 import { ENDPOINTS, EXCLUDE_DESCRIPTION_KEYWORDS } from "@/constants";
 import type {
+  TPopulationResult,
   TWikidataCity,
   TWikidataEntitiesResult,
   TWikidataGeoSearchResult,
@@ -13,24 +14,18 @@ import i18n from "i18next";
 const searchCache = new Map<string, TWikidataCity[]>();
 const CACHE_MAX_SIZE = 100;
 
-type TPopulationBinding = {
-  settlement: { value: string };
-  population?: { value: string };
-};
-
-type TPopulationResult = {
-  results: { bindings: TPopulationBinding[] };
-};
+const POP_TIERS = [
+  { threshold: 5_000_000, score: 1_000_000 },
+  { threshold: 1_000_000, score: 100_000 },
+  { threshold: 500_000, score: 50_000 },
+  { threshold: 100_000, score: 10_000 },
+  { threshold: 50_000, score: 5_000 },
+  { threshold: 10_000, score: 1_000 },
+  { threshold: 1_000, score: 100 },
+] as const;
 
 function popTier(pop: number): number {
-  if (pop >= 5_000_000) return 1_000_000;
-  if (pop >= 1_000_000) return 100_000;
-  if (pop >= 500_000) return 50_000;
-  if (pop >= 100_000) return 10_000;
-  if (pop >= 50_000) return 5_000;
-  if (pop >= 10_000) return 1_000;
-  if (pop >= 1_000) return 100;
-  return 0;
+  return POP_TIERS.find(({ threshold }) => pop >= threshold)?.score ?? 0;
 }
 
 function storeCache(key: string, cities: TWikidataCity[]): void {
