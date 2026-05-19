@@ -1,5 +1,6 @@
 export type {
   TApiResponse,
+  TClimatePeriod,
   TPopulationResult,
   TRawAvgValueBinding,
   TRawAvgValueResponse,
@@ -56,6 +57,7 @@ export type {
   TUseGetCompareDataReturn,
   TUseGetComparePeriodsReturn,
 } from "./hooks";
+export type { TFiltersData, TFiltersState } from "./stores";
 export type { TCellSizeOption } from "./ui";
 export type {
   TCellBounds,

@@ -1,5 +1,4 @@
-import type { TClimatePeriod } from "@/constants";
-import type { TCellSize, TDataset, TMonthFilter, TVariable } from "@/types";
+import type { TCellSize, TClimatePeriod, TDataset, TMonthFilter, TVariable } from "@/types";
 
 export type TFiltersData = {
   dataset: TDataset;
