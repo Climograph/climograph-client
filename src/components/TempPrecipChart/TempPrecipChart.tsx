@@ -3,13 +3,13 @@ import { CLIMATE_PERIOD_LABELS, DATASETS } from "@/constants";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ModeToggle } from "./components/ModeToggle";
-import { useTempPrecipChart } from "./hooks/useTempPrecipChart";
+import { useTempPrecipChart } from "./hooks";
 import { CalendarIcon, DatabaseIcon } from "./icons";
 import { StandardClimateChart } from "./StandardClimateChart";
 import type { TChartMode, TTempPrecipChartProps, TVisibleSeries } from "./TempPrecipChart.type";
+import { WalterLiethChart } from "./WalterLiethChart";
 import { WLCitiesLayout } from "./WLCitiesLayout";
 import { WLPeriodsLayout } from "./WLPeriodsLayout";
-import { WalterLiethChart } from "./WalterLiethChart";
 
 const DEFAULT_VISIBLE: TVisibleSeries = { tmax: true, tmin: true, tavg: false, prec: true };
 

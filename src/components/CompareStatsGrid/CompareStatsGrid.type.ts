@@ -1,4 +1,4 @@
-import type { TCompareStats } from "@/pages/ClimateComparison/ClimateComparison.util";
+import type { TCompareStats } from "@/pages/ClimateComparison/ClimateComparison.type";
 
 export type TCompareStatsGridProps = {
   labelA: string;
