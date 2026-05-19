@@ -1,6 +1,5 @@
-import { WorldClimService } from "@/api/services/worldClimService";
-import type { TClimatePeriod } from "@/constants";
-import type { TCellSize, TPolygonResult, TVariable } from "@/types";
+import { WorldClimService } from "@/api";
+import type { TCellSize, TClimatePeriod, TPolygonResult, TVariable } from "@/types";
 import { groupAvgBindings, groupPixelBindings } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 

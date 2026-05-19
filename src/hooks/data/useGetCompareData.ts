@@ -1,9 +1,9 @@
 import { WorldClimService } from "@/api";
-import type { TClimatePeriod } from "@/constants";
 import { DATASETS, WEATHER_VARIABLES } from "@/constants";
 import { useFiltersStore } from "@/stores";
 import type {
   TCellSize,
+  TClimatePeriod,
   TCompareData,
   TMonthlyTemperature,
   TUseGetCompareDataReturn,
