@@ -6,7 +6,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   // * ignore folders (instead of globalIgnores)
-  { ignores: ["dist", "node_modules", "build"] },
+  { ignores: ["dist", "node_modules", "build", "src/_archive"] },
 
   // * main part for TS & React
   {
@@ -40,6 +40,7 @@ export default tseslint.config(
 
       // * custom rules
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/consistent-type-definitions": "off",
       "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
