@@ -1,7 +1,7 @@
-import type { TClimatePeriod } from "@/constants";
 import { WORLDCLIM_BASE_URL } from "@/constants";
 import type {
   TCellSize,
+  TClimatePeriod,
   TRawAvgValueResponse,
   TRawPixelValueResponse,
   TVariable,
