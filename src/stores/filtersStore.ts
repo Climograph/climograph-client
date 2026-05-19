@@ -1,4 +1,3 @@
-import type { TClimatePeriod } from "@/constants";
 import {
   CELL_SIZES,
   CLIMATE_PERIODS,
@@ -7,32 +6,9 @@ import {
   PERIOD_RESTRICTED_VARIABLES,
   WEATHER_VARIABLES,
 } from "@/constants";
-import type { TCellSize, TDataset, TMonthFilter, TVariable } from "@/types";
+import type { TFiltersData, TFiltersState } from "@/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-type TFiltersData = {
-  dataset: TDataset;
-  climatePeriod: TClimatePeriod;
-  weatherYear: number;
-  variables: TVariable[];
-  gridSize: TCellSize;
-  months: TMonthFilter;
-};
-
-type TFiltersState = TFiltersData & {
-  actions: {
-    setDataset: (d: TDataset) => void;
-    setClimatePeriod: (period: TClimatePeriod) => void;
-    setWeatherYear: (year: number) => void;
-    toggleVariable: (v: TVariable) => void;
-    setVariables: (vars: TVariable[]) => void;
-    setGridSize: (g: TCellSize) => void;
-    toggleMonth: (n: number) => void;
-    selectAllMonths: () => void;
-    setMonths: (months: TMonthFilter) => void;
-  };
-};
 
 const DEFAULT_FILTERS: TFiltersData = {
   dataset: DATASETS.CLIMATE,
