@@ -1,14 +1,7 @@
 import { interpolateColor } from "@/utils";
 import { useTranslation } from "react-i18next";
 import type { TStatsLegendBarProps } from "../HeatMap.type";
-
-type TStatBlockProps = {
-  label: string;
-  value: string;
-  subtitle?: string;
-  tooltip?: string;
-  className?: string;
-};
+import type { TSkeletonBlockProps, TStatBlockProps } from "./StatsLegendBar.type";
 
 function StatBlock({ label, value, subtitle, tooltip, className = "" }: TStatBlockProps) {
   return (
@@ -29,7 +22,7 @@ function StatBlock({ label, value, subtitle, tooltip, className = "" }: TStatBlo
   );
 }
 
-function SkeletonBlock({ className = "" }: { className?: string }) {
+function SkeletonBlock({ className = "" }: TSkeletonBlockProps) {
   return (
     <div className={`flex flex-col gap-1.5 px-3 py-2.5 border-[var(--color-border)] ${className}`}>
       <div className="h-2.5 w-10 animate-pulse rounded bg-[var(--color-border)]" />

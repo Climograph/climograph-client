@@ -8,6 +8,13 @@ import type {
   TWorldClimBoxResponse,
 } from "@/types";
 
+export type TLooseBinding = Record<string, unknown>;
+
+export type TSumAndCount = {
+  sum: number;
+  count: number;
+};
+
 export type TRegionalProfile = {
   meanTemp: number;
   annualPrecip: number;

@@ -2,7 +2,13 @@ import type { TWorldClimAvgBoxBinding, TWorldClimBoxBinding } from "@/types";
 import { CELL_SIZE_OPTIONS, GRID_DELTA, MONTH_NAMES } from "@/constants";
 import { iriToCellBounds } from "@/utils";
 import type { TCellBounds, TCellSize } from "@/types";
-import type { THeatmapStats, TRegionalProfile } from "./HeatMap.type";
+import type {
+  THeatmapStats,
+  TLooseBinding,
+  TPolygon,
+  TRegionalProfile,
+  TSumAndCount,
+} from "./HeatMap.type";
 
 export { GRID_DELTA, iriToCellBounds };
 export type { TCellBounds, TCellSize };
@@ -21,8 +27,6 @@ const KEY_SETS = [
   Array.from({ length: 12 }, (_, i) => `month${i + 1}`), // month1..12
 ];
 
-type TLooseBinding = Record<string, unknown>;
-
 function extractNumber(raw: unknown): number {
   if (raw === undefined || raw === null) return NaN;
   if (typeof raw === "number") return raw;
@@ -35,7 +39,7 @@ function extractNumber(raw: unknown): number {
   return NaN;
 }
 
-function readMonthlySumAndCount(binding: TLooseBinding): { sum: number; count: number } {
+function readMonthlySumAndCount(binding: TLooseBinding): TSumAndCount {
   for (const keys of KEY_SETS) {
     const first = binding[keys[0]];
     if (first !== undefined) {
@@ -144,6 +148,20 @@ export function polygonToWkt(vertices: [number, number][]): string {
   const ring = [...vertices, vertices[0]];
   const coords = ring.map(([lat, lng]) => `${lng} ${lat}`).join(", ");
   return `POLYGON((${coords}))`;
+}
+
+/** Inverse of polygonToWkt — returns null for invalid WKT */
+export function wktToPolygon(wkt: string): TPolygon | null {
+  const match = /^POLYGON\(\((.+)\)\)$/i.exec(wkt);
+  if (!match) return null;
+  const pairs = match[1].split(",").map((s) => s.trim().split(/\s+/));
+  // WKT is lng lat; drop closing vertex (duplicate of first)
+  const vertices = pairs.slice(0, -1).map(([lng, lat]) => {
+    return [Number(lat), Number(lng)] as [number, number];
+  });
+  if (vertices.length < 3) return null;
+  if (vertices.some(([lat, lng]) => isNaN(lat) || isNaN(lng))) return null;
+  return vertices;
 }
 
 /** "2.5 min" from "2.5 min (~20.25 km²)" */
