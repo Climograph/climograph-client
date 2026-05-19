@@ -1,3 +1,5 @@
+import type { TClimatePeriod } from "@/constants/worldclim.constant";
+
 export type TSparqlValue = {
   type: string;
   value: string;
@@ -180,3 +182,5 @@ export type TWorldClimCellResource = {
   iri: string;
   elevation?: number;
 };
+
+export type { TClimatePeriod };

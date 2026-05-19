@@ -36,3 +36,9 @@ export type TStatCardProps = {
   unit?: string;
   tooltip?: string;
 };
+
+export type TClimateStats = {
+  avgTmax: string;
+  avgTmin: string;
+  totalPrec: string;
+};

@@ -1,7 +1,12 @@
 import { WorldClimService } from "@/api";
 import { DATASETS, WEATHER_VARIABLES } from "@/constants";
-import type { TClimatePeriod } from "@/constants/worldclim.constant";
-import type { TCellSize, TComparePeriods, TDataset, TUseGetComparePeriodsReturn } from "@/types";
+import type {
+  TCellSize,
+  TClimatePeriod,
+  TComparePeriods,
+  TDataset,
+  TUseGetComparePeriodsReturn,
+} from "@/types";
 import { buildMonthlyTemperaturesFromPointValues } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCityData } from "./useGetCompareData";

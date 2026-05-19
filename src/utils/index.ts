@@ -10,6 +10,17 @@ export {
 } from "./walterLieth.util";
 export { isValidString, parseWktPoint } from "./wikidata.util";
 export {
+  encodeMonths,
+  encodeVars,
+  parseCellSize,
+  parseCoord,
+  parseDataset,
+  parseMonths,
+  parsePeriod,
+  parseVars,
+  parseYear,
+} from "./urlParams.util";
+export {
   buildDatasetParams,
   buildGridIri,
   buildMonthlyTemperatures,

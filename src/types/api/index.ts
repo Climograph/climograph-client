@@ -1,5 +1,6 @@
 export type { TApiResponse, TResultStatus } from "./common";
 export type {
+  TPopulationResult,
   TWikidataCoords,
   TWikidataEntitiesResult,
   TWikidataEntity,
@@ -13,6 +14,7 @@ export type {
   TWikidataSparqlResult,
 } from "./wikidata.dto";
 export type {
+  TClimatePeriod,
   TRawAvgValueBinding,
   TRawAvgValueResponse,
   TRawPixelValueBinding,
