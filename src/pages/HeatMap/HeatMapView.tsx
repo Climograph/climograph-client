@@ -29,6 +29,7 @@ export function HeatMapView({
   onDrawModeChange,
   onBboxChange,
   onPolygonChange,
+  onClear,
   onCitySelect,
   onLocate,
   onClearLocationError,
@@ -60,11 +61,6 @@ export function HeatMapView({
           year: periodLabel,
         });
 
-  function handleClear() {
-    onBboxChange(null);
-    onPolygonChange(null);
-  }
-
   return (
     <PageWrapper>
       <div className="flex flex-col gap-8">
@@ -87,7 +83,7 @@ export function HeatMapView({
           hasSelection={hasSelection}
           onBboxModeToggle={() => onDrawModeChange(drawMode === "bbox" ? "none" : "bbox")}
           onPolygonModeToggle={() => onDrawModeChange(drawMode === "polygon" ? "none" : "polygon")}
-          onClear={handleClear}
+          onClear={onClear}
         />
 
         {hasSelection && (

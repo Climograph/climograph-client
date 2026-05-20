@@ -185,8 +185,11 @@ export function HeatMap() {
     setDrawMode(mode);
   }
 
-  function setBboxInUrl(next: TBbox | null) {
+  function handleBboxChange(next: TBbox | null) {
+    setDrawMode("none");
+    setPolygon(null);
     const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete(SIDEBAR_PARAMS.POLYGON);
     if (next) {
       nextParams.set(SIDEBAR_PARAMS.BBOX_NORTH, String(next.north));
       nextParams.set(SIDEBAR_PARAMS.BBOX_SOUTH, String(next.south));
@@ -201,8 +204,14 @@ export function HeatMap() {
     setSearchParams(nextParams, { replace: true });
   }
 
-  function setPolygonInUrl(next: TPolygon | null) {
+  function handlePolygonChange(next: TPolygon | null) {
+    setDrawMode("none");
+    setPolygon(next);
     const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete(SIDEBAR_PARAMS.BBOX_NORTH);
+    nextParams.delete(SIDEBAR_PARAMS.BBOX_SOUTH);
+    nextParams.delete(SIDEBAR_PARAMS.BBOX_WEST);
+    nextParams.delete(SIDEBAR_PARAMS.BBOX_EAST);
     if (next) {
       nextParams.set(SIDEBAR_PARAMS.POLYGON, polygonToWkt(next));
     } else {
@@ -211,20 +220,16 @@ export function HeatMap() {
     setSearchParams(nextParams, { replace: true });
   }
 
-  function handleBboxChange(next: TBbox | null) {
+  function handleClear() {
     setDrawMode("none");
-    if (next) {
-      setPolygon(null);
-      setPolygonInUrl(null);
-    }
-    setBboxInUrl(next);
-  }
-
-  function handlePolygonChange(next: TPolygon | null) {
-    setDrawMode("none");
-    setPolygon(next);
-    if (next) setBboxInUrl(null);
-    setPolygonInUrl(next);
+    setPolygon(null);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete(SIDEBAR_PARAMS.POLYGON);
+    nextParams.delete(SIDEBAR_PARAMS.BBOX_NORTH);
+    nextParams.delete(SIDEBAR_PARAMS.BBOX_SOUTH);
+    nextParams.delete(SIDEBAR_PARAMS.BBOX_WEST);
+    nextParams.delete(SIDEBAR_PARAMS.BBOX_EAST);
+    setSearchParams(nextParams, { replace: true });
   }
 
   function handleCitySelect(city: TWikidataCity) {
@@ -254,6 +259,7 @@ export function HeatMap() {
       onDrawModeChange={handleDrawModeChange}
       onBboxChange={handleBboxChange}
       onPolygonChange={handlePolygonChange}
+      onClear={handleClear}
       isClimate={isClimate}
       selectedMonths={selectedMonths}
       periodLabel={periodLabel}

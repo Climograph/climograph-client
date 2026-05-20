@@ -58,6 +58,7 @@ export type TRegionHeatmapViewProps = {
   onDrawModeChange: (mode: TDrawMode) => void;
   onBboxChange: (bbox: TBbox | null) => void;
   onPolygonChange: (polygon: TPolygon | null) => void;
+  onClear: () => void;
   onCitySelect: (city: TWikidataCity) => void;
   onLocate: () => void;
   onClearLocationError: () => void;
