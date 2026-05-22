@@ -47,6 +47,15 @@
       "tempTitle": "Тенденція температури",
       "precipTitle": "Тенденція опадів",
       "noChange": "Без змін"
+    },
+    "weather": {
+      "periods": "Роки",
+      "addPeriod": "Додати період",
+      "maxPeriods": "Максимум {{max}} періодів",
+      "removePeriod": "Видалити {{year}}",
+      "invalidYear": "Введіть рік між {{min}} та {{max}}",
+      "duplicateYear": "Цей рік вже є у списку",
+      "periodsCount": "{{count}} / {{max}} періодів"
     }
   },
   "climateComparison": {
@@ -147,6 +156,7 @@
     },
     "modeStandard": "Стандартний графік",
     "modeWalterLieth": "Діаграма Вальтера-Лієта",
+    "walterLiethTabUnavailable": "Недоступно у вигляді Вальтера-Лієта",
     "selectedMonth": "значення за {{month}}",
     "altitude": "Висота",
     "subtitle": {
@@ -203,7 +213,8 @@
     "button": "Експорт даних",
     "png": "Зображення PNG",
     "svg": "Вектор SVG",
-    "csv": "Дані CSV"
+    "csv": "Дані CSV",
+    "metricColumn": "Метрика"
   },
   "months": {
     "1": "Січ",

@@ -47,6 +47,15 @@
       "tempTitle": "Tendencia de temperatura",
       "precipTitle": "Tendencia de precipitación",
       "noChange": "Sin cambios"
+    },
+    "weather": {
+      "periods": "Años",
+      "addPeriod": "Añadir período",
+      "maxPeriods": "Máximo {{max}} períodos",
+      "removePeriod": "Eliminar {{year}}",
+      "invalidYear": "Introduce un año entre {{min}} y {{max}}",
+      "duplicateYear": "Este año ya está en la lista",
+      "periodsCount": "{{count}} / {{max}} períodos"
     }
   },
   "climateComparison": {
@@ -147,6 +156,7 @@
     },
     "modeStandard": "Gráfico estándar",
     "modeWalterLieth": "Diagrama Walter-Lieth",
+    "walterLiethTabUnavailable": "No disponible en la vista Walter-Lieth",
     "selectedMonth": "valores de {{month}}",
     "altitude": "Altitud",
     "subtitle": {
@@ -203,7 +213,8 @@
     "button": "Exportar",
     "png": "Imagen PNG",
     "svg": "Vector SVG",
-    "csv": "Datos CSV"
+    "csv": "Datos CSV",
+    "metricColumn": "Métrica"
   },
   "months": {
     "1": "Ene",
