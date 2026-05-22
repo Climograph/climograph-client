@@ -15,12 +15,43 @@ function triggerDownload(url: string, filename: string): void {
   URL.revokeObjectURL(url);
 }
 
+function csvEscape(value: string): string {
+  if (value.includes(",") || value.includes('"') || value.includes("\n")) {
+    return `"${value.replace(/"/g, '""')}"`;
+  }
+  return value;
+}
+
+function html2canvasOpts(_el: HTMLElement) {
+  const bg = getComputedStyle(document.documentElement).getPropertyValue("--color-bg").trim();
+  return {
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+    scrollX: 0,
+    scrollY: -window.scrollY,
+    windowWidth: document.documentElement.scrollWidth,
+    windowHeight: document.documentElement.scrollHeight,
+    backgroundColor: bg || "#ffffff",
+  };
+}
+
+/** Returns a full filename including extension: "compare-cities-rome-oslo-2024-01-15.png" */
+export function buildFilename(page: string, parts: string[], ext: "png" | "csv" | "svg"): string {
+  const date = new Date().toISOString().split("T")[0];
+  const slug = [page, ...parts, date]
+    .join("-")
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+  return `${slug}.${ext}`;
+}
+
 export function exportToCSV(
   data: TMonthlyTemperature[],
   cityName: string,
   variables: readonly TVariable[],
 ): void {
-  const date = new Date().toISOString().slice(0, 10);
   const cols = variables.filter(isCsvVariable);
   const activeCols = cols.length > 0 ? cols : [...WEATHER_VARIABLES];
   const headers = [
@@ -31,8 +62,7 @@ export function exportToCSV(
   const csv = rows.map((r) => r.join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
-
-  triggerDownload(url, `climatica-${cityName}-${date}.csv`);
+  triggerDownload(url, buildFilename("city-climate", [cityName], "csv"));
 }
 
 export async function exportToPNG(elementId: string, filename: string): Promise<void> {
@@ -45,7 +75,7 @@ export async function exportToPNG(elementId: string, filename: string): Promise<
     (card as HTMLElement).style.paddingBottom = "4px";
   });
 
-  const canvas = await html2canvas(el);
+  const canvas = await html2canvas(el, html2canvasOpts(el));
 
   cards.forEach((card) => {
     (card as HTMLElement).style.lineHeight = "";
@@ -55,8 +85,24 @@ export async function exportToPNG(elementId: string, filename: string): Promise<
   canvas.toBlob((blob) => {
     if (!blob) return;
     const url = URL.createObjectURL(blob);
-    triggerDownload(url, `${filename}.png`);
+    triggerDownload(url, filename);
   });
+}
+
+export async function exportElementToPng(element: HTMLElement, filename: string): Promise<void> {
+  const canvas = await html2canvas(element, html2canvasOpts(element));
+  canvas.toBlob((blob) => {
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    triggerDownload(url, filename);
+  });
+}
+
+export function exportTableToCsv(filename: string, headers: string[], rows: string[][]): void {
+  const csv = [headers, ...rows].map((r) => r.map(csvEscape).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  triggerDownload(url, filename);
 }
 
 export function exportToSVG(chartRef: RefObject<HTMLElement | null>, filename: string): void {
@@ -67,7 +113,6 @@ export function exportToSVG(chartRef: RefObject<HTMLElement | null>, filename: s
   if (!svg) return;
 
   const clone = svg.cloneNode(true) as SVGElement;
-
   clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
   const serialized = new XMLSerializer().serializeToString(clone);
@@ -75,6 +120,5 @@ export function exportToSVG(chartRef: RefObject<HTMLElement | null>, filename: s
     type: "image/svg+xml;charset=utf-8",
   });
   const url = URL.createObjectURL(blob);
-
-  triggerDownload(url, `${filename}.svg`);
+  triggerDownload(url, filename);
 }

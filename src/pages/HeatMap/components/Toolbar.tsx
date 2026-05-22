@@ -1,3 +1,4 @@
+import { ExportMenu } from "@/components/UI";
 import { useTranslation } from "react-i18next";
 import type { TToolbarProps } from "../HeatMap.type";
 
@@ -51,6 +52,8 @@ export function Toolbar({
   onBboxModeToggle,
   onPolygonModeToggle,
   onClear,
+  onExportCSV,
+  onExportPNG,
 }: TToolbarProps) {
   const { t } = useTranslation();
   const activeClass =
@@ -93,6 +96,12 @@ export function Toolbar({
         <span className="text-[length:var(--font-sm)] text-[var(--color-text-secondary)] italic">
           {drawMode === "polygon" ? t("heatMap.drawingPolygon") : t("heatMap.drawing")}
         </span>
+      )}
+
+      {onExportCSV !== undefined && onExportPNG !== undefined && (
+        <div className="ml-auto">
+          <ExportMenu onExportCSV={onExportCSV} onExportPNG={onExportPNG} />
+        </div>
       )}
     </div>
   );

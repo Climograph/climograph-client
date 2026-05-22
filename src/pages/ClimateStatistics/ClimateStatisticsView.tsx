@@ -1,6 +1,6 @@
 import { LeafletMap, LocationSearch, TempPrecipChart, ThreeDotsScaleLoader } from "@/components";
 import { ExportMenu, PageWrapper } from "@/components/UI";
-import { exportToCSV, exportToPNG, exportToSVG } from "@/utils";
+import { buildFilename, exportToCSV, exportToPNG, exportToSVG } from "@/utils";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { TClimateStatisticsViewProps, TStatCardProps } from "./ClimateStatistics.type";
@@ -80,11 +80,11 @@ export function ClimateStatisticsView({
   }
 
   function handleExportPNG(): Promise<void> {
-    return exportToPNG("climate-stats-container", `climatica-${cityName}`);
+    return exportToPNG("climate-stats-container", buildFilename("city-climate", [cityName], "png"));
   }
 
   function handleExportSVG() {
-    exportToSVG(chartRef, `climatica-${cityName}`);
+    exportToSVG(chartRef, buildFilename("city-climate", [cityName], "svg"));
   }
 
   return (
@@ -163,7 +163,7 @@ export function ClimateStatisticsView({
                 >
                   {filteredMonthNames
                     ? t("climateStatistics.stats.filteredMonths", { months: filteredMonthNames })
-                    : " "}
+                    : " "}
                 </p>
               </div>
             )}
@@ -192,10 +192,10 @@ export function ClimateStatisticsView({
                   </div>
                 )}
                 <TempPrecipChart
-                  data={temperatureData}
                   cityName={cityName}
                   subtitle={subtitle}
                   variables={variables}
+                  data={temperatureData}
                   {...(altitude !== null ? { altitude } : {})}
                   {...(isFiltered ? { selectedMonths } : {})}
                 />

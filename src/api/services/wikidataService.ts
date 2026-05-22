@@ -65,9 +65,21 @@ export const WikidataService = {
     const values = ids.map((id) => `wd:${id}`).join(" ");
 
     const sparqlQuery = `
-      SELECT ?settlement ?point ?sitelinks ?statements WHERE {
+      SELECT DISTINCT ?settlement ?point ?sitelinks ?statements WHERE {
         VALUES ?settlement { ${values} }
-        ?settlement wdt:P31/wdt:P279* wd:Q486972 .
+        {
+          { ?settlement wdt:P31/wdt:P279* wd:Q15284 }
+          UNION
+          { ?settlement wdt:P31/wdt:P279* wd:Q486972 }
+          UNION
+          { ?settlement wdt:P31/wdt:P279* wd:Q23442 }
+          UNION
+          { ?settlement wdt:P31/wdt:P279* wd:Q183039 }
+          UNION
+          { ?settlement wdt:P31/wdt:P279* wd:Q10864048 }
+          UNION
+          { ?settlement wdt:P31/wdt:P279* wd:Q515 }
+        }
         ?settlement wdt:P625 ?point .
         ?settlement wikibase:sitelinks ?sitelinks .
         ?settlement wikibase:statements ?statements .
@@ -75,10 +87,11 @@ export const WikidataService = {
     `;
 
     const popQuery = `
-      SELECT ?settlement ?population WHERE {
+      SELECT ?settlement (MAX(?populationRaw) AS ?population) WHERE {
         VALUES ?settlement { ${values} }
-        OPTIONAL { ?settlement wdt:P1082 ?population . }
+        OPTIONAL { ?settlement wdt:P1082 ?populationRaw . }
       }
+      GROUP BY ?settlement
     `;
 
     const coordReq = axios.get<TWikidataSparqlResult>(ENDPOINTS.WIKIDATA_SPARQL as string, {

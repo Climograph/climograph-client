@@ -1,3 +1,4 @@
+import type { TMultiPeriodEntry } from "@/components/TempPrecipChart/TempPrecipChart.type";
 import type { TClimatePeriod } from "@/constants/worldclim.constant";
 import type { TCellSize, TDataset, TMonthlyTemperature, TWikidataCity } from "@/types";
 
@@ -6,12 +7,6 @@ export type TComparePeriodsViewProps = {
   dataset: TDataset;
   selectedMonths: number[] | null;
   altitude: number | null;
-  climatePeriodA: TClimatePeriod;
-  climatePeriodB: TClimatePeriod;
-  yearA: number;
-  yearB: number;
-  dataA: TMonthlyTemperature[];
-  dataB: TMonthlyTemperature[];
   autoGrid: TCellSize;
   isLoading: boolean;
   isLocating: boolean;
@@ -20,10 +15,21 @@ export type TComparePeriodsViewProps = {
   onCitySelect: (city: TWikidataCity) => void;
   onLocate: () => void;
   onClearLocationError: () => void;
+  // climate-only
+  climatePeriodA: TClimatePeriod;
+  climatePeriodB: TClimatePeriod;
+  dataA: TMonthlyTemperature[];
+  dataB: TMonthlyTemperature[];
   onClimatePeriodAChange: (period: TClimatePeriod) => void;
   onClimatePeriodBChange: (period: TClimatePeriod) => void;
-  onYearAChange: (year: number) => void;
-  onYearBChange: (year: number) => void;
+  // weather multi-period
+  periods: number[];
+  hiddenPeriods: number[];
+  periodsData: TMultiPeriodEntry[];
+  loadingPeriods: number[];
+  onAddPeriod: (year: number) => void;
+  onRemovePeriod: (year: number) => void;
+  onToggleHidePeriod: (year: number) => void;
 };
 
 export type TClimatePeriodRowProps = {

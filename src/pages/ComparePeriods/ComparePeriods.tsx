@@ -11,31 +11,32 @@ import {
   useGeolocation,
   useGetAltitude,
   useGetComparePeriods,
+  useGetMultiPeriodData,
   usePersistedComparisonCities,
+  usePersistedPeriods,
 } from "@/hooks";
 import { useFiltersStore } from "@/stores";
 import type { TClimatePeriod, TWikidataCity } from "@/types";
 import {
   encodeMonths,
+  encodePeriods,
   encodeVars,
   parseCellSize,
   parseCoord,
   parseDataset,
   parsePeriod,
+  parsePeriods,
   parseVars,
   parseYear,
 } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
+import { MAX_PERIODS, MIN_PERIODS } from "./ComparePeriods.constant";
 import { ComparePeriodsView } from "./ComparePeriodsView";
 
 function resolvePeriodFromUrl(raw: string | null, fallback: TClimatePeriod): TClimatePeriod {
   return parsePeriod(raw) ?? fallback;
-}
-
-function resolveYearFromUrl(raw: string | null, fallback: number): number {
-  return parseYear(raw) ?? fallback;
 }
 
 export function ComparePeriods() {
@@ -46,21 +47,19 @@ export function ComparePeriods() {
   const selectedMonths = Array.isArray(months) ? months : null;
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Lazy initial values from URL (read once at mount)
+  // Climate-only: 2 periods
   const [climatePeriodA, setClimatePeriodA] = useState<TClimatePeriod>(() =>
     resolvePeriodFromUrl(searchParams.get(SIDEBAR_PARAMS.PERIOD_A), CLIMATE_PERIODS.C1970_2000),
   );
   const [climatePeriodB, setClimatePeriodB] = useState<TClimatePeriod>(() =>
     resolvePeriodFromUrl(searchParams.get(SIDEBAR_PARAMS.PERIOD_B), CLIMATE_PERIODS.C1991_2020),
   );
-  const [yearA, setYearA] = useState<number>(() =>
-    resolveYearFromUrl(searchParams.get(SIDEBAR_PARAMS.YEAR_A), WEATHER_MIN_YEAR),
-  );
-  const [yearB, setYearB] = useState<number>(() =>
-    resolveYearFromUrl(searchParams.get(SIDEBAR_PARAMS.YEAR_B), WEATHER_MAX_YEAR),
-  );
 
-  // Restore city and global filters from URL once on mount
+  // Weather: N periods (2–5), persisted to localStorage
+  const [periods, setPeriods] = usePersistedPeriods();
+  const [hiddenPeriods, setHiddenPeriods] = useState<number[]>([]);
+
+  // Restore city, global filters, and periods from URL once on mount
   useEffect(() => {
     const lat = parseCoord(searchParams.get(SIDEBAR_PARAMS.LAT));
     const lng = parseCoord(searchParams.get(SIDEBAR_PARAMS.LNG));
@@ -78,21 +77,29 @@ export function ComparePeriods() {
     }
 
     const store = useFiltersStore.getState();
-
     const ds = parseDataset(searchParams.get(SIDEBAR_PARAMS.DATASET));
     if (ds !== null) store.actions.setDataset(ds);
-
     const vars = parseVars(searchParams.get(SIDEBAR_PARAMS.VAR));
     if (vars !== null) store.actions.setVariables(vars);
-
     const grid = parseCellSize(searchParams.get(SIDEBAR_PARAMS.GRID));
     if (grid !== null) store.actions.setGridSize(grid);
+
+    // URL periods take priority over localStorage
+    const fromUrl = parsePeriods(searchParams.get(SIDEBAR_PARAMS.PERIODS));
+    if (fromUrl !== null && fromUrl.length >= MIN_PERIODS) {
+      setPeriods(fromUrl);
+    } else {
+      const y1 = parseYear(searchParams.get(SIDEBAR_PARAMS.YEAR_A));
+      const y2 = parseYear(searchParams.get(SIDEBAR_PARAMS.YEAR_B));
+      if (y1 !== null && y2 !== null) setPeriods([y1, y2]);
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Sync all shareable state → URL (replace)
   const varsStr = useMemo(() => encodeVars(variables), [variables]);
   const monthsStr = useMemo(() => encodeMonths(months), [months]);
+  const periodsStr = useMemo(() => encodePeriods(periods), [periods]);
 
+  // Sync shareable state → URL
   useEffect(() => {
     const nextParams = new URLSearchParams(searchParams);
     let changed = false;
@@ -121,13 +128,15 @@ export function ComparePeriods() {
     if (dataset === DATASETS.CLIMATE) {
       maybeSet(SIDEBAR_PARAMS.PERIOD_A, climatePeriodA);
       maybeSet(SIDEBAR_PARAMS.PERIOD_B, climatePeriodB);
+      maybeDelete(SIDEBAR_PARAMS.PERIODS);
       maybeDelete(SIDEBAR_PARAMS.YEAR_A);
       maybeDelete(SIDEBAR_PARAMS.YEAR_B);
     } else {
-      maybeSet(SIDEBAR_PARAMS.YEAR_A, String(yearA));
-      maybeSet(SIDEBAR_PARAMS.YEAR_B, String(yearB));
+      maybeSet(SIDEBAR_PARAMS.PERIODS, periodsStr);
       maybeDelete(SIDEBAR_PARAMS.PERIOD_A);
       maybeDelete(SIDEBAR_PARAMS.PERIOD_B);
+      maybeDelete(SIDEBAR_PARAMS.YEAR_A);
+      maybeDelete(SIDEBAR_PARAMS.YEAR_B);
     }
 
     if (changed) setSearchParams(nextParams, { replace: true });
@@ -138,8 +147,7 @@ export function ComparePeriods() {
     dataset,
     climatePeriodA,
     climatePeriodB,
-    yearA,
-    yearB,
+    periodsStr,
     varsStr,
     gridSize,
     monthsStr,
@@ -161,22 +169,61 @@ export function ComparePeriods() {
       const labelB = CLIMATE_PERIOD_LABELS[climatePeriodB] ?? climatePeriodB;
       document.title = `${cityLabel} · ${varLabel} ${labelA} vs ${labelB} | Climatica`;
     } else {
-      document.title = `${cityLabel} · ${varLabel} ${yearA} vs ${yearB} | Climatica`;
+      document.title = `${cityLabel} · ${varLabel} ${periods.join(", ")} | Climatica`;
     }
-  }, [cityA.label, dataset, climatePeriodA, climatePeriodB, yearA, yearB, variables]);
+  }, [cityA.label, dataset, climatePeriodA, climatePeriodB, periods, variables]);
 
-  const { dataA, dataB, isLoading, error } = useGetComparePeriods(
+  // Climate: fixed 2-period compare
+  const {
+    dataA,
+    dataB,
+    isLoading: isClimateLoading,
+    error: climateError,
+  } = useGetComparePeriods(
     cityA.lat,
     cityA.lng,
     climatePeriodA,
     climatePeriodB,
-    yearA,
-    yearB,
+    periods[0] ?? WEATHER_MIN_YEAR,
+    periods[1] ?? WEATHER_MAX_YEAR,
     gridSize,
     dataset,
   );
 
+  // Weather: N-period compare
+  const {
+    data: periodsData,
+    isLoading: isWeatherLoading,
+    loadingPeriods,
+    error: weatherError,
+  } = useGetMultiPeriodData(
+    cityA.lat,
+    cityA.lng,
+    gridSize,
+    dataset === DATASETS.WEATHER ? periods : [],
+  );
+
   const { data: altitude = null } = useGetAltitude(cityA.lat, cityA.lng, gridSize);
+
+  const isLoading = dataset === DATASETS.CLIMATE ? isClimateLoading : isWeatherLoading;
+  const error = dataset === DATASETS.CLIMATE ? climateError : weatherError;
+
+  function handleAddPeriod(year: number) {
+    if (periods.includes(year) || periods.length >= MAX_PERIODS) return;
+    setPeriods([...periods, year]);
+  }
+
+  function handleRemovePeriod(year: number) {
+    if (periods.length <= MIN_PERIODS) return;
+    setPeriods(periods.filter((y) => y !== year));
+    setHiddenPeriods((prev) => prev.filter((y) => y !== year));
+  }
+
+  function handleToggleHidePeriod(year: number) {
+    setHiddenPeriods((prev) =>
+      prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year],
+    );
+  }
 
   function handleLocate() {
     locate(selectCityA);
@@ -198,12 +245,6 @@ export function ComparePeriods() {
       city={cityA}
       altitude={altitude}
       dataset={dataset}
-      climatePeriodA={climatePeriodA}
-      climatePeriodB={climatePeriodB}
-      yearA={yearA}
-      yearB={yearB}
-      dataA={dataA}
-      dataB={dataB}
       autoGrid={gridSize}
       selectedMonths={selectedMonths}
       isLoading={isLoading}
@@ -213,10 +254,19 @@ export function ComparePeriods() {
       onCitySelect={handleCitySelect}
       onLocate={handleLocate}
       onClearLocationError={clearLocationError}
+      climatePeriodA={climatePeriodA}
+      climatePeriodB={climatePeriodB}
+      dataA={dataA}
+      dataB={dataB}
       onClimatePeriodAChange={setClimatePeriodA}
       onClimatePeriodBChange={setClimatePeriodB}
-      onYearAChange={setYearA}
-      onYearBChange={setYearB}
+      periods={periods}
+      hiddenPeriods={hiddenPeriods}
+      periodsData={periodsData}
+      loadingPeriods={loadingPeriods}
+      onAddPeriod={handleAddPeriod}
+      onRemovePeriod={handleRemovePeriod}
+      onToggleHidePeriod={handleToggleHidePeriod}
     />
   );
 }

@@ -47,6 +47,15 @@
       "tempTitle": "Temperature trend",
       "precipTitle": "Precipitation trend",
       "noChange": "No change"
+    },
+    "weather": {
+      "periods": "Years",
+      "addPeriod": "Add period",
+      "maxPeriods": "Maximum {{max}} periods",
+      "removePeriod": "Remove {{year}}",
+      "invalidYear": "Enter a year between {{min}} and {{max}}",
+      "duplicateYear": "This year is already in the list",
+      "periodsCount": "{{count}} / {{max}} periods"
     }
   },
   "climateComparison": {
@@ -147,6 +156,7 @@
     },
     "modeStandard": "Standard chart",
     "modeWalterLieth": "Walter-Lieth diagram",
+    "walterLiethTabUnavailable": "Not available in Walter-Lieth view",
     "selectedMonth": "{{month}} values",
     "altitude": "Altitude",
     "subtitle": {
@@ -203,7 +213,8 @@
     "button": "Export data",
     "png": "PNG image",
     "svg": "SVG vector",
-    "csv": "CSV data"
+    "csv": "CSV data",
+    "metricColumn": "Metric"
   },
   "months": {
     "1": "Jan",
