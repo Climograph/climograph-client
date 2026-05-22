@@ -74,3 +74,16 @@ export function encodeVars(vars: TVariable[]): string {
 export function encodeMonths(months: TMonthFilter): string {
   return months === "all" ? "all" : months.join(",");
 }
+
+export function parsePeriods(raw: string | null): number[] | null {
+  if (raw === null) return null;
+  const years = raw
+    .split(",")
+    .map((s) => parseInt(s, 10))
+    .filter((n) => !isNaN(n) && n >= WEATHER_MIN_YEAR && n <= WEATHER_MAX_YEAR);
+  return years.length > 0 ? years : null;
+}
+
+export function encodePeriods(years: number[]): string {
+  return years.join(",");
+}
