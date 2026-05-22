@@ -163,6 +163,13 @@ body {
   /* * Active button text (icon on filled primary button) */
   --color-on-primary: #ffffff;
 
+  /* * Multi-period comparison colors */
+  --color-period-0: #1d9e75;
+  --color-period-1: #f59e0b;
+  --color-period-2: #3b82f6;
+  --color-period-3: #e11d48;
+  --color-period-4: #8b5cf6;
+
   /* * Heatmap gradient stops */
   --color-heatmap-0: #85b7eb;
   --color-heatmap-25: #9fe1cb;
