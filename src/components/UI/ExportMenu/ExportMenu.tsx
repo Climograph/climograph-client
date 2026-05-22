@@ -84,6 +84,7 @@ export function ExportMenu({
   }
 
   async function handleExportSVG() {
+    if (!onExportSVG) return;
     setIsOpen(false);
     setIsExporting(true);
     await new Promise<void>((resolve) => setTimeout(resolve, 150));
@@ -98,7 +99,9 @@ export function ExportMenu({
 
   const options = [
     { label: t("exportMenu.png"), icon: <ImageIcon />, handler: () => void handleExportPNG() },
-    { label: t("exportMenu.svg"), icon: <CodeIcon />, handler: () => void handleExportSVG() },
+    ...(onExportSVG !== undefined
+      ? [{ label: t("exportMenu.svg"), icon: <CodeIcon />, handler: () => void handleExportSVG() }]
+      : []),
     { label: t("exportMenu.csv"), icon: <TableIcon />, handler: handleExportCSV },
   ];
 
