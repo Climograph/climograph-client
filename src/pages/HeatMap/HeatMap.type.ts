@@ -97,6 +97,8 @@ export type TToolbarProps = {
   onBboxModeToggle: () => void;
   onPolygonModeToggle: () => void;
   onClear: () => void;
+  onExportCSV?: (() => void) | undefined;
+  onExportPNG?: (() => Promise<void>) | undefined;
 };
 
 export type TStatsLegendBarProps = {
