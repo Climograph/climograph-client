@@ -12,7 +12,6 @@ export type TDraftFilters = {
   dataset: TDataset;
   climatePeriod: TClimatePeriod;
   weatherYear: number;
-  weatherYearInput: string;
   variables: TVariable[];
   gridSize: TCellSize;
   months: TMonthFilter;

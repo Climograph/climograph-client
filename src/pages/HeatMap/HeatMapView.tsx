@@ -1,8 +1,10 @@
 import { LocationSearch } from "@/components";
 import { PageWrapper } from "@/components/UI";
+import { buildFilename, exportElementToPng, exportTableToCsv } from "@/utils";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { TRegionHeatmapViewProps } from "./HeatMap.type";
-import { computeHeatmapStats, formatSelectedMonths } from "./HeatMap.util";
+import { computeHeatmapStats, formatSelectedMonths, pixelAnnualAvg } from "./HeatMap.util";
 import { MapCanvas } from "./components/MapCanvas";
 import { RegionalClimateProfile } from "./components/RegionalClimateProfile";
 import { StatsLegendBar } from "./components/StatsLegendBar";
@@ -29,11 +31,13 @@ export function HeatMapView({
   onDrawModeChange,
   onBboxChange,
   onPolygonChange,
+  onClear,
   onCitySelect,
   onLocate,
   onClearLocationError,
 }: TRegionHeatmapViewProps) {
   const { t } = useTranslation();
+  const statsBarRef = useRef<HTMLDivElement>(null);
 
   const pixelBindings = pixels?.results.bindings ?? [];
   const stats = computeHeatmapStats(pixelBindings);
@@ -60,9 +64,29 @@ export function HeatMapView({
           year: periodLabel,
         });
 
-  function handleClear() {
-    onBboxChange(null);
-    onPolygonChange(null);
+  function handleExportCSV() {
+    const rows = pixelBindings
+      .map((b) => {
+        const lat = typeof b.lat?.value === "string" ? parseFloat(b.lat.value) : NaN;
+        const lng = typeof b.lng?.value === "string" ? parseFloat(b.lng.value) : NaN;
+        const value = pixelAnnualAvg(b);
+        if (isNaN(lat) || isNaN(lng) || isNaN(value)) return null;
+        return [lat.toFixed(4), lng.toFixed(4), value.toFixed(2)];
+      })
+      .filter((r): r is string[] => r !== null);
+    exportTableToCsv(
+      buildFilename("heatmap", [activeVariable, periodLabel], "csv"),
+      ["lat", "lng", "value"],
+      rows,
+    );
+  }
+
+  async function handleExportPNG() {
+    if (!statsBarRef.current) return;
+    await exportElementToPng(
+      statsBarRef.current,
+      buildFilename("heatmap", [activeVariable, periodLabel], "png"),
+    );
   }
 
   return (
@@ -87,18 +111,21 @@ export function HeatMapView({
           hasSelection={hasSelection}
           onBboxModeToggle={() => onDrawModeChange(drawMode === "bbox" ? "none" : "bbox")}
           onPolygonModeToggle={() => onDrawModeChange(drawMode === "polygon" ? "none" : "polygon")}
-          onClear={handleClear}
+          onClear={onClear}
+          {...(hasData ? { onExportCSV: handleExportCSV, onExportPNG: handleExportPNG } : {})}
         />
 
         {hasSelection && (
-          <StatsLegendBar
-            hasData={hasData}
-            stats={stats}
-            unit={unit}
-            scale={colorScale}
-            statSubtitle={statSubtitle}
-            avgTooltip={avgTooltip}
-          />
+          <div ref={statsBarRef}>
+            <StatsLegendBar
+              hasData={hasData}
+              stats={stats}
+              unit={unit}
+              scale={colorScale}
+              statSubtitle={statSubtitle}
+              avgTooltip={avgTooltip}
+            />
+          </div>
         )}
 
         <MapCanvas

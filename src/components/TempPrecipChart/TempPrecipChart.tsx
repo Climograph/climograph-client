@@ -37,7 +37,7 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
 
   if (!chart.hasData) return null;
 
-  const canUseWalterLieth = props.showWalterLiethToggle !== false;
+  const canUseWalterLieth = props.showWalterLiethToggle !== false && !chart.isMultiPeriod;
   const isWalterLieth = canUseWalterLieth && chartMode === "walter-lieth";
   const showAridity = props.showAridity !== false;
   const activeCount = Object.values(visible).filter(Boolean).length;
@@ -111,19 +111,22 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
         <div className="ml-auto flex flex-wrap gap-2">
           {chips.map(({ key, label }) => {
             const isLastActive = visible[key] && activeCount === 1;
-            const isDimmed = isWalterLieth && (key === "tmax" || key === "tmin");
+            const isDisabledInWL = isWalterLieth;
             const isUnavailable =
               props.variables !== undefined && key !== "tavg" && !storeVarSet.has(key);
             return (
               <div
                 key={key}
+                title={isDisabledInWL ? t("chart.walterLiethTabUnavailable") : undefined}
                 className={
-                  isLastActive || isDimmed || isUnavailable ? "pointer-events-none opacity-40" : ""
+                  isLastActive || isDisabledInWL || isUnavailable
+                    ? "pointer-events-none cursor-not-allowed opacity-40"
+                    : ""
                 }
               >
                 <FilterChip
                   label={label}
-                  isActive={visible[key] && !isDimmed && !isUnavailable}
+                  isActive={visible[key] && !isDisabledInWL && !isUnavailable}
                   onClick={() => handleToggle(key)}
                 />
               </div>
@@ -174,6 +177,11 @@ export function TempPrecipChart(props: TTempPrecipChartProps) {
           {...(props.labelA !== undefined ? { labelA: props.labelA } : {})}
           {...(props.labelB !== undefined ? { labelB: props.labelB } : {})}
           {...(props.altitude !== undefined ? { altitude: props.altitude } : {})}
+          {...(props.multiPeriodData !== undefined
+            ? { multiPeriodData: props.multiPeriodData }
+            : {})}
+          {...(props.hiddenPeriods !== undefined ? { hiddenPeriods: props.hiddenPeriods } : {})}
+          {...(props.periodColors !== undefined ? { periodColors: props.periodColors } : {})}
         />
       )}
     </div>

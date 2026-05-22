@@ -7,14 +7,16 @@ import {
   TempPrecipChart,
   ThreeDotsScaleLoader,
 } from "@/components";
-import { PageWrapper } from "@/components/UI";
+import { ExportMenu, PageWrapper } from "@/components/UI";
 import { CELL_SIZE_OPTIONS } from "@/constants";
 import { CLIMATE_COMPARISON_COLORS } from "@/pages/ClimateComparison/ClimateComparison.constant";
 import {
   computeCompareStats,
   computeDiffStats,
 } from "@/pages/ClimateComparison/ClimateComparison.util";
-import { useState } from "react";
+import { buildFilename, exportElementToPng, exportTableToCsv } from "@/utils";
+import { getMartonneBadge } from "@/utils/martonne.util";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { TCitySearchRowProps, TCompareCitiesViewProps } from "./CompareCities.type";
 
@@ -53,6 +55,7 @@ export function CompareCitiesView({
 }: TCompareCitiesViewProps) {
   const { t } = useTranslation();
   const [activeCity, setActiveCity] = useState(0);
+  const exportRef = useRef<HTMLDivElement>(null);
 
   const hasBothData = dataA.length > 0 && dataB.length > 0;
   const statsA = hasBothData ? computeCompareStats(dataA) : null;
@@ -66,6 +69,64 @@ export function CompareCitiesView({
     { lat: cityA.lat, lng: cityA.lng, label: cityA.label, color: CLIMATE_COMPARISON_COLORS.A.tmax },
     { lat: cityB.lat, lng: cityB.lng, label: cityB.label, color: CLIMATE_COMPARISON_COLORS.B.tmax },
   ];
+
+  function handleExportCSV() {
+    if (!statsA || !statsB) return;
+    const badgeA = getMartonneBadge(statsA.martonneIndex);
+    const badgeB = getMartonneBadge(statsB.martonneIndex);
+    const showAltitude = altitudeA != null || altitudeB != null;
+    const rows: string[][] = [
+      [
+        t("climateComparison.stats.avgTmax"),
+        `${statsA.avgTmax.toFixed(1)} °C`,
+        `${statsB.avgTmax.toFixed(1)} °C`,
+      ],
+      [
+        t("climateComparison.stats.avgTmin"),
+        `${statsA.avgTmin.toFixed(1)} °C`,
+        `${statsB.avgTmin.toFixed(1)} °C`,
+      ],
+      [
+        t("climateComparison.stats.totalPrec"),
+        `${statsA.totalPrec.toFixed(0)} mm`,
+        `${statsB.totalPrec.toFixed(0)} mm`,
+      ],
+      [
+        t("climateComparison.stats.aridMonths"),
+        String(statsA.aridMonths),
+        String(statsB.aridMonths),
+      ],
+    ];
+    if (showAltitude) {
+      rows.push([
+        t("chart.altitude"),
+        altitudeA != null ? `${altitudeA} m` : "—",
+        altitudeB != null ? `${altitudeB} m` : "—",
+      ]);
+    }
+    rows.push([
+      t("climateComparison.stats.martonne"),
+      statsA.martonneIndex !== null
+        ? `${statsA.martonneIndex.toFixed(1)} (${badgeA?.labelKey ?? ""})`
+        : "—",
+      statsB.martonneIndex !== null
+        ? `${statsB.martonneIndex.toFixed(1)} (${badgeB?.labelKey ?? ""})`
+        : "—",
+    ]);
+    exportTableToCsv(
+      buildFilename("compare-cities", [labelA, labelB], "csv"),
+      [t("exportMenu.metricColumn"), labelA, labelB],
+      rows,
+    );
+  }
+
+  async function handleExportPNG() {
+    if (!exportRef.current) return;
+    await exportElementToPng(
+      exportRef.current,
+      buildFilename("compare-cities", [labelA, labelB], "png"),
+    );
+  }
 
   return (
     <PageWrapper>
@@ -128,30 +189,36 @@ export function CompareCitiesView({
         )}
 
         {hasBothData && statsA && statsB && (
-          <CompareStatsGrid
-            labelA={labelA}
-            labelB={labelB}
-            statsA={statsA}
-            statsB={statsB}
-            altitudeA={altitudeA}
-            altitudeB={altitudeB}
-            activeColumn={activeCity}
-          />
-        )}
-
-        {hasBothData && (
-          <TempPrecipChart
-            dataA={dataA}
-            dataB={dataB}
-            labelA={labelA}
-            labelB={labelB}
-            compareMode="cities"
-            cityName={`${labelA} vs ${labelB}`}
-            subtitle={subtitle}
-            showWalterLiethToggle={false}
-            showAridity={false}
-            {...(selectedMonths !== null && selectedMonths.length > 0 ? { selectedMonths } : {})}
-          />
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-end">
+              <ExportMenu onExportCSV={handleExportCSV} onExportPNG={handleExportPNG} />
+            </div>
+            <div ref={exportRef} className="flex flex-col gap-6">
+              <CompareStatsGrid
+                labelA={labelA}
+                labelB={labelB}
+                statsA={statsA}
+                statsB={statsB}
+                altitudeA={altitudeA}
+                altitudeB={altitudeB}
+                activeColumn={activeCity}
+              />
+              <TempPrecipChart
+                dataA={dataA}
+                dataB={dataB}
+                labelA={labelA}
+                labelB={labelB}
+                compareMode="cities"
+                cityName={`${labelA} vs ${labelB}`}
+                subtitle={subtitle}
+                showWalterLiethToggle={false}
+                showAridity={false}
+                {...(selectedMonths !== null && selectedMonths.length > 0
+                  ? { selectedMonths }
+                  : {})}
+              />
+            </div>
+          </div>
         )}
 
         {hasBothData && diff && (

@@ -1,4 +1,4 @@
-import { CellSizeSelector, FilterChip, PeriodSelectRow, SectionLabel } from "@/components";
+import { CellSizeSelector, FilterChip, SectionLabel, YearInput } from "@/components";
 import { Dropdown } from "@/components/UI";
 import {
   CELL_SIZE_OPTIONS,
@@ -56,7 +56,6 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
     dataset,
     climatePeriod,
     weatherYear,
-    weatherYearInput: String(weatherYear),
     variables,
     gridSize,
     months,
@@ -72,7 +71,6 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
         dataset,
         climatePeriod,
         weatherYear,
-        weatherYearInput: String(weatherYear),
         variables: [...variables],
         gridSize,
         months,
@@ -148,8 +146,8 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
     });
   }
 
-  function handleDraftYearInputChange(val: string) {
-    setDraft((prev) => ({ ...prev, weatherYearInput: val }));
+  function handleDraftYearChange(year: number) {
+    setDraft((prev) => ({ ...prev, weatherYear: year }));
     if (submitAttempted && errors["weatherYear"] !== undefined) {
       setErrors({});
     }
@@ -185,12 +183,10 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
   function handleApplyAndClose() {
     setSubmitAttempted(true);
 
-    const parsedYear = parseInt(draft.weatherYearInput, 10);
-
     const result = sidebarFiltersSchema.safeParse({
       dataset: draft.dataset,
       climatePeriod: draft.climatePeriod,
-      weatherYear: isNaN(parsedYear) ? draft.weatherYearInput : parsedYear,
+      weatherYear: draft.weatherYear,
     });
 
     if (!result.success) {
@@ -277,17 +273,21 @@ export function Sidebar({ isOpen, onClose }: TSidebarProps) {
         )}
 
         {draft.dataset === DATASETS.WEATHER && (
-          <div>
+          <div className="flex flex-col gap-2">
             <SectionLabel text={t("sidebar.sections.yearRange")} />
-            <PeriodSelectRow
-              label=""
-              hideDot={true}
-              value={draft.weatherYearInput}
-              onChange={handleDraftYearInputChange}
-              error={errors["weatherYear"]}
-              hint={`${WEATHER_MIN_YEAR}–${WEATHER_MAX_YEAR}`}
+            <YearInput
+              value={draft.weatherYear}
+              min={WEATHER_MIN_YEAR}
+              max={WEATHER_MAX_YEAR}
+              onChange={handleDraftYearChange}
+              placeholder={`${WEATHER_MIN_YEAR}–${WEATHER_MAX_YEAR}`}
             />
-            <p className="mt-1.5 text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
+            {errors["weatherYear"] !== undefined && errors["weatherYear"] !== "" && (
+              <span className="text-[length:var(--font-xs)] font-medium text-[var(--color-error)]">
+                {errors["weatherYear"]}
+              </span>
+            )}
+            <p className="text-[length:var(--font-xs)] text-[var(--color-text-secondary)]">
               {t("sidebar.notes.weatherData")}
             </p>
           </div>

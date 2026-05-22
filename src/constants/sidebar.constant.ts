@@ -35,4 +35,5 @@ export const SIDEBAR_PARAMS = {
   YEAR_B: "year2",
   VAR: "var",
   POLYGON: "polygon",
+  PERIODS: "periods",
 } as const;
