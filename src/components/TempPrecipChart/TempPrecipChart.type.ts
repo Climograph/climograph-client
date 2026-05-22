@@ -5,6 +5,8 @@ import type { ReactNode } from "react";
 
 export type TMonthlyTemperatureWithAvg = TMonthlyTemperature & { tavg: number };
 
+export type TMultiPeriodEntry = { year: number; rows: TMonthlyTemperature[] };
+
 export type TVisibleSeries = {
   tmax: boolean;
   tmin: boolean;
@@ -37,6 +39,9 @@ export type TTempPrecipChartProps = {
   showWalterLiethToggle?: boolean;
   showAridity?: boolean;
   variables?: readonly TVariable[];
+  multiPeriodData?: TMultiPeriodEntry[] | undefined;
+  hiddenPeriods?: number[] | undefined;
+  periodColors?: readonly string[] | undefined;
 };
 
 export type TBarShape = {
@@ -188,4 +193,7 @@ export type TStandardClimateChartProps = {
   labelB?: string;
   altitude?: number;
   showAridity?: boolean;
+  multiPeriodData?: TMultiPeriodEntry[] | undefined;
+  hiddenPeriods?: number[] | undefined;
+  periodColors?: readonly string[] | undefined;
 };

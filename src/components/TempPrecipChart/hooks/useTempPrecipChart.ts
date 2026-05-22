@@ -2,20 +2,26 @@ import { computeAridityPeriods, getWalterLiethScales } from "@/utils";
 import { useMemo } from "react";
 import type { TMonthlyTemperatureWithAvg, TTempPrecipChartProps } from "../TempPrecipChart.type";
 import { buildCompareData } from "../utils/buildCompareData";
+import { buildMultiPeriodChartData } from "../utils/buildMultiPeriodChartData";
 import { computeChartSummary } from "../utils/computeChartSummary";
 
-export function useTempPrecipChart({ data, dataA, dataB }: TTempPrecipChartProps) {
+export function useTempPrecipChart({ data, dataA, dataB, multiPeriodData }: TTempPrecipChartProps) {
   const isCompare = dataA !== undefined;
+  const isMultiPeriod = multiPeriodData !== undefined && multiPeriodData.length > 0;
 
   const hasData = useMemo(
     () =>
-      isCompare ? (dataA?.length ?? 0) > 0 || (dataB?.length ?? 0) > 0 : (data?.length ?? 0) > 0,
-    [data, dataA, dataB, isCompare],
+      isMultiPeriod
+        ? multiPeriodData.some((p) => p.rows.length > 0)
+        : isCompare
+          ? (dataA?.length ?? 0) > 0 || (dataB?.length ?? 0) > 0
+          : (data?.length ?? 0) > 0,
+    [data, dataA, dataB, isCompare, isMultiPeriod, multiPeriodData],
   );
 
   const aridity = useMemo(
-    () => (!isCompare && data?.length ? computeAridityPeriods(data) : null),
-    [data, isCompare],
+    () => (!isCompare && !isMultiPeriod && data?.length ? computeAridityPeriods(data) : null),
+    [data, isCompare, isMultiPeriod],
   );
 
   const aridityA = useMemo(
@@ -28,10 +34,11 @@ export function useTempPrecipChart({ data, dataA, dataB }: TTempPrecipChartProps
     [dataB, isCompare],
   );
 
-  const scalesData = useMemo(
-    () => (isCompare ? [...(dataA ?? []), ...(dataB ?? [])] : (data ?? [])),
-    [data, dataA, dataB, isCompare],
-  );
+  const scalesData = useMemo(() => {
+    if (isMultiPeriod) return multiPeriodData.flatMap((p) => p.rows);
+    if (isCompare) return [...(dataA ?? []), ...(dataB ?? [])];
+    return data ?? [];
+  }, [data, dataA, dataB, isCompare, isMultiPeriod, multiPeriodData]);
 
   const scales = useMemo(
     () => (scalesData.length ? getWalterLiethScales(scalesData) : null),
@@ -43,10 +50,11 @@ export function useTempPrecipChart({ data, dataA, dataB }: TTempPrecipChartProps
     [data],
   );
 
-  const chartData = useMemo<Record<string, unknown>[]>(
-    () => (isCompare ? buildCompareData(dataA ?? [], dataB ?? []) : chartDataSingle),
-    [chartDataSingle, dataA, dataB, isCompare],
-  );
+  const chartData = useMemo<Record<string, unknown>[]>(() => {
+    if (isMultiPeriod) return buildMultiPeriodChartData(multiPeriodData);
+    if (isCompare) return buildCompareData(dataA ?? [], dataB ?? []);
+    return chartDataSingle;
+  }, [chartDataSingle, dataA, dataB, isCompare, isMultiPeriod, multiPeriodData]);
 
   const summary = useMemo(
     () => (aridity && data ? computeChartSummary(data, aridity) : null),
@@ -74,17 +82,21 @@ export function useTempPrecipChart({ data, dataA, dataB }: TTempPrecipChartProps
   );
 
   const rightMax = useMemo(() => {
-    const precValues = isCompare
-      ? [...(dataA ?? []), ...(dataB ?? [])].map((d) => d.prec)
-      : (data ?? []).map((d) => d.prec);
-
+    let precValues: number[];
+    if (isMultiPeriod) {
+      precValues = multiPeriodData.flatMap((p) => p.rows.map((r) => r.prec));
+    } else if (isCompare) {
+      precValues = [...(dataA ?? []), ...(dataB ?? [])].map((d) => d.prec);
+    } else {
+      precValues = (data ?? []).map((d) => d.prec);
+    }
     const max = precValues.length ? Math.max(...precValues) : 0;
-
     return Math.ceil(max / 10) * 10 || 100;
-  }, [data, dataA, dataB, isCompare]);
+  }, [data, dataA, dataB, isCompare, isMultiPeriod, multiPeriodData]);
 
   return {
     isCompare,
+    isMultiPeriod,
     hasData,
     aridity,
     aridityA,
