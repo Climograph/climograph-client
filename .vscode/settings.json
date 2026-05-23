@@ -1,0 +1,36 @@
+{
+  "editor.tabSize": 2,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always"
+  },
+  "cSpell.words": [
+    "Andrii",
+    "axios",
+    "Climatica",
+    "climograph",
+    "hyperarid",
+    "Kononenko",
+    "Lieth",
+    "martonne",
+    "navlink",
+    "nivo",
+    "perhumid",
+    "PREC",
+    "Precip",
+    "react-icons",
+    "react-query",
+    "react-router-dom",
+    "Sparql",
+    "tavg",
+    "tmax",
+    "tmin",
+    "Topbar",
+    "VITE",
+    "WORLDCLIM",
+    "Клімограф"
+  ]
+}
